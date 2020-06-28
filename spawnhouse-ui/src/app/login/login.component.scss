@@ -5,4 +5,18 @@
 
 .font-bold {
     font-weight: 900;
+    font-size: 5rem;
+}
+
+.overflow-x-none {
+    // overflow-x: none ;
+}
+
+.picturediv {
+    background-image: url('https://i.pinimg.com/236x/f5/53/4c/f5534c400c0c773c0dce941929f06fdf.jpg');
+    width: 100%;
+    height: 50vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
