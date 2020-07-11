@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, NgZone } from '@angular/core';
+import { Component, OnInit, Renderer2, NgZone, Inject } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { APIvars } from '../../assets/variables/api-vars.enum';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -13,10 +13,9 @@ declare var gapi: any;
 })
 export class LoginComponent implements OnInit {
 
-
   fname: string;
   lname: string;
-  email: string | number;
+  email: string | number; 
   gender: '' | 'f' | 'm' | 'o' = '';
 
   constructor(private _metaService: Meta,
@@ -24,22 +23,26 @@ export class LoginComponent implements OnInit {
     ngZone: NgZone,
     private _http: HttpClient,
     private _storageService: StorageService,
-    private _router: Router
+    private _router: Router,
     ) {
       
       window['onSignIn'] = user => ngZone.run( () => {
       this.onSignIn(user);
-    })
+    });
   }
   
   ngOnInit(): void {
+
+    // google script injection
     let scr = this._renderer.createElement('script');
     scr.src = APIvars.APIgoogleSignup;
     scr.defer = true;
     scr.async = true;
     this._renderer.appendChild(document.body, scr);
-    this._metaService.addTags([{name: 'google-signin-client_id', content: '206033993886-qqam7i8l0egv1t8iih63hnqiut8c932e.apps.googleusercontent.com'}]);
+    this._metaService.addTags([{name: 'google-signin-client_id', content: APIvars.GOOGLE_PROVIDER}]);
+  }
 
+  fbLogin() {
   }
 
   onSignIn(gUser) {
@@ -48,9 +51,14 @@ export class LoginComponent implements OnInit {
       console.log('User signed out.');
     });
 
+
+    let newUser = JSON.stringify({'fname': user.getGivenName(), 'lname': user.getFamilyName(), 'email': user.getEmail(), 'gender': ''});
+
     this._http.post(APIvars.APIdomain+'/'+APIvars.APIlogin,
-      {fname: user.getGivenName(), lname: user.getFamilyName(), email: user.getEmail(), gender: ''}).subscribe( response => {
-        console.log(response);
+      {newUser}).subscribe( data => {
+        console.log(data);
+        this._storageService.setSessionData('sh_auth_token', data['auth_token']);
+        this._router.navigate(['/profile']);
       });
   }
 

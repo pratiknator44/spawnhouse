@@ -1,0 +1,83 @@
+.ball {
+    height: 5rem;
+    width: 5rem;
+    border-radius: 50%;
+    background-color: red;
+    margin-left: 1rem;
+    animation: bounce 1s infinite linear;
+}
+
+.ball-container {
+    height: 10rem;
+    width: 7rem;
+    display: inline-block;
+    position: relative;
+}
+
+.text {
+    font-size: 7rem;
+    bottom: 0;
+    display: inline-block;
+    color: rgb(39, 39, 39);
+}
+
+.shadow {
+    height: 3px; width: 50%;
+    margin-left: 25%;
+    background-color: grey;
+    bottom: -1rem;
+    border-radius: 50%;
+    animation: shadow-bounce 1s infinite linear;
+}
+
+@keyframes shadow-bounce {
+    0% {
+        width: 50%;
+        opacity: 0.8;
+        margin-left: 25%;
+    }
+
+    50% {
+        width: 100%;
+        margin-left: 0;
+        opacity: 1;
+    }
+    100% {
+        width: 50%;
+        opacity: 0.8;
+        margin-left: 25%;
+    }
+}
+
+@keyframes bounce {
+    0%{
+        top: 0;
+        margin-left: 1rem;
+    }
+    
+    45% {
+        top: calc(100% - 5rem);
+        height: 6rem;
+        width: 5rem;
+        margin-left: 1rem;
+    }
+    50% {
+        top: calc(100% - 4rem);
+        height: 4rem;
+        width: 7rem;
+        margin-left: 0;
+    }
+    55% {
+        top: calc(100% - 5rem);
+        height: 6rem;
+        width: 5rem;
+        margin-left: 1rem;
+    }
+
+    100% {
+        top: 0;
+        margin-left: 1rem;
+    }
+
+
+}

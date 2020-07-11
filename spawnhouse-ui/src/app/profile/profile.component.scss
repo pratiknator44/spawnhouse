@@ -1,0 +1,33 @@
+.loader {
+    height: 100vh;
+    overflow: none;
+}
+
+.loader-center {
+    top:calc(50% - 3rem); left: calc(50% - 3rem);
+    
+}
+
+.profile-media-container {
+
+}
+
+.cover-picture {
+    background-color: red;
+    height: 10rem;
+}
+
+.dp-size {
+    height: 7rem; width: 7rem;
+    border-radius: 50%;
+    background-color: green;
+    bottom: -2.5rem; left: 10%;
+}
+
+
+// loader classes
+.div-center {
+    transform: translate(-50%, -50%);
+    top: 50%; left: 50%;
+    position: absolute;
+}

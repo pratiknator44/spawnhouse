@@ -15,11 +15,11 @@ const routes: Routes = [
     canActivate: [ProfileGuardService],
     component: ProfileComponent
   },
-  //  {
-  //   path: '**',
-  //   canActivate: [WildcardGuardService],
-  //   component: NotfoundComponent
-  // }
+   {
+    path: '**',
+   // canActivate: [WildcardGuardService],
+    component: ProfileComponent
+  }
 ];
 
 @NgModule({
