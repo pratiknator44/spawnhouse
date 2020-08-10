@@ -48,25 +48,31 @@ export class LoginComponent implements OnInit {
   onSignIn(gUser) {
     let user = gUser.getBasicProfile();
     gapi.auth2.getAuthInstance().signOut().then(function () {
-      console.log('User signed out.');
+      console.log('User signed out');
     });
 
 
-    let newUser = JSON.stringify({'fname': user.getGivenName(), 'lname': user.getFamilyName(), 'email': user.getEmail(), 'gender': ''});
+    // let logginUser = {'fname': user.getGivenName(), 'lname': user.getFamilyName(), 'email': user.getEmail(), 'gender': '', 'type': 'Google'};
 
-    this._http.post(APIvars.APIdomain+'/'+APIvars.APIlogin,
-      {newUser}).subscribe( data => {
+    this._http.post(APIvars.APIdomain+'/'+APIvars.APIsignup, {'fname': user.getGivenName(), 'lname': user.getFamilyName(), 'email': user.getEmail(), 'gender': '', 'signedVia': 'Google'}  ).subscribe( data => {
         console.log(data);
         this._storageService.setSessionData('sh_auth_token', data['auth_token']);
+        sessionStorage.setItem('user', data['user']);
+        this._storageService.currentUser = data['user'];
+        console.log(this._storageService.currentUser);
+        this._storageService.setSessionData('user', JSON.stringify(data['user']));
         this._router.navigate(['/profile']);
       });
   }
 
   submitForm() {
     if(this.fname.trim() !== '' && this.lname.trim() !== '') {
-      this._http.post(APIvars.APIdomain+'/'+APIvars.APIlogin,
-      {fname: this.fname, lname: this.lname, email:this.email, gender: this.gender}).subscribe( data => {
+      this._http.post(APIvars.APIdomain+'/'+APIvars.APIsignup,
+      {'fname': this.fname, 'lname': this.lname, 'email':this.email, 'gender': this.gender,  'signedVia': 'mail'}).subscribe( data => {
         this._storageService.setSessionData('sh_auth_token', data['auth_token']);
+        this._storageService.currentUser = data['user'];
+        this._storageService.setSessionData('user', JSON.stringify(data['user']));
+        console.log(this._storageService.currentUser);
         this._router.navigate(['/profile']);
       });
     }

@@ -1,3 +1,5 @@
+@import '../../assets/variables/variables.scss';
+
 .loader {
     height: 100vh;
     overflow: none;
@@ -9,25 +11,106 @@
 }
 
 .profile-media-container {
-
 }
 
 .cover-picture {
-    background-color: red;
-    height: 10rem;
+    background-color: $theme-color;
+    height: 12rem;
 }
 
+.user-dp-info {
+    left: 10%;
+    bottom: 0;
+}
 .dp-size {
-    height: 7rem; width: 7rem;
+    height: 9rem; width: 9rem;
     border-radius: 50%;
-    background-color: green;
-    bottom: -2.5rem; left: 10%;
+    background-color: grey;
 }
 
+.user-name {
+    top: -3.2rem;
+ }
+
+.user-name > label {
+    font-size: 3rem;
+    top: 4.5rem;
+}
+.user-name > label:hover {
+    text-decoration: underline;
+}
 
 // loader classes
 .div-center {
     transform: translate(-50%, -50%);
     top: 50%; left: 50%;
     position: absolute;
+}
+
+.feeds {
+    margin-left: 12.5vw;
+    min-height: 1rem;
+}
+
+.side-info {
+}
+
+.side-info > div {
+}
+
+.media-tabs {
+    background: linear-gradient(0deg, #CCC, white);
+}
+
+.media-category {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.media-category-selected {
+    background-color: $theme-color;
+    color: white;
+}
+
+.online-dot {
+    height: 0.75rem; width: 0.75rem;
+    border-radius: 50%;
+    bottom: 1.75rem; right: -2rem;
+    position: absolute;
+}
+
+.add-media {
+    height: 7rem;
+    width: 7rem;
+    border-radius: 1rem;
+    font-size: 5rem;
+    color: rgb(253, 200, 200);
+    font-weight: 900;
+    border: none;
+    background-color: transparent;
+    outline: none ;
+}
+
+.media-content {
+    height: 7rem;
+    width: 7rem;
+    border-radius: 0.5rem;
+    border: solid 1px blue;
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: calc( 100vh - 3.5rem); width: 100vw;
+    top: 3.5rem;
+}
+
+.recent-followers {
+    height: 3rem; width: 3rem;
+    border-radius: 50%;
+    border: solid 1px black;
+}
+
+.recent-followers-container {
+    flex-wrap: wrap;
 }

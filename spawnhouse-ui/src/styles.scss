@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@import './assets/variables/variables.scss';
+@import './assets/variables/icons.scss';
 .cursor-pointer {
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 body {
@@ -8,4 +10,58 @@ body {
 
 .title-font {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.d-inline-block {
+    display: inline-block !important;
+}
+
+.justify-content-evenly {
+    justify-content: space-evenly;
+}
+
+.text-bold {
+    font-weight: 700 !important;
+}
+
+.color-theme {
+    color: $theme-color;
+}
+.bg-theme {
+    background-color: $theme-color !important;
+}
+
+.bg-online {
+    background-color: $online;
+}
+
+.bg-offline {
+    background-color: $offline;
+}
+
+.bg-busy {
+    background-color: $busy;
+}
+
+.border-none {
+    border: none !important;
+    outline: none;
+}
+
+.text-black {
+    color: black !important;
+}
+
+.d-wrap-flex {
+    flex-wrap: wrap !important;
+}
+
+.iconset {
+    font-family: sh-icons !important;
+    src: url('/../spawnhouse-ui/src/assets/fonts/icomoon.woff');
+    // format:('opentype');
 }

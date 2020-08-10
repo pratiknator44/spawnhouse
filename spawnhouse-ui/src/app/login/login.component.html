@@ -426,10 +426,10 @@
 
             <div class="row">
                 <div class="col-6 mt-2">
-                    <input type="text" class="form form-control" placeholder="email or mobile number" [(ngModel)]="email" />
+                    <input type="text" class="form form-control" placeholder="Email" [(ngModel)]="email" />
                 </div>
                 <div class="col-4 mt-2">
-                    <select type="text" class="form form-control" placeholder="email or mobile number" [(ngModel)]="gender" >
+                    <select type="text" class="form form-control" [(ngModel)]="gender" >
                         <option value="">Gender</option>
                         <option value="f">Female</option>
                         <option value="m">Male</option>
@@ -439,7 +439,7 @@
             </div>
             <div class="row mt-3">
                 <div class="col-6">
-                   <div class="mt-2"><input type="radio" /> I agree the usage of this service
+                   <div class="mt-2"><input type="checkbox" [(ngModel)]="email" /> I agree the usage of this service
                    </div> 
                 </div>
                 <div class="col-6">

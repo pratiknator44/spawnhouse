@@ -13,6 +13,7 @@ const routes: Routes = [
   }, {
     path: 'profile',
     canActivate: [ProfileGuardService],
+    loadChildren: () => import('./modules/profile.module').then( m=> m.ProfileModule),
     component: ProfileComponent
   },
    {

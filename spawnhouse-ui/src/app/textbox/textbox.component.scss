@@ -1,0 +1,36 @@
+@import '../../assets/variables/icons.scss';
+
+.text-area {
+    height: 4rem;
+    border: solid 1px #CCC;
+}
+
+.suggestions {
+    width: max-content;
+    border: solid 1px #CCC;
+    background-color:white;
+    width:10rem;
+}
+
+.suggestions > .cursor-pointer:hover {
+    background-color: #CCC;
+}
+
+.btn-default:hover {
+    background-color: rgb(207, 207, 207);
+}
+
+.media-container > span > h4, .media-container > span > h6 {
+    display: inline-block
+}
+
+.media-container > span > h6 {
+    margin-left: 1rem;
+    margin-left: 0.25rem;
+    margin-bottom: 0.25rem;    
+}
+
+.media-container > span:hover {
+    border-radius: 5px;
+    background-color: rgb(233, 233, 233);
+}

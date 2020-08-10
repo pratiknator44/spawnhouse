@@ -1,11 +1,112 @@
 <navbar></navbar>
-<!-- <div class="div-center">
-    <loader2></loader2>
-</div> -->
-
 <div class="profile-media-container">
     <div class="cover-picture position-relative">
-        <div class="position-absolute dp-size cursor-pointer"></div>
+        <div class="user-dp-info position-absolute cursor-pointer d-flex">
+            <div class="dp-size"></div>
+            <div class="user-name text-white">
+                <label class="position-relative cursor-pointer ml-3">{{ user.fname + ' ' + user.lname}} </label>
+                <span class="online-dot" [ngClass]="{ 'bg-online': onlineStatus === 1, 'bg-offline': onlineStatus === 0, 'bg-busy' : onlineStatus === 2 }" title="You are being shown online"></span>
+                <!--
+                    0. offline
+                    1. online
+                    2. playing
+                -->
+            </div>
+        </div>
+        <label class="float-right postion-absolute text-white m-2 cursor-pointer" *ngIf="true">Edit</label>
     </div>
 </div>
+
+<div class="w-75 feeds d-flex mt-3">
+    <div class="side-info w-25">
+        <div class="follow-list border-none text-black">
+            <h5>0 Following</h5>
+            <h5>0 Followers</h5>
+            <h5>0 Posts</h5>
+        </div>
+        <hr>
+        <div class="cursor-pointer p-1 text-primary" (click)="mymediaToggle = !mymediaToggle">My Media</div>
+        <div class="cursor-pointer p-1 text-primary">My Streams</div>
+        <div class="cursor-pointer p-1 text-primary" (click)="basicInfoToggle = !basicInfoToggle">Edit basic info</div>
+        <hr>
+        <h5>Recent followers</h5>
+        <div class="d-flex">
+            <div class="recent-followers-container d-flex">
+                <div class="recent-followers m-1 cursor-pointer" title="new user" *ngFor="let fol of [1,2,3,4,5,6,7]"></div>
+            </div>
+        </div>
+    </div>
+    <div class="w-75">
+
+        <div class="edit-profile m-2" *ngIf="basicInfoToggle">
+            <!-- <div class="row">
+                <div class="col-4 m-1">First Name</div>
+                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
+            </div>
+            <div class="row">
+                <div class="col-4 m-1">Last Name</div>
+                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
+            </div> -->
+            <div class="row">
+                <div class="col-4 m-1">username</div>
+                <div class="col-4 m-1">@<input type="text" class="form" /><button class="border-none">check</button></div>
+            </div>
+            <!-- <div class="row">
+                <div class="col-4 m-1">Date of birth</div>
+                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
+            </div> -->
+            <!-- <div class="row">
+                <div class="col-4 m-1">Gender</div>
+                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
+            </div> -->
+            <!-- <div class="row">
+                <div class="col-4 m-1">Relationship status</div>
+                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
+            </div> -->
+            <div class="row">
+                <div class="col-4 m-1">Bio</div>
+                <div class="col-4 m-1"><textarea class="form form-control"></textarea></div>
+            </div>
+            <div class="row">
+                <div class="col-4 m-1">Website</div>
+                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
+            </div>
+            <div class="row">
+                <div class="col-4 m-1">I am playing</div>
+                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
+            </div>
+            <div class="row">
+                <div class="col-4 m-1">
+                    <button class="btn w-50" (click)="basicInfoToggle = false">Cancel</button>
+                    <button class="btn btn-primary w-50">Save</button>
+                </div>
+                <div class="col-4">
+                    <button class="w-100 btn btn-default float-right text-primary cursor-pointer">edit more</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="media-tabs d-flex justify-content-evenly cursor-pointer" *ngIf="mymediaToggle">
+            <div *ngFor="let media of mediaArray" class="media-category" (click)="getMedia(media.value)" [ngClass]="{'media-category-selected text-bold': selectedMedia===media.value}">{{ media.name }}</div>
+        </div>
+
+        <div class="media-contents" *ngIf="mymediaToggle">
+            <div class="m-3 d-flex">
+                <div class="media-content cursor-pointer m-1"></div>
+                <div class="media-content cursor-pointer m-1"></div>
+                <div class="media-content cursor-pointer m-1"></div>
+                <div class="media-content cursor-pointer m-1"></div>
+                <div class="media-content cursor-pointer m-1"></div>
+
+                <button class="add-media text-center m-1">+</button>
+            </div>
+        </div>
+        <sh-textbox></sh-textbox>
+    </div>
+</div>
+
+<div class="overlay position-absolute" *ngIf="false"></div>
+
 <!-- <loader class="loader-center position-absolute" *ngIf="false"></loader> -->
+
+

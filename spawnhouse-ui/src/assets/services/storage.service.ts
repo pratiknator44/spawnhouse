@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class StorageService {
     currentData = {};
+    currentUser: any;
     constructor() {}
     
     setSessionData(key, value) {
@@ -35,6 +36,12 @@ export class StorageService {
 
     flushSession() {
         sessionStorage.clear();
+    }
+
+    // called when session token is found when a user reopens the browser or refreshes it
+    setUserFromSession() {
+        if(sessionStorage.getItem('user'))
+        this.currentUser = JSON.parse(sessionStorage.getItem('user'));
     }
 
 }
