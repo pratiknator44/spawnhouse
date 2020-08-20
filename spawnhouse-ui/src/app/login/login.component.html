@@ -8,7 +8,6 @@
     <div class="row">
         <div class="col-7">
             <div class="picturediv position-relative">
-
 <!-- **************************************************************************************-->
 <svg class="position-absolute svg-size" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 500 500" style="enable-background:new 0 0 500 500;" xml:space="preserve">
@@ -372,36 +371,36 @@
 	<text transform="matrix(0.9453 0 0 1 129.062 73.1538)" class="st9 st10 st11">Spawnhouse</text>
 </g>
 </svg>
-
 <!--***************************************************************************************************-->
-
-
-
             </div>
         </div>
 
         <div class="col-4">
             <!-- login -->
             <div class="mt-3 bg-blue p-3">
-                <div class="row text-white">
-                    <h6 class="col-6">Username or Email</h6>
-                    <h6 class="col-6">Password</h6>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <input type="text" class="form form-control" />
-                    </div>
-                    <div class="col-6">
-                        <input type="password" class="form form-control" />
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-6">
-                        <button class="btn btn-primary w-100">Login</button>
-                    </div>
-                    <div class="col-6 text-white font-italic"><label class="mt-2 float-right cursor-pointer">forgot password</label></div>
-                </div>
-            </div>
+				<form [formGroup]="loginForm" (ngSubmit)="attemptLogin()">
+					<div class="row text-white">
+						<h6 class="col-6">Username or Email</h6>
+						<h6 class="col-6">Password</h6>
+					</div>
+					<div class="row">
+						<div class="col-6">
+							<input type="text" class="form form-control" formControlName="username" />
+						</div>
+						<div class="col-6">
+							<input type="password" class="form form-control" formControlName="password" />
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-6">
+							<button class="btn btn-primary w-100" type="submit">Login</button>
+						</div>
+						<div class="col-6 text-white font-italic">
+							<label class="mt-2 float-right cursor-pointer">forgot password</label>
+						</div>
+					</div>
+				</form>
+			</div>
 
 
             <!-- sign up-->
@@ -413,40 +412,48 @@
                 <div class="col-6"><button class="btn btn-primary col-12" (click)="fbLogin()">Facebook</button></div>
             </div>
 
-            <div class="row mt-3">
-                <h5 class="col-12 text-secondary">or provide the following details</h5>
 
-                <div class="col-6">
-                    <input type="text" class="form form-control" placeholder="First Name" [(ngModel)]="fname" />
-                </div>
-                <div class="col-6">
-                    <input type="text" class="form form-control" placeholder="Last Name" [(ngModel)]="lname" />
-                </div>
-            </div>
+			<form [formGroup]="signupForm" (ngSubmit)="attemptSignUp()">
 
-            <div class="row">
-                <div class="col-6 mt-2">
-                    <input type="text" class="form form-control" placeholder="Email" [(ngModel)]="email" />
-                </div>
-                <div class="col-4 mt-2">
-                    <select type="text" class="form form-control" [(ngModel)]="gender" >
-                        <option value="">Gender</option>
-                        <option value="f">Female</option>
-                        <option value="m">Male</option>
-                        <option value="o">Other</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-6">
-                   <div class="mt-2"><input type="checkbox" [(ngModel)]="email" /> I agree the usage of this service
-                   </div> 
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-success w-100" (click)="submitForm()"> Sign Up </button>
-                </div>
-            </div>
+				<div class="row mt-3">
+					<h5 class="col-12 text-secondary">or provide the following details</h5>
+					<div class="col-6">
+						<input type="text" class="form form-control" placeholder="First Name" formControlName="fname" />
+						<p class="text-danger">First name is needed</p>
+					</div>
+					<div class="col-6">
+						<input type="text" class="form form-control" placeholder="Last Name" formControlName="lname" />
+					</div>
+				</div>
 
+				<div class="row">
+					<div class="col-6 mt-2">
+						<input type="text" class="form form-control" placeholder="Email" formControlName="email" />
+					</div>
+					<div class="col-6 mt-2">
+						<input type="text" class="form form-control" placeholder="New Password" formControlName="password" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 mt-2">
+						<select type="text" class="form form-control" formControlName="gender" >
+							<option value="">Gender</option>
+							<option value="2">Female</option>
+							<option value="1">Male</option>
+							<option value="3">Other</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-6">
+					<div class="mt-2"><input type="checkbox" formControlName="tnc" /> I agree the usage of this service
+					</div> 
+					</div>
+					<div class="col-6">
+						<button class="btn btn-success w-100" type="submit"> Sign Up </button>
+					</div>
+				</div>
+			</form>
         </div>
     </div>
 </div>

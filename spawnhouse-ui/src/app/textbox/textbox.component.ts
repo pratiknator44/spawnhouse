@@ -14,7 +14,7 @@ export class TextboxComponent implements OnInit {
   type: '@' | '#';        // for hashtag or mentioning people
   hashtagSuggestions = [{tagname: 'A tag', timesused: 200}, {tagname: 'A tag', timesused: 200}, {tagname: 'A tag', timesused: 200}];
   @ViewChild('textUpdate', {static: false}) textUpdate: ElementRef;
-
+  @ViewChild('mediafile', {static: false}) mediFile: ElementRef;
   mentionCounter = 0;   // acitvates when user types @ or # so suggestions are shown after certain chartacters
   mentionState: boolean;
 
