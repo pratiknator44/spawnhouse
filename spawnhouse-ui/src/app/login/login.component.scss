@@ -9,14 +9,30 @@
 }
 
 .overflow-x-none {
-    // overflow-x: none ;
+    overflow: hidden ;
 }
 
 .picturediv {
-    background-image: url('https://i.pinimg.com/236x/f5/53/4c/f5534c400c0c773c0dce941929f06fdf.jpg');
+    // background-image: url('https://i.pinimg.com/236x/f5/53/4c/f5534c400c0c773c0dce941929f06fdf.jpg');
     width: 100%;
-    height: 50vh;
+    height:100vh;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    overflow: hidden;
+}
+
+.svg-size {
+    width: 100%;
+    height: 100vh;
+}
+
+.mt-5 {
+    margin-top: 5rem;
+}
+
+.bg-blue {
+    background-color: #06C;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }

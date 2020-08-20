@@ -1,0 +1,43 @@
+@import '../../assets/variables/variables.scss';
+a {
+    cursor: pointer;
+}
+
+.ml-5rem {
+    margin-left: 5rem;
+}
+
+.size {
+    width: 15rem;
+    transition: width 0.5s;
+}
+
+// .size-elongate {
+//     width: 15rem;
+//     transition: width 0.5s;
+// }
+
+nav {
+    background-color: smokewhite;
+}
+
+.search-suggestions {
+    width: 15rem;
+    background-color: white;
+}
+
+.ml-5rem {
+    margin-left: 9.25rem;
+}
+.w-15rem {
+    width: 15rem;
+}
+
+.bg-busy {
+    background-color: red;
+}
+
+.icon-size {
+    font-size: 1.25rem;
+    margin-left: 3rem;
+}
