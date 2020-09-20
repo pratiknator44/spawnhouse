@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
   gender: '' | 'f' | 'm' | 'o' = '';
   loginForm: FormGroup;
   signupForm: FormGroup;
+  showForgotPassword: boolean;
 
   constructor(private _metaService: Meta,
     private _renderer: Renderer2,
@@ -104,7 +105,6 @@ export class LoginComponent implements OnInit {
         signedVia: 'mail'
       });
       console.log(this.signupForm.value);
-      return;
       this._http.post(APIvars.APIdomain+'/'+APIvars.APIsignup, this.signupForm.value).subscribe( data => {
         this.onLoginSuccess(data);
       });
@@ -117,5 +117,19 @@ export class LoginComponent implements OnInit {
     this._storageService.currentUser = data['user'];
     this._storageService.setSessionData('user', JSON.stringify(data['user']));
     this._router.navigate(['/profile']);
+  }
+
+  forgotPassword() {
+    // inject the script
+
+    let scr = this._renderer.createElement('script');
+    scr.src = APIvars.APIrecaptcha;
+    scr.defer = true;
+    scr.async = true;
+    this._renderer.appendChild(document.body, scr);
+  }
+
+  resolved(event) {
+    console.log(event);
   }
 }

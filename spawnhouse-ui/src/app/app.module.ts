@@ -10,19 +10,32 @@ import { LoginGuardService } from 'src/assets/services/login-guard.service';
 import { ProfileGuardService } from 'src/assets/services/profile-guard.service';
 import { WildcardGuardService } from 'src/assets/services/wildcard-guard.service';
 import { BrowserModule } from '@angular/platform-browser';
-import { TextboxComponent } from './textbox/textbox.component';
+import { APIservice } from 'src/assets/services/api.service';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { FloatNotificationComponent } from './float-notification/float-notification.component';
+import { FloatNotificationService } from 'src/assets/services/float-notification.service';
+import { OverlayComponent } from './overlay/overlay.component';
+import { OverlayService } from 'src/assets/services/overlay.service';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
+    FloatNotificationComponent,
+    OverlayComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+
+    RecaptchaModule,  //this is the recaptcha main module
+    // RecaptchaFormsModule, //this is the module for form incase form validation
+  ],
+  exports: [
   ],
   providers: [{ 
     provide: HTTP_INTERCEPTORS,
@@ -33,6 +46,9 @@ import { TextboxComponent } from './textbox/textbox.component';
     LoginGuardService,
     ProfileGuardService,
     WildcardGuardService,
+    APIservice,
+    FloatNotificationService,
+    OverlayService
   ],
   bootstrap: [AppComponent]
 })

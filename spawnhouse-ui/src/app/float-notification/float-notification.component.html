@@ -1,0 +1,17 @@
+
+<div class="d-flex float-container overflow-hidden bg-white">
+    <div class="h-100 iconset icon-video-camera icon-size text-center ml-1"> </div>
+    <div class="">
+        <div class="ml-1" style="text-overflow: ellipsis;">Your photo is being uploaded, please do not refresh
+        </div>
+        <div class="col-12">
+
+            <!-- progress bar -->
+            <div class="w-100 mt-1 border-radius-5-px" style="height: 0.5rem; background-color: rgb(236, 236, 236);">
+                <div class="h-100 bg-theme text-white border-radius-5-px" [ngStyle]="{'width': currentProgress }" ></div>
+            </div>
+        </div>
+    </div>
+    <span class="notif-close-size text-center cursor-pointer" (click)="closeThisNotification()"><label class="position-relative text-red cursor-pointer">x</label></span>
+
+</div>

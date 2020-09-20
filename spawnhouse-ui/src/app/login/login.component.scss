@@ -36,3 +36,15 @@
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+
+.overlay {
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.75);
+    top: 0; left: 0;
+}
+
+.forgot-password {
+    width: 50%;
+    transform: translate(50%, 100%);
+}

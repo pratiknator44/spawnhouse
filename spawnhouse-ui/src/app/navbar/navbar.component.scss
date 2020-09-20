@@ -41,3 +41,14 @@ nav {
     font-size: 1.25rem;
     margin-left: 3rem;
 }
+
+.dp {
+    height: 2rem;
+    width: 2rem;
+    border: solid 1px blue;
+    border-radius: 50%;
+}
+
+.setting-op:hover {
+    background-color: #CCC;
+}

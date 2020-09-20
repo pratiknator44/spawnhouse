@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 export class StorageService {
     currentData = {};
     currentUser: any;
+    dpLink: any
     constructor() {}
     
     setSessionData(key, value) {

@@ -396,7 +396,7 @@
 							<button class="btn btn-primary w-100" type="submit">Login</button>
 						</div>
 						<div class="col-6 text-white font-italic">
-							<label class="mt-2 float-right cursor-pointer">forgot password</label>
+							<label class="mt-2 float-right cursor-pointer" (click)="forgotPassword(); showForgotPassword = true">forgot password</label>
 						</div>
 					</div>
 				</form>
@@ -456,4 +456,32 @@
 			</form>
         </div>
     </div>
+</div>
+
+
+
+<div class="overlay position-absolute" *ngIf="showForgotPassword">
+
+	<div class="forgot-password bg-white">
+		<re-captcha (resolved)="resolved($event)" 
+		siteKey="6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU">  
+		</re-captcha>
+		<!-- <div class="g-recaptcha" data-sitekey="6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU"
+		[data-callback]="resolved($event)"></div> -->
+
+		<!-- <div class="m-3">
+			<div class="row">
+				<div class="col-6">Please enter your username or email</div>
+			</div>
+			<div class="row">
+				<div class="col-6"><input type="text" class="form form-control" /></div>
+			</div>
+
+			<div class="m-3 mt-3">Im not a robot</div>
+			<re-captcha (resolved)="resolved($event)" 
+			siteKey="6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU">  
+			</re-captcha>
+		</div> -->
+	</div>
+
 </div>

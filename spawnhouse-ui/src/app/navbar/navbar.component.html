@@ -1,13 +1,16 @@
-<nav class="navbar navbar-expand-lg bg-light">
-  <a class="navbar-brand text-grey">Spawnhouse</a>
+<nav class="navbar navbar-expand-lg bg-light" style="box-shadow: 0 0 5px 0 #CCC;">
+  <h4 class="iconset icon-spawnhouse color-theme positon-relative mt-2" style="line-height: 1.5;"></h4> &nbsp;
+  <a class="navbar-brand text-black">Spawnhouse</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-
+<div style="margin-left: 10%;"></div>
+<img [src]="dp" class="cursor-pointer dp" /> &nbsp; <h5 class="positon-relative mt-2 cursor-pointer">{{ user.fname }}</h5>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li *ngFor="let op of options" [title]="op.name" class="nav-item" (click)="selectedOption = op.name" [ngClass]="{'color-theme text-bold': selectedOption===op.name}">
-        <a class="nav-link text-center iconset icon-size icon-{{op.icon}}"></a>
+      <li *ngFor="let op of options" [title]="op.name" class="nav-item text-black" (click)="selectedOption = op.name">
+        <span class="cursor-pointer nav-link text-center iconset icon-size icon-{{op.icon}}" [ngClass]="{'color-theme': selectedOption===op.name}"><span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="op.alert && op.alert > 0">{{ op.alert }}</span>
+        </span>
       </li>
 
       <li class="nav-item ml-3 mt-1"> 
@@ -19,13 +22,13 @@
         <a class="nav-link disabled">Disabled</a>
       </li> -->
     </ul>
-    <label (click)="logout()">Logout</label>
+    <h5 class="cursor-pointer" (click)="showUserOptions = !showUserOptions; showSuggestions = !showSuggestions">Options vv</h5>
   </div>
 </nav>
 
-<div *ngIf="showSuggestions" style="background-color: rgba(0, 0, 0, 0.5); position: absolute; top:3.5rem; left:0; height: calc(100% - 3.5rem); width: 100%; z-index: 1;">
+<div *ngIf="showSuggestions" style="background-color: rgba(0, 0, 0, 0); position: absolute; top: 4.25rem; left:0; height: calc(100% - 4.25rem); width: 100%; z-index: 1;" (click)="showSuggestions = false; showUserOptions = false">
   <div class="search-suggestions postion-absolute ml-5rem">
-    <div class="row mt-1" *ngFor="let suggestion of searchSuggestions" [ngClass]="{'text-white bg-busy': ishover === suggestion.username}" (hover)="ishover = suggestion.username">
+    <div class="row mt-1" *ngFor="let suggestion of " [ngClass]="{'text-white bg-busy': ishover === suggestion.username}" (hover)="ishover = suggestion.username">
       <div class="col-2">
         <img class="" style="width: 2.5rem; height: 2.5rem;" />
       </div>
@@ -37,4 +40,9 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="position-absolute d-inline-block bg-white" style="right: 0; z-index: 2;" *ngIf="showUserOptions">
+    <div class="setting-op p-2 cursor-pointer mr-1">Privacy & Settings</div>
+    <div class="setting-op p-2 cursor-pointer mr-1" (click)="logout()">Logout</div>
 </div>

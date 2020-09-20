@@ -3,9 +3,17 @@ export enum APIvars {
     APIlogin = 'login',
     APIsignup = 'signup',
     APIgoogleSignup = 'https://apis.google.com/js/platform.js',
+    APIrecaptcha = 'https://www.google.com/recaptcha/api.js',
+    APIrecaptchaKey = '6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU',
     APIallowAll = '*',
     APIattemptLogin = 'login/attempt',
     GOOGLE_PROVIDER = '206033993886-qqam7i8l0egv1t8iih63hnqiut8c932e.apps.googleusercontent.com',
     FACEBOOK_APP_ID = '',
-    GET_HASHTAGS  = 'mentions'
+    GET_HASHTAGS  = 'mentions',
+    GET_DP = 'resources/getdp',
+    SET_DP = 'resources/setdp',
+    REMOVE_DP = 'resources/dp',
+    GET_COVER = 'resources/getcover',
+    SET_COVER = 'resources/setcover',
+    REMOVE_COVER = 'resources/cover'
 }

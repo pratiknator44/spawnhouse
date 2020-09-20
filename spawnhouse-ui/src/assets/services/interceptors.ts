@@ -14,8 +14,8 @@ export class TokenInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         request = request.clone({
             setHeaders: {
-              Authorization: sessionStorage.getItem('sh_auth_token') || '',
-              'Access-Control-Allow-Origin': APIvars.APIallowAll
+              Authorization: 'Bearer '+sessionStorage.getItem('sh_auth_token') || '',
+              'Access-Control-Allow-Origin': APIvars.APIallowAll,
             }
           });
           return next.handle(request);

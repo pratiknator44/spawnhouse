@@ -69,3 +69,58 @@ body {
     src: url('/../spawnhouse-ui/src/assets/fonts/icomoon.woff');
     // format:('opentype');
 }
+
+.text-ellipsis {
+    text-overflow: ellipsis !important;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.content-center {
+    transform: translate(50%, 50%) !important;
+}
+
+.border-bottom {
+    border-bottom: solid 1px $theme-color;
+}
+
+.r-0 {
+    right: 0 !important;
+}
+
+::-webkit-input-placeholder {
+    font-style: italic;
+ }
+ :-moz-placeholder {
+    font-style: italic;  
+ }
+ ::-moz-placeholder {
+    font-style: italic;  
+ }
+ :-ms-input-placeholder {  
+    font-style: italic; 
+ }
+
+ .animate-float {
+    transition: width 20rem 3s !important;
+ }
+
+ .mt-nav {
+     margin-top: 5rem !important;
+ }
+
+ @keyframes float-in-animation {
+     from {
+         opacity: 0;
+     } to {
+         opacity: 1;
+     }
+ }
+
+ .float-in {
+     animation: float-in-animation 1s linear forwards;
+ }
+
+ .mt-belownav {
+     margin-top: 4.25rem;
+ }

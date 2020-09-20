@@ -1,0 +1,32 @@
+.icon-size {
+    font-size: 3rem;
+}
+
+.float-container {
+    max-height: 10rem;
+    width: 20rem;
+    border-radius: 5px;
+    box-shadow: 0px 1px 5px 1px #CCC;
+}
+
+.rounded-corner {
+    border-radius: 1rem;
+}
+
+.notif-close-size {
+    width: 2rem;
+    overflow: hidden;
+}
+
+.notif-close-size:hover {
+    background-color: red !important;
+}
+
+.notif-close-size > label {
+    top: 48%;
+    transform: translateY(-50%);
+}
+
+.border-radius-5-px {
+    border-radius: 5px;
+}

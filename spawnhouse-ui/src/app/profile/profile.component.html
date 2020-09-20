@@ -1,19 +1,20 @@
-<navbar></navbar>
+<navbar style="z-index: 10;" (onPicUpdate)="updatePic($event)" #navbar></navbar>
 <div class="profile-media-container">
-    <div class="cover-picture position-relative">
+    <div class="cover-picture position-relative overflow-hidden">
+        <div class="position-absolute float-right text-white m-2 cursor-pointer edit-cover-photo" (click)="setupImageUpload(false)" *ngIf="true">Edit</div>
+        <img [src]="usercover" *ngIf="usercover" />
         <div class="user-dp-info position-absolute cursor-pointer d-flex">
-            <div class="dp-size"></div>
+            <div class="dp-size">
+                <img class="position-absolute dp-image" [src]="userdp" *ngIf="userdp" />
+                <div class="dp-edit text-white text-center overflow-hidden" *ngIf="true" (click)="setupImageUpload(true)">
+                    <h6 style="transform:translate(0%, 200%);">Edit</h6>
+                </div>
+            </div>
             <div class="user-name text-white">
                 <label class="position-relative cursor-pointer ml-3">{{ user.fname + ' ' + user.lname}} </label>
                 <span class="online-dot" [ngClass]="{ 'bg-online': onlineStatus === 1, 'bg-offline': onlineStatus === 0, 'bg-busy' : onlineStatus === 2 }" title="You are being shown online"></span>
-                <!--
-                    0. offline
-                    1. online
-                    2. playing
-                -->
             </div>
         </div>
-        <label class="float-right postion-absolute text-white m-2 cursor-pointer" *ngIf="true">Edit</label>
     </div>
 </div>
 
@@ -38,30 +39,11 @@
     <div class="w-75">
 
         <div class="edit-profile m-2" *ngIf="basicInfoToggle">
-            <!-- <div class="row">
-                <div class="col-4 m-1">First Name</div>
-                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
-            </div>
-            <div class="row">
-                <div class="col-4 m-1">Last Name</div>
-                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
-            </div> -->
             <div class="row">
                 <div class="col-4 m-1">username</div>
-                <div class="col-4 m-1">@<input type="text" class="form" /><button class="border-none">check</button></div>
+                <div class="col-4 m-1"><input type="text" class="form" /><button class="border-none">check</button></div>
             </div>
-            <!-- <div class="row">
-                <div class="col-4 m-1">Date of birth</div>
-                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
-            </div> -->
-            <!-- <div class="row">
-                <div class="col-4 m-1">Gender</div>
-                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
-            </div> -->
-            <!-- <div class="row">
-                <div class="col-4 m-1">Relationship status</div>
-                <div class="col-4 m-1"><input type="text" class="form form-control" /></div>
-            </div> -->
+          
             <div class="row">
                 <div class="col-4 m-1">Bio</div>
                 <div class="col-4 m-1"><textarea class="form form-control"></textarea></div>
@@ -77,7 +59,7 @@
             <div class="row">
                 <div class="col-4 m-1">
                     <button class="btn w-50" (click)="basicInfoToggle = false">Cancel</button>
-                    <button class="btn btn-primary w-50">Save</button>
+                    <button class="btn btn-primary bg-theme w-50">Save</button>
                 </div>
                 <div class="col-4">
                     <button class="w-100 btn btn-default float-right text-primary cursor-pointer">edit more</button>
@@ -86,26 +68,24 @@
         </div>
         
         <div class="media-tabs d-flex justify-content-evenly cursor-pointer" *ngIf="mymediaToggle">
-            <div *ngFor="let media of mediaArray" class="media-category" (click)="getMedia(media.value)" [ngClass]="{'media-category-selected text-bold': selectedMedia===media.value}">{{ media.name }}</div>
+            <div *ngFor="let media of mediaArray" class="media-category text-ellipsis" (click)="getMedia(media.value)" [ngClass]="{'media-category-selected text-bold': selectedMedia===media.value}">{{ media.name }}</div>
         </div>
 
         <div class="media-contents" *ngIf="mymediaToggle">
-            <div class="m-3 d-flex">
-                <div class="media-content cursor-pointer m-1"></div>
-                <div class="media-content cursor-pointer m-1"></div>
-                <div class="media-content cursor-pointer m-1"></div>
-                <div class="media-content cursor-pointer m-1"></div>
-                <div class="media-content cursor-pointer m-1"></div>
-
-                <button class="add-media text-center m-1">+</button>
+            <h5 class="text-secondary mt-3">No media, <a class="color-theme cursor-pointer">Add</a> something</h5>
+            <div class="m-3 d-flex d-wrap-flex">
             </div>
         </div>
         <sh-textbox></sh-textbox>
     </div>
 </div>
 
-<div class="overlay position-absolute" *ngIf="false"></div>
-
+<div class="overlay position-absolute overflow-hidden" *ngIf="showOverlay" #overlay>
+    <!-- <button (click)="getuploadUI()">Click</button> -->
+    <sh-imageupload [imageSchema]="imageSchema" [isDisabled]="disableImageUpload" [mode]="uploadMode" (close)="showOverlay = false" (onImageRemove)="refreshImage()" (newsubmit)="submitNewImage($event)"></sh-imageupload>
+    <!-- <ng-template></ng-template> -->
+</div>
 <!-- <loader class="loader-center position-absolute" *ngIf="false"></loader> -->
+
 
 

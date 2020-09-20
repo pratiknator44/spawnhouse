@@ -20,6 +20,11 @@ const routes: Routes = [
     path: '**',
    // canActivate: [WildcardGuardService],
     component: ProfileComponent
+  },
+  {
+    path: '',
+    component: LoginComponent,
+    canActivate: [LoginGuardService]
   }
 ];
 

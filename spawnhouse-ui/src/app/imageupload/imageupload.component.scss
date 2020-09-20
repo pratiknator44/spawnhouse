@@ -1,0 +1,12 @@
+.image-desc-size {
+    // height: calc(100% - 4rem);
+    width: calc( 100% - 1rem);
+    outline: none;
+    border:  solid 1px rgb(187, 187, 187);
+    border-bottom: dashed 1px rgb(187, 187, 187);
+}
+
+.croppedImage {
+    height: 128px;
+    width: 128px;
+}

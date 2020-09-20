@@ -1,0 +1,35 @@
+<div class="position-absolute bg-white upload-div-size w-50" style="transform: translate(50%, 10%);">
+    <h4 class="m-2">New {{ mode === 'dp' ? 'Profile' : 'Cover'}} Piture</h4>
+        <div class="row">
+            <div class="col-12">    
+                <input type="file" class="d-none" #newdpOrCover (change)="fileChangeEvent($event)" [disabled]=isDisabled />
+                <button class="btn btn-primary cursor-pointer m-1 ml-3" [ngClass]="{'btn-secondary': isDisabled}" (click)="newdpOrCover.click()">Select an image</button>
+                <div style="max-width: 30rem; height: 100%; transform: translate(25%, 0%);">
+                        <!-- {{imageSchema | json}} -->
+                    <image-cropper *ngIf="temp" class="m-3"
+                        [imageChangedEvent]="imageChangedEvent"
+                        [maintainAspectRatio]="imageSchema.maintainAspectRatio"
+                        [aspectRatio]="imageSchema.aspectRatio"
+                        [resizeToWidth]="imageSchema.resizeToWidth"
+                        [format]="imageSchema.format"
+                        (imageCropped)="imageCropped($event)"
+                        (imageLoaded)="imageLoaded()"
+                        (cropperReady)="cropperReady()"
+                        (loadImageFailed)="loadImageFailed()"
+                    ></image-cropper>
+
+                    <label class="text-danger" *ngIf="loadingFailed">Please select only a jpg</label>
+                    <img [src]="croppedImage" #finalimage class="d-none" />
+                </div>
+            </div>
+        </div>
+        <div style="transform: translate(25%, 0);">
+            <span class="iconset icon-home cursor-pointer"></span> <input type="text" class="text-secondary ml-3 border-none border-bottom" placeholder="Type a Location">
+        </div>
+        
+        <button (click)="removeImage()" style="line-height: 1.5; height: 2.5rem;" class="bg-danger text-white float-left border-none" [ngClass]="{'btn-secondary': isDisabled}" >Remove Current {{ mode === 'dp' ? 'Profile': 'Cover' }} Picture</button>
+        
+
+        <button (click)="updateNewDpCover()" [disabled]="isDisabled || !temp" style="line-height: 1.5; width: 5rem; height: 2.5rem;" class="bg-theme text-white float-right border-none" [ngClass]="{'btn-secondary': isDisabled || !temp}">Update</button>
+        <button (click)="hideUI()" [disabled]="isDisabled" class="btn btn-default float-right" [ngClass]="{'text-secondary': isDisabled}" >Cancel</button>
+</div>
