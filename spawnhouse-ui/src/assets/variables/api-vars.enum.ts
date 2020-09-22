@@ -15,5 +15,6 @@ export enum APIvars {
     REMOVE_DP = 'resources/dp',
     GET_COVER = 'resources/getcover',
     SET_COVER = 'resources/setcover',
-    REMOVE_COVER = 'resources/cover'
+    REMOVE_COVER = 'resources/cover',
+    SEARCH_USER = 'search/user'
 }

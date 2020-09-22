@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-light nav-shadow">
+<nav class="navbar navbar-expand-lg bg-light nav-shadow position-fixed w-100">
   <h4 class="iconset icon-spawnhouse color-theme positon-relative mt-2" style="line-height: 1.5;"></h4> &nbsp;
   <a class="navbar-brand text-black">Spawnhouse</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,36 +13,40 @@
         </span>
       </li>
 
-      <li class="nav-item ml-3 mt-1"> 
-        <input class="form-control mr-sm-2 size iconset" type="search" placeholder="&#xe986; Search" aria-label="Search" (focus)="elongate=true" (focusout)="elongate=false" [ngClass]="{'size-elongate': false}" (change)="searchThis($event)">
+      <li class="nav-item ml-3 mt-1" style="max-width: 10rem;"> 
+        <input class="form-control mr-sm-2 size iconset" [(ngModel)]="userSearch" type="search" placeholder="&#xe986; Search" aria-label="Search" (focus)="elongate=true" (focusout)="elongate = false; userSearch=''" [ngClass]="{'size-elongate': false}" (keyup)="searchThis($event)">
+
+        <!-- suggestions -->
+        <div  *ngIf="showSuggestions && userSearch.length > 0" class="search-suggestions position-absolute mh-50vh overflow-y-auto" style="border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem;">
+          <div class="position-relative" style="height: 4rem;" *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
+            <div class="position-absolute search-icon-container">
+              <div class="" style="animation: rotate-left 1s infinite linear;">
+                <loader [type]="2"></loader>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex" *ngFor="let suggestion of searchSuggestions" (mouseover)="hoveringOn = suggestion.userid" [ngClass]="{'bg-lite': hoveringOn === suggestion.userid}" >
+            <img class="m-1" style="width: 2.5rem; height: 2.5rem;"  />
+            <div style="width: calc(100% - 3rem);">
+                <div class="text-truncate hover-underline cursor-pointer">&nbsp;{{ suggestion.fname + ' ' + suggestion.lname }}</div>
+                <div class="text-secondary">&nbsp;@{{ suggestion.username }}</div>
+            </div>
+          </div>
+          <div class="class text-center text-secondary cursor-pointer" *ngIf="noUserFound">No users found, try adding '@' before search word  </div>
+          <div class="class text-center hover-underline text-primary cursor-pointer" *ngIf="searchSuggestions.length > 3">See All</div>
+        </div>
+        <!-- suggestions end -->
+
       </li>
-
-
-      <!-- <li class="nav-item">
-        <a class="nav-link disabled">Disabled</a>
-      </li> -->
     </ul>
-    <h5 class="cursor-pointer" (click)="showUserOptions = !showUserOptions; showSuggestions = !showSuggestions">Options vv</h5>
+    <h5 class="cursor-pointer" (click)="userOptions()">Options v</h5>
   </div>
 </nav>
 
-<div *ngIf="showSuggestions" style="background-color: rgba(0, 0, 0, 0); position: absolute; top: 4.25rem; left:0; height: calc(100% - 4.25rem); width: 100%; z-index: 1;" (click)="showSuggestions = false; showUserOptions = false">
-  <div class="search-suggestions postion-absolute ml-5rem">
-    <div class="row mt-1" *ngFor="let suggestion of " [ngClass]="{'text-white bg-busy': ishover === suggestion.username}" (hover)="ishover = suggestion.username">
-      <div class="col-2">
-        <img class="" style="width: 2.5rem; height: 2.5rem;" />
-      </div>
-      <div class="col-10">
-        <div class="row">
-          <div class="col-12">&nbsp;{{ suggestion.name }}</div>
-          <div class="text-secondary col-12">&nbsp;{{ suggestion.username }}</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="position-absolute d-inline-block bg-white" style="right: 0; z-index: 2;" *ngIf="showUserOptions">
+<div class="position-fixed d-inline-block bg-white mt-nav " style="right: 0; z-index: 4;" *ngIf="showUserOptions">
     <div class="setting-op p-2 cursor-pointer mr-1">Privacy & Settings</div>
     <div class="setting-op p-2 cursor-pointer mr-1" (click)="logout()">Logout</div>
 </div>
+
+<div class="h-nav"></div>

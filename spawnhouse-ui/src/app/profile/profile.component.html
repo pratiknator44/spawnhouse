@@ -1,4 +1,4 @@
-<navbar style="z-index: 10;" (onPicUpdate)="updatePic($event)" #navbar></navbar>
+<!-- <navbar style="z-index: 10;" (onPicUpdate)="updatePic($event)" #navbar></navbar> -->
 <div class="profile-media-container">
     <div class="cover-picture position-relative overflow-hidden">
         <div class="position-absolute float-right text-white m-2 cursor-pointer edit-cover-photo" (click)="setupImageUpload(false)" *ngIf="true">Edit</div>
@@ -80,12 +80,10 @@
     </div>
 </div>
 
-<div class="overlay position-absolute overflow-hidden" *ngIf="showOverlay" #overlay>
-    <!-- <button (click)="getuploadUI()">Click</button> -->
-    <sh-imageupload [imageSchema]="imageSchema" [isDisabled]="disableImageUpload" [mode]="uploadMode" (close)="showOverlay = false" (onImageRemove)="refreshImage()" (newsubmit)="submitNewImage($event)"></sh-imageupload>
-    <!-- <ng-template></ng-template> -->
-</div>
-<!-- <loader class="loader-center position-absolute" *ngIf="false"></loader> -->
+    <div class="position-absolute w-100 mt-belownav" style="z-index: 2; top:0;" *ngIf="showImageUpload">
+        <sh-imageupload [imageSchema]="imageSchema" [isDisabled]="disableImageUpload" [mode]="uploadMode" (close)="setVisibilityImageOverlay(false)" (onImageRemove)="refreshImage()" (newsubmit)="submitNewImage($event)"></sh-imageupload>
+    </div>
+
 
 
 

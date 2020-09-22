@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 
 @Component({
   selector: 'app-root',
@@ -8,11 +7,6 @@ import { FloatNotificationService } from 'src/assets/services/float-notification
 })
 export class AppComponent {
   title = 'spawnhouse-ui';
-  isNotifVisible: boolean;
-  constructor(private _floatNoteService: FloatNotificationService)
-  {
-    _floatNoteService.closeOn.asObservable().subscribe( close => {
-      this.isNotifVisible = close;
-    });
-  }
+  constructor()
+  { }
 }

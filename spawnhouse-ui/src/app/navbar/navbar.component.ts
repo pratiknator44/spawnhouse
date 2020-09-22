@@ -1,9 +1,14 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
 import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
+import { IPictureUploadSchema } from 'src/assets/interfaces/picture-upload-schema.interface';
+import { NavbarService } from 'src/assets/services/navbar.service';
+import { OverlayService } from 'src/assets/services/overlay.service';
+import { HttpClient } from '@angular/common/http';
+import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
   selector: 'navbar',
@@ -14,17 +19,28 @@ export class NavbarComponent implements OnInit {
   elongate: boolean;
   selectedOption: boolean;
   options = [];
-  searchSuggestions = [];
-  ishover = '';
+  searchSuggestions: any = [];
+  hoveringOn = '';
   showSuggestions: boolean;
   dp: any;
+  userSearch = '';
   user;
   showUserOptions: boolean;
   dpSubject = new Subject<any>();
   dpObservale;
+  imageSchema: IPictureUploadSchema;
+  noUserFound: boolean;
 
+  @Input() imageUploadMode: string;
+  
   @Output() onPicUpdate = new EventEmitter(); 
-  constructor(private _storageService: StorageService, private _api: APIservice, private _dom: DomSanitizer,  private _router: Router ) { }
+  constructor(private _storageService: StorageService,
+    private _api: APIservice,
+    private _dom: DomSanitizer,
+    private _router: Router,
+    private _navbarService: NavbarService,
+    private _overlayService: OverlayService,
+    private _http: HttpClient ) { }
 
   ngOnInit(): void {
     this.options = [
@@ -36,21 +52,38 @@ export class NavbarComponent implements OnInit {
      // { name: 'Settings & Privacy', icon: 'cog', alert: 0 }];
       
     this.selectedOption = this.options[0].name;
-    this.searchSuggestions =  [
-      { name: 'Pratik Agarwal', username: 'accesspratik' },
-      { name: 'Pragya Agarwal', username: 'supercoolprags' },
-      { name: 'Ayush Mittal', username: 'ayushm2004' },
-      { name: 'Shivam Singh', username: 'shivamsvm' }
-    ];
-
     // call profile picture api
-    this.user = this._storageService.currentUser;
+    this.user = JSON.parse(sessionStorage.getItem('user'));
     // this.dp = this._api.getDp();
     this.getDp();
+    this._navbarService.getDpSubject.asObservable().subscribe( status => {
+      if(status) this.getDp();
+    });
+    this._overlayService.closeSubject.asObservable().subscribe( closeOptions => {
+      this.showUserOptions = false; this.showSuggestions = false;
+    });
   }
 
   searchThis(event) {
     console.log(event);
+    if(this.userSearch.length < 3) {
+      this._overlayService.closeSubject.next();
+      return;
+    }
+    this.noUserFound = false;
+    this.showSuggestions = true;
+    this.searchSuggestions = [];
+    this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
+
+    setTimeout( () => {
+        this._http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER+'/'+this.userSearch).subscribe( res => {
+          console.log(res);
+          this.searchSuggestions = res['users'];
+          if(this.searchSuggestions.length === 0){
+            this.noUserFound = true;
+          }
+        });
+    }, 2000);
   }
 
   logout() {
@@ -73,6 +106,7 @@ export class NavbarComponent implements OnInit {
         this.dp = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
         this._storageService.dpLink = this.dp;
         this.onPicUpdate.emit({type: 'dp', src: this.dp});
+        this._navbarService.dpUpdated.next({type: 'dp', src: this.dp});
         console.log("dp emitted ", this.dp);
       }, false);
       if (image) {
@@ -80,4 +114,17 @@ export class NavbarComponent implements OnInit {
       }
     });
   }
+
+  showOverlay() {
+  }
+
+  userOptions() {
+    this.showUserOptions = !this.showUserOptions; this.showSuggestions = !this.showSuggestions;
+    if(!this.showUserOptions) {
+      this._overlayService.closeSubject.next();
+    } else {
+      this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
+    }
+  }
+
 }

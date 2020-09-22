@@ -1,0 +1,13 @@
+<navbar></navbar>
+<sh-overlay 
+[closeOnClick]="config.closeOnClick"
+[transparent]="config.transparent"
+*ngIf="showOverlay"
+(click)="overlayClicked($event)"
+></sh-overlay>
+<sh-float-notification class="position-fixed r-0 float-size row mr-3 z-nav"
+*ngIf="isNotifVisible"
+[ngClass]="{'float-in': isNotifVisible}"
+></sh-float-notification>
+
+<router-outlet></router-outlet>

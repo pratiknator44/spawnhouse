@@ -52,8 +52,8 @@ export class ImageuploadComponent implements OnInit {
   }
 
   updateNewDpCover() {
-    console.log("submit dp cover pic");
     if(this.isDisabled) return;
+
     let fd = new FormData();
     var imageBase64 = this.croppedImage.split(',')[1];
     const byteCharacters = atob(imageBase64);
@@ -63,14 +63,10 @@ export class ImageuploadComponent implements OnInit {
     }
     const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], {type: 'image/jpg'});
-    // var blob = new Blob([imageBase64], {type: 'image/jpg'});
     this.temp = new File([blob], new Date().getTime()+'.jpg');
     console.log('new dp = ', this.temp);
     fd.append('newdp', this.temp);
-    console.log("form data ", fd);
-    // this.http.post('http://localhost:3000/resources/setdp', fd).subscribe( res => console.log("success"),
-    // err => console.log("failed")
-    // );
+
     this.newsubmit.emit(fd);
   }
 
@@ -84,7 +80,7 @@ export class ImageuploadComponent implements OnInit {
     }
 
     this.http.delete(url).subscribe(confirm => {
-      console.log(confirm);
+      console.log(this.mode+' removed '+confirm);
       this.onImageRemove.emit();
     });
   }

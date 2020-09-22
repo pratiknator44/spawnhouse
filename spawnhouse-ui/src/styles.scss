@@ -51,6 +51,10 @@ body {
     background-color: $busy;
 }
 
+.bg-lite {
+    background-color: $litegrey !important;
+}
+
 .border-none {
     border: none !important;
     outline: none;
@@ -105,10 +109,6 @@ body {
     transition: width 20rem 3s !important;
  }
 
- .mt-nav {
-     margin-top: 5rem !important;
- }
-
  @keyframes float-in-animation {
      from {
          opacity: 0;
@@ -124,3 +124,63 @@ body {
  .mt-belownav {
      margin-top: 4.25rem;
  }
+ 
+
+.h-nav {
+    height: 4.30rem;
+}
+
+.mt-nav {
+    margin-top: 4.25rem !important;
+}
+
+.z-nav {
+    z-index: 4;
+}
+
+.text-truncate {
+    text-overflow: ellipsis !important;
+}
+
+.hover-underline {
+
+}
+.hover-underline:hover {
+    text-decoration: underline;
+}
+
+@keyframes search-animation {
+    0%{ top: 0; left: 0; }
+    25% { top: 0; right: 100%}
+    50% { top: 100%; right: 100%;}
+    75% {top: 100%; right: 0}
+    100%{ top: 0; left: 0; }
+
+}
+
+@keyframes rotate-right {
+    from{transform: rotate(0deg);}
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-left {
+    from{transform: rotate(0deg);}
+    to { transform: rotate(-360deg); }
+}
+
+
+.anim-search-animation {
+    animation: search-animation 2s infinite ;
+}
+
+.mh-50 {
+    max-height: 50% !important;
+}
+
+.mh-50vh {
+    max-height: 50vh !important;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}

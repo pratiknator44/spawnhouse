@@ -1,12 +1,12 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { HttpClient, HttpEventType, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
-import { NavbarComponent } from '../navbar/navbar.component';
 import { APIservice } from 'src/assets/services/api.service';
 import { IPictureUploadSchema } from 'src/assets/interfaces/picture-upload-schema.interface';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
+import { NavbarService } from 'src/assets/services/navbar.service';
 
 @Component({
   selector: 'app-profile',
@@ -32,17 +32,16 @@ export class ProfileComponent implements OnInit {
   user;
   userdp: any;
   usercover: any;
-  showOverlay: boolean;
   newDpCoverForm: FormGroup;
-  disableImageUpload: boolean = false;
+  disableImageUpload: boolean = false;;
+  showImageUpload: boolean;
   @ViewChild('overlay') overlay: ElementRef;
-  @ViewChild('navbar', {static: true}) navbar: NavbarComponent;
+  // @ViewChild('navbar', {static: true}) navbar: NavbarComponent;
 
-  constructor( private _storageService : StorageService, private http: HttpClient, private _apiService: APIservice, private _notifService: FloatNotificationService) { }
+  constructor( private _storageService : StorageService, private http: HttpClient, private _apiService: APIservice, private _notifService: FloatNotificationService, private _navbarService: NavbarService) { }
   
   ngOnInit(): void {
     this.user = this._storageService.currentUser;
-    console.log('current user = ', this.user);
     this.onlineStatus = 1;
     console.log(this._storageService.dpLink);
     this.userdp = this._storageService.dpLink;
@@ -51,9 +50,12 @@ export class ProfileComponent implements OnInit {
     this._apiService.coverPictureSubject.subscribe( coverurl => {
       console.log("event ", coverurl);
       this.usercover = coverurl.coverurl;
-    })
-    console.log('userdp ', this.userdp);
-    console.log('usercover ', this.usercover);
+    });
+    this._navbarService.getDpSubject.next(true);
+    this._navbarService.dpUpdated.asObservable().subscribe( updatedDp => {
+      console.log("inside subscribed dp updated ", updatedDp );
+      this.updatePic(updatedDp);
+    });
   }
 
   getMedia(mediaType:string) {
@@ -91,19 +93,20 @@ export class ProfileComponent implements OnInit {
         isOpenFlag = false;
       }
       if(result.type === HttpEventType.UploadProgress) {
-        this.showOverlay = false;
+        this.setVisibilityImageOverlay(false);
         this._notifService.progress.next(Math.round(result['loaded']*100/result['total'])+'%');
       }
       else if (result.type === HttpEventType.Response) {
         console.log('event done ', result['message']);
         this._notifService.closeOn.next(false);
       }
-      console.log('result.message ', result["message"]);
       if((result as HttpResponse<any>).body?.message === 'passed') {
         this.disableImageUpload = false;
         setTimeout(() => {
-          this.uploadMode === 'dp' ? this.navbar.getDp() : this._apiService.getCover();
-          this.showOverlay = false;
+          this.uploadMode === 'dp' ? this._navbarService.getDpSubject.next(true) : this._apiService.getCover();
+          // this.uploadMode === 'dp' ? this.navbar.getDp() : this._apiService.getCover();
+          this.setVisibilityImageOverlay(false);
+
         }, 1000);
       }
       console.log(result);
@@ -114,7 +117,7 @@ export class ProfileComponent implements OnInit {
     console.log("update dp in profile ", event);
     if(event.type === 'dp') {
       this.userdp = event.src;
-      this.showOverlay = false;
+      this.setVisibilityImageOverlay(false);
       // console.log('userdp', this.userdp);
     }
   }
@@ -139,40 +142,28 @@ export class ProfileComponent implements OnInit {
       }
       this.uploadMode = 'cover';
     }
-    this.showOverlay = true;
+    // this.showOverlay = true;
+    this.setVisibilityImageOverlay(true);
   }
 
   setupCoverPhotoUpload() {
-    this.showOverlay = true;
+    this.setVisibilityImageOverlay(true);
   }
 
   refreshImage() {
     console.log('upload mode ', this.uploadMode);
     if(this.uploadMode === 'dp') {
-      this.navbar.getDp();
+      // this.navbar.getDp();
+      this._navbarService.getDpSubject.next(true);
     } else if(this.uploadMode === 'cover') {
       this._apiService.getCover();
-      this.showOverlay = false;
+      this.setVisibilityImageOverlay(false);
     }
   }
 
-  getCover() {      // get cover picture
-  //   this._apiService.getPhotos('cover').subscribe( image => {
-  //     console.log("get cover called")
-  //     // convert raw image to Blob object
-  //     let reader = new FileReader();
-  //     reader.addEventListener('load', () => {
-  //       this.usercover = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-  //       this._storageService.dpLink = this.dp;
-  //       this.onPicUpdate.emit({type: 'dp', src: this.dp});
-  //       console.log("dp emitted");
-  //     }, false);
-  
-  //     if (image) {
-  //        reader.readAsDataURL(image);
-  //     }
-  //     console.log("dp url = ", this.dp);
-  //   });
-  // }
+  setVisibilityImageOverlay( visibility: boolean) {
+    // this._overlayService.show.next(visibility);
+    this.showImageUpload = visibility;
   }
+  getCover() { }
 }

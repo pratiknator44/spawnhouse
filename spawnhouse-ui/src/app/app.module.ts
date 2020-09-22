@@ -14,8 +14,12 @@ import { APIservice } from 'src/assets/services/api.service';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { FloatNotificationComponent } from './float-notification/float-notification.component';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
+import { PcViewComponent } from './pc-view/pc-view.component';
+import { NavbarService } from 'src/assets/services/navbar.service';
+import { NavbarComponent } from './navbar/navbar.component';
 import { OverlayComponent } from './overlay/overlay.component';
 import { OverlayService } from 'src/assets/services/overlay.service';
+import { LoaderComponent } from './loader/loader.component';
 
 
 @NgModule({
@@ -23,7 +27,10 @@ import { OverlayService } from 'src/assets/services/overlay.service';
     AppComponent,
     LoginComponent,
     FloatNotificationComponent,
-    OverlayComponent
+    PcViewComponent,
+    NavbarComponent,
+    OverlayComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +38,6 @@ import { OverlayService } from 'src/assets/services/overlay.service';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-
     RecaptchaModule,  //this is the recaptcha main module
     // RecaptchaFormsModule, //this is the module for form incase form validation
   ],
@@ -48,6 +54,7 @@ import { OverlayService } from 'src/assets/services/overlay.service';
     WildcardGuardService,
     APIservice,
     FloatNotificationService,
+    NavbarService,
     OverlayService
   ],
   bootstrap: [AppComponent]

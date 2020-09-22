@@ -16,7 +16,7 @@ export class FloatNotificationComponent implements OnInit {
 
   ngOnInit(): void {
     this._notifService.progress.asObservable().subscribe( status => {
-          this.currentProgress = status;
+      this.currentProgress = status;
     });
     
     this._notifService.closeOn.asObservable().subscribe( status => {
