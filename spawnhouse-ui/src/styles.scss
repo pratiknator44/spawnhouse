@@ -12,6 +12,10 @@ body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
+.text-small {
+    font-size: 0.75rem;
+}
+
 .d-flex {
     display: flex !important;
 }
@@ -60,6 +64,14 @@ body {
     outline: none;
 }
 
+.border-grey {
+    border: solid 1px #CCC;
+}
+
+.border-theme {
+    border: solid 1px $theme-color;
+}
+
 .text-black {
     color: black !important;
 }
@@ -92,18 +104,18 @@ body {
     right: 0 !important;
 }
 
-::-webkit-input-placeholder {
-    font-style: italic;
- }
- :-moz-placeholder {
-    font-style: italic;  
- }
- ::-moz-placeholder {
-    font-style: italic;  
- }
- :-ms-input-placeholder {  
-    font-style: italic; 
- }
+// ::-webkit-input-placeholder {
+//     font-style: italic;
+//  }
+//  :-moz-placeholder {
+//     font-style: italic;  
+//  }
+//  ::-moz-placeholder {
+//     font-style: italic;  
+//  }
+//  :-ms-input-placeholder {  
+//     font-style: italic; 
+//  }
 
  .animate-float {
     transition: width 20rem 3s !important;
@@ -140,6 +152,10 @@ body {
 
 .text-truncate {
     text-overflow: ellipsis !important;
+}
+
+.text-theme {
+    color: $theme-color;
 }
 
 .hover-underline {
@@ -183,4 +199,17 @@ body {
 
 .overflow-y-auto {
     overflow-y: auto;
+}
+
+.hover-bg-grey:hover {
+    background-color: #CCC;
+}
+
+.filter-greyscale {
+    filter: grayscale(100%);
+}
+
+.hover-remove-entry:hover {
+    background-color: red !important;
+    color: white;
 }

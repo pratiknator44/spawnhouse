@@ -1,10 +1,15 @@
-<navbar></navbar>
+<div class="w-75 z-nav" style="margin-left: 12.5%; z-index: 9;">
+    <navbar *ngIf="isLoggedIn"></navbar>
+
+</div>
+
 <sh-overlay 
 [closeOnClick]="config.closeOnClick"
 [transparent]="config.transparent"
 *ngIf="showOverlay"
 (click)="overlayClicked($event)"
 ></sh-overlay>
+
 <sh-float-notification class="position-fixed r-0 float-size row mr-3 z-nav"
 *ngIf="isNotifVisible"
 [ngClass]="{'float-in': isNotifVisible}"

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
+import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
 
 @Component({
@@ -13,7 +14,10 @@ export class PcViewComponent {
   isNotifVisible: boolean;
   config: {closeOnClick: boolean, transparent: boolean} = {closeOnClick: false, transparent: false};
   showOverlay: boolean;
-  constructor(private _floatNoteService: FloatNotificationService, private _overlayService: OverlayService)
+  isLoggedIn: boolean;
+  constructor(private _floatNoteService: FloatNotificationService,
+    private _overlayService: OverlayService,
+    private _navbarService: NavbarService)
   {}
 
   ngAfterViewInit() {
@@ -26,8 +30,20 @@ export class PcViewComponent {
       this.showOverlay = true;
     });
 
-    this._overlayService.closeSubject.asObservable().subscribe( close => {
-      this.showOverlay = false;
+    this._navbarService.isLoggedIn.asObservable().subscribe( status => {
+      console.log('login status = ', status);
+      this.isLoggedIn = status;
+      if(status) {
+        return;
+      }
+    });
+
+    // this._overlayService.closeSubject.asObservable().subscribe( close => {
+    //   this.showOverlay = false;
+    // });
+
+    this._overlayService.showSubject.asObservable().subscribe( show => {
+      this.showOverlay = show;
     })
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ViewChild } from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
 import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
@@ -9,6 +9,8 @@ import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
 import { HttpClient } from '@angular/common/http';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { SuggestionsComponent } from '../suggestions/suggestions.component';
 
 @Component({
   selector: 'navbar',
@@ -17,7 +19,7 @@ import { APIvars } from 'src/assets/variables/api-vars.enum';
 })
 export class NavbarComponent implements OnInit {
   elongate: boolean;
-  selectedOption: boolean;
+  selectedOption: string;
   options = [];
   searchSuggestions: any = [];
   hoveringOn = '';
@@ -30,7 +32,18 @@ export class NavbarComponent implements OnInit {
   dpObservale;
   imageSchema: IPictureUploadSchema;
   noUserFound: boolean;
-
+  showUpdateOptions = false;
+  showGameBroadcast = false;
+  @ViewChild('gameSuggestComp') gameSuggestComp: SuggestionsComponent;
+  consoles = [
+    { label : 'PC', value: 'pc'},
+    { label : 'Phone', value: 'phone'},
+    { label : 'PlayStation', value: 'ps'},
+    { label : 'Wii', value: 'wii'},
+    { label : 'XBOX', value: 'xbox'},
+    { label : 'Other', value: 'other'},
+  ];
+  nowplayingForm: FormGroup;
   @Input() imageUploadMode: string;
   
   @Output() onPicUpdate = new EventEmitter(); 
@@ -46,7 +59,7 @@ export class NavbarComponent implements OnInit {
     this.options = [
       { name: 'Home', icon: 'home', alert: 0},
       { name: 'Friends', icon: 'users', alert: 2 },
-      { name: 'Streams', icon: 'display', alert: 0 },
+      { name: 'Streams', icon: 'display', alert: 0, showSubmenu: false, submenu: { options: ['Story', 'Status', 'Now Playingaaaaa'], triggerFunction: this.update(event) }},
       { name: 'Notifcations', icon: 'bell', alert: 99 },
       { name: 'Messages', icon: 'bubbles', alert: 3 }]
      // { name: 'Settings & Privacy', icon: 'cog', alert: 0 }];
@@ -60,12 +73,18 @@ export class NavbarComponent implements OnInit {
       if(status) this.getDp();
     });
     this._overlayService.closeSubject.asObservable().subscribe( closeOptions => {
-      this.showUserOptions = false; this.showSuggestions = false;
+      this.showUserOptions = false; this.showSuggestions = false; this.showUpdateOptions = false;
     });
+  }
+
+  update(event) {
+    console.log('event = ', event);
   }
 
   searchThis(event) {
     console.log(event);
+    this.searchSuggestions = [];
+    this.userSearch = event;
     if(this.userSearch.length < 3) {
       this._overlayService.closeSubject.next();
       return;
@@ -120,11 +139,82 @@ export class NavbarComponent implements OnInit {
 
   userOptions() {
     this.showUserOptions = !this.showUserOptions; this.showSuggestions = !this.showSuggestions;
-    if(!this.showUserOptions) {
+    if(this.showUserOptions) {
+      this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
+    } else {
+      this._overlayService.closeSubject.next();
+    }
+  }
+
+  updateOptions() {
+    this.showUpdateOptions = !this.showUpdateOptions;
+    if(!this.showUpdateOptions) {
       this._overlayService.closeSubject.next();
     } else {
       this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
     }
+  }
+
+  gameBroadcast() {
+    this.showGameBroadcast = !this.showGameBroadcast;
+    if(this.showGameBroadcast) {
+      
+      this.nowplayingForm = new FormGroup({
+        game: new FormControl('', Validators.required),
+        username: new FormControl(),
+        audience: new FormControl(),
+        stream: new FormControl(),
+        console: new FormControl(),
+        hasPrivateRoom: new FormControl(),
+        roomid: new FormControl(),
+        password: new FormControl(),
+        exposepassword: new FormControl(),
+        desc: new FormControl()
+      });
+      this.nowplayingForm.patchValue({
+        audience: '0',
+        console: '',
+        hasPrivateRoom: false
+      });
+
+      this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
+    }
+  }
+
+  saveNowPlaying() {
+    console.log(this.nowplayingForm.value);
+    if(!this.nowplayingForm.get('hasPrivateRoom').value) {
+      this.nowplayingForm.removeControl('roomid');
+      this.nowplayingForm.removeControl('password');
+      this.nowplayingForm.removeControl('exposepassword');
+    }
+    this.nowplayingForm.removeControl('hasPrivateRoom');
+    this._http.post(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING, this.nowplayingForm.value).subscribe(result => {
+      console.log(result);
+      // this.showGameBroadcast = false;
+    });
+  }
+
+  closeOverlay() {
+    this._overlayService.showSubject.next(false);
+  }
+
+  gameSuggestions = [];
+  searchGame(searchword) {
+    console.log('game searched ', searchword);
+    if(searchword < 2) {
+      return;
+    }
+
+    this._http.get(APIvars.APIdomain+'/'+APIvars.GET_GAMELIST+'/'+searchword).subscribe(res => {
+      this.gameSuggestions = res['gamelist'];
+    });
+  }
+
+  gameSelect(game) {
+    this.gameSuggestComp.searchInput = game.name;
+    this.nowplayingForm.patchValue({game: game.name});
+    this.gameSuggestions = [];
   }
 
 }

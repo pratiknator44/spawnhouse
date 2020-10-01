@@ -16,5 +16,7 @@ export enum APIvars {
     GET_COVER = 'resources/getcover',
     SET_COVER = 'resources/setcover',
     REMOVE_COVER = 'resources/cover',
-    SEARCH_USER = 'search/user'
+    SEARCH_USER = 'search/user',
+    NOW_PLAYING = 'nowplaying',
+    GET_GAMELIST = 'nowplaying/gamelist'
 }

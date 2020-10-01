@@ -7,6 +7,7 @@ import { APIservice } from 'src/assets/services/api.service';
 import { IPictureUploadSchema } from 'src/assets/interfaces/picture-upload-schema.interface';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
+import { OverlayService } from 'src/assets/services/overlay.service';
 
 @Component({
   selector: 'app-profile',
@@ -33,12 +34,18 @@ export class ProfileComponent implements OnInit {
   userdp: any;
   usercover: any;
   newDpCoverForm: FormGroup;
+  nowPlayingForm: FormGroup;
   disableImageUpload: boolean = false;;
   showImageUpload: boolean;
   @ViewChild('overlay') overlay: ElementRef;
   // @ViewChild('navbar', {static: true}) navbar: NavbarComponent;
 
-  constructor( private _storageService : StorageService, private http: HttpClient, private _apiService: APIservice, private _notifService: FloatNotificationService, private _navbarService: NavbarService) { }
+  constructor( private _storageService : StorageService,
+    private http: HttpClient,
+    private _apiService: APIservice,
+    private _notifService: FloatNotificationService,
+    private _navbarService: NavbarService,
+    private _overlayService: OverlayService) { }
   
   ngOnInit(): void {
     this.user = this._storageService.currentUser;
@@ -56,6 +63,7 @@ export class ProfileComponent implements OnInit {
       console.log("inside subscribed dp updated ", updatedDp );
       this.updatePic(updatedDp);
     });
+    this.openGamingInfo();
   }
 
   getMedia(mediaType:string) {
@@ -162,8 +170,20 @@ export class ProfileComponent implements OnInit {
   }
 
   setVisibilityImageOverlay( visibility: boolean) {
-    // this._overlayService.show.next(visibility);
+    if(visibility)
+      this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
+    this._overlayService.showSubject.next(visibility);
     this.showImageUpload = visibility;
   }
   getCover() { }
+
+  openGamingInfo() {
+    this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
+    this._overlayService.showSubject.next(true);
+  }
+  
+  updateNowPlaying() {
+
+  }
+
 }

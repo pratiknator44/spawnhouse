@@ -20,6 +20,9 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { OverlayComponent } from './overlay/overlay.component';
 import { OverlayService } from 'src/assets/services/overlay.service';
 import { LoaderComponent } from './loader/loader.component';
+import { RecepientComponent } from './recepient/recepient.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { SuggestionsComponent } from './suggestions/suggestions.component';
 
 
 @NgModule({
@@ -30,7 +33,10 @@ import { LoaderComponent } from './loader/loader.component';
     PcViewComponent,
     NavbarComponent,
     OverlayComponent,
-    LoaderComponent
+    LoaderComponent,
+    RecepientComponent,
+    NotFoundComponent,
+    SuggestionsComponent
   ],
   imports: [
     BrowserModule,

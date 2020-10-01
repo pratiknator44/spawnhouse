@@ -7,18 +7,14 @@ a {
     margin-left: 5rem;
 }
 
-.size {
-    width: 15rem;
-    transition: width 0.5s;
-}
-
 nav {
     background-color: smokewhite;
 }
 
 .search-suggestions {
-    width: 15rem;
+    width: 20rem;
     background-color: white;
+    z-index: 9;
 }
 
 .search-icon-container {
@@ -41,13 +37,12 @@ nav {
 
 .icon-size {
     font-size: 1.25rem;
-    margin-left: 3rem;
+    // margin-left: 3rem;
 }
 
 .dp {
     height: 2rem;
     width: 2rem;
-    border: solid 1px blue;
     border-radius: 50%;
 }
 
@@ -58,4 +53,39 @@ nav {
 .nav-shadow {
     box-shadow: 0 0 0.5rem 0 #CCC;
     z-index: 4;
+}
+
+.font-0-5-rem {
+    font-size: 0.75rem;
+}
+
+.search-input {
+    outline: none;
+    height: 2.5rem;
+}
+
+.search-container {
+    border-radius: 3px;
+}
+
+.edit-game-container {
+    width: 50%;
+    transform: translate(25%, 0);
+    box-shadow: 0 0 5px 0 #000;
+}
+
+.audience > label {
+    margin: 0; padding: 0;
+    cursor: pointer;
+}
+
+/// new nav
+
+nav {
+    height: 3rem;
+}
+
+.nav-item {
+    padding-left: 1rem;
+    padding-right: 1rem;
 }

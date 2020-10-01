@@ -1,8 +1,8 @@
 
 <div class="d-flex float-container overflow-hidden bg-white z-nav">
     <div class="h-100 iconset icon-video-camera icon-size text-center ml-1"> </div>
-    <div class="">
-        <div class="ml-1" style="text-overflow: ellipsis;">Your photo is being uploaded, please do not refresh
+    <div style="width: calc(100% - 1.5rem); word-wrap: break-word;">
+        <div class="ml-1" style="text-overflow: ellipsis;">Now updating your changes, please do not referesh
         </div>
         <div class="col-12">
 
@@ -12,6 +12,6 @@
             </div>
         </div>
     </div>
-    <span class="notif-close-size text-center cursor-pointer" (click)="closeThisNotification()"><label class="position-relative text-red cursor-pointer">x</label></span>
+    <span class="notif-close-size h-100 text-center cursor-pointer position-absolute" (click)="closeThisNotification()"><label class="position-relative text-danger cursor-pointer" title="close this notification">x</label></span>
 
 </div>

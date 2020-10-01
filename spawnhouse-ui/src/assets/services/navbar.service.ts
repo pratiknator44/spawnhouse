@@ -5,6 +5,6 @@ import { Subject } from 'rxjs';
 export class NavbarService {
     getDpSubject = new Subject<boolean>();
     dpUpdated = new Subject<{type: string, src: any}>();
-    
+    isLoggedIn = new Subject<boolean>();
     constructor() {}
 }

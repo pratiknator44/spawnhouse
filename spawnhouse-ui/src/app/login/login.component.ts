@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from 'src/assets/services/storage.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { NavbarService } from 'src/assets/services/navbar.service';
 declare var gapi: any;
 
 @Component({
@@ -29,6 +30,7 @@ export class LoginComponent implements OnInit {
     private _http: HttpClient,
     private _storageService: StorageService,
     private _router: Router,
+    private _navService: NavbarService
     ) {
       window['onSignIn'] = user => ngZone.run( () => {
       this.onSignIn(user);
@@ -116,6 +118,7 @@ export class LoginComponent implements OnInit {
     sessionStorage.setItem('user', data['user']);
     this._storageService.currentUser = data['user'];
     this._storageService.setSessionData('user', JSON.stringify(data['user']));
+    this._navService.isLoggedIn.next(true); 
     this._router.navigate(['/profile']);
   }
 

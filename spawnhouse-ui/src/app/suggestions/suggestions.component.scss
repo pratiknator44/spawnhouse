@@ -1,0 +1,16 @@
+.space-for-icon {
+    width: calc(100% - 3rem);
+}
+
+.border-right-none {
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.suggestions {
+    top: 2.5rem;
+    width: calc(100% - 1.75rem);
+    border-bottom-left-radius: 3px;
+    border-bottom-color: 3px;
+}

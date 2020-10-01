@@ -15,28 +15,61 @@
                 <span class="online-dot" [ngClass]="{ 'bg-online': onlineStatus === 1, 'bg-offline': onlineStatus === 0, 'bg-busy' : onlineStatus === 2 }" title="You are being shown online"></span>
             </div>
         </div>
+
+        <div class="position-absolute message-add-container" *ngIf="true">
+            <!-- <div class="btn bg-white d-inline m-1 border-grey"><span class="iconset icon-bubbles"></span> Message</div>
+            <div class="btn bg-white d-inline m-1 border-grey"><span class="iconset icon-user-plus"></span>Follow</div> -->
+
+            <div class="badge cursor-pointer bg-white d-inline m-1 border-grey float-right mt-3"><span class="iconset icon-pencil"></span> Update Profile</div>            
+        </div>
     </div>
 </div>
 
-<div class="w-50 feeds d-flex mt-3" style="transform: translate(50%, 0);">
-    <div class="side-info w-25">
-        <div class="follow-list border-none text-black">
-            <h5>0 Following</h5>
-            <h5>0 Followers</h5>
+
+<div class="w-75 feeds d-flex mt-3" style="transform: translate(17%, 0);">
+    <div class="side-info" style="width: 40%;">
+        <div class="follow-list border-none text-black m-1">
+            <h6 class="text-secondary">@bios619</h6>
+            <label class="text-secondary hover-underline cursor-pointer" (click)="openGamingInfo()" *ngIf="true"><span class="icon-pencil iconset"></span> Edit</label>
+            <div>Currently playing (4w ago)</div>
+            <label class="text-primary hover-underline cursor-pointer">Call of Duty Black Ops: Cold War</label> as <label class="text-secondary">bios619</label> 
+            <div class=""><span *ngIf="true">Room ID: </span><label class="text-secondary"> 11025955</label> <br>
+            Password: <label class="text-secondary"></label> <a class="text-theme cursor-pointer">request password</a></div>
+
+            <div>
+                <div><span class="iconset icon-fire"></span> Top favourites games</div>
+                <label class="text-primary">Prince of Persia: Worrior Within</label>,
+                <label class="text-primary">Elder Scrolls V: Skyrim</label>,
+                <label class="text-primary">Counter-Strike</label>,
+                <label class="text-primary">Total Overdose</label>
+                <label class="text-secondary hover-underline"> ... 16 more</label>
+
+                <div>Likes to play (by Genre)</div>
+                <label class="text-primary">Shooting</label>,
+                <label class="text-primary">FPS</label>,
+                <label class="text-primary">Strategic</label>
+            </div>
+
+            <hr>
+            <label class="text-secondary" *ngIf="true"><span class="icon-pencil iconset"></span>  Edit</label>
+            <label>Hi !! I own a channel in Youtube, called Out of Office. It has all sorts of stuff regarding cooking, gaming and front end. Do have a look, link below</label>
+            <label class="text-primary hover-underline cursor-pointer">www.youtube.com/outofoffice1</label>
+            <br>
+
+            Gender <label class="text-secondary">Male</label> <br>
+            Relationship <label class="text-secondary">Single</label> <br>
+            Favourite quote <br>
+            <label class="font-italic text-secondary">"Nothing is true, everything is permitted" <br> - Ezio Auditore, Assassins' Creed 2</label>
         </div>
+        
         <hr>
         <div class="cursor-pointer p-1 text-primary" (click)="mymediaToggle = !mymediaToggle">My Media</div>
         <div class="cursor-pointer p-1 text-primary">My Streams</div>
-        <div class="cursor-pointer p-1 text-primary" (click)="basicInfoToggle = !basicInfoToggle">Edit basic info</div>
+        <div class="cursor-pointer p-1 text-primary" (click)="basicInfoToggle = !basicInfoToggle;">Edit Profile</div>
         <hr>
-        <h5>Recent followers</h5>
-        <div class="d-flex">
-            <div class="recent-followers-container d-flex">
-                <div class="recent-followers m-1 cursor-pointer" title="new user" *ngFor="let fol of [1,2,3,4,5,6,7]"></div>
-            </div>
-        </div>
+
     </div>
-    <div class="w-75">
+    <div style="width: 60%;">
 
         <div class="edit-profile m-2" *ngIf="basicInfoToggle">
             <div class="row">
@@ -80,10 +113,6 @@
     </div>
 </div>
 
-    <div class="position-absolute w-100 mt-belownav" style="z-index: 2; top:0;" *ngIf="showImageUpload">
-        <sh-imageupload [imageSchema]="imageSchema" [isDisabled]="disableImageUpload" [mode]="uploadMode" (close)="setVisibilityImageOverlay(false)" (onImageRemove)="refreshImage()" (newsubmit)="submitNewImage($event)"></sh-imageupload>
-    </div>
-
-
-
-
+<div class="position-absolute w-100 mt-belownav" style="z-index: 2; top:0;" *ngIf="showImageUpload">
+    <sh-imageupload [imageSchema]="imageSchema" [isDisabled]="disableImageUpload" [mode]="uploadMode" (close)="setVisibilityImageOverlay(false)" (onImageRemove)="refreshImage()" (newsubmit)="submitNewImage($event)"></sh-imageupload>
+</div>
