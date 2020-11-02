@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FloatNotificationSchema } from 'src/assets/interfaces/float-notification-config.interface';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 
 @Component({
@@ -8,19 +9,14 @@ import { FloatNotificationService } from 'src/assets/services/float-notification
 })
 export class FloatNotificationComponent implements OnInit {
 
-  @Input() config: any;
+  @Input() config: FloatNotificationSchema;
   @Input() animate = true;
   currentProgress = '0';
-  isVisible = false;
   constructor(private _notifService: FloatNotificationService) { }
 
   ngOnInit(): void {
     this._notifService.progress.asObservable().subscribe( status => {
       this.currentProgress = status;
-    });
-    
-    this._notifService.closeOn.asObservable().subscribe( status => {
-      this.isVisible = status;
     });
   }
 

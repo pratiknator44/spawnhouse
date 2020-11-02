@@ -1,0 +1,107 @@
+<div class="profile-management mt-3">
+
+    <div class="m-3">
+        <div class="w-25">
+            <!-- <sh-timer-button></sh-timer-button> -->
+        </div>
+        <form [formGroup]="gamedataForm" (ngSubmit)="submitGamedata()" action="" method="POST">
+            <h2 class="text-secondary">Videogame Preferences</h2>
+            <label class="mt-1">Some of the best videogames you've played. Click on game name to remove it. Click on <span class="iconset icon-favorite_outline text-danger"></span> to set as favourite</label>
+            <sh-chips [items]="gameSuggestions" [selected]="items" (queryChange)="queryChange($event)" (selectionChange)="newSelections($event)"></sh-chips>
+
+            <div class="hover-underline text-primary cursor-pointer mt-3">What are you playing today?</div>
+            <div class="row mt-2">
+                <div class="col-12">
+                    Type of games you like (select top 3):
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div *ngFor="let genre of genres">
+                        <input [disabled]="gamedataForm.get('genres').value?.length > 3 && !gamedataForm.get('genres').value?.includes(genre.id)" type="checkbox" (click)="updateGenreCheckList($event, genre.id)" class="form" id="{{genre.id}}" checked="{{genre.checked}}" /> <label class="ml-1" for="{{genre.id}}">{{genre.genre}} <label class="ml-1 text-secondary" for={{genre.id}}>{{ genre.example }} etc.</label></label> 
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn w-25 bg-theme text-white float-right"
+            [ngClass]="{'bg-secondary': saveText.videogame === 'Saving...'}">{{saveText.videogame}}</button></form>
+    </div>
+
+    <!-- <hr> -->
+    <br><br>
+    <sh-divider>
+
+    </sh-divider>
+
+    <div class="m-3">
+        <form [formGroup]="userinfoForm" (ngSubmit)="submitUserdata()" action="" method="POST">
+            <h2 class="text-secondary">Personal</h2>
+
+            <div class="row">
+                <div class="col-6">First Name<label class="text-danger">*</label></div>
+                <div class="col-6">Last Name<label class="text-danger">*</label></div>
+            </div>
+            
+            <div class="row">
+                <div class="col-6">
+                    <input type="text" formControlName="fname" class="form form-control" />
+                </div>
+                <div class="col-6">
+                    <input type="text" formControlName="lname" class="form form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">Username
+                    <span class="text-secondary" style="font-size: 10px;">
+                       will let you access spawnhouse.com/your-username
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6"><input type="text" class="form form-control" formControlName="username" /></div>
+                <div class="col-4"><label class=" btn text-primary cursor-pointer hover-underline">Check</label></div>
+            </div>
+
+            <div class="row">
+                <div class="col-6"> Email <label class="text-danger">*</label></div>
+                <div class="col-6">Phone</div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <input type="email" formControlName="email" class="form form-control" />
+                </div>
+                <div class="col-6"><input type="number" formControlName="phone" class="form form-control" maxlength="10" /></div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">Website</div>
+            </div>
+            <div class="row">
+                <div class="col-12"><input type="text" class="form form-control" formControlName="website" /></div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-12">Bio</div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <textarea cols="7" class="form form-control" formControlName="bio"></textarea>
+                    <label class="text-secondary float-right">{{  userinfoForm.get('bio').value.length+'/100' }}</label>
+                </div>
+            </div><div class="row mt-3">
+                <div class="col-12">Favourite Quote</div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <input type="text" formControlName="quote" class="form form-control font-italic" placeholder="'Sic Patvis magna' -Nathan Drake ">
+                    <label class="text-secondary float-right">{{  userinfoForm.get('quote').value.length+'/100' }}</label>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6">You joined on {{ user['doj'] | date:'mediumDate' }}</div>
+                <div class="col-6">
+                    <button type="submit" class="btn w-50 bg-theme text-white float-right" [ngClass]="{'bg-secondary': saveText.videogame === 'Saving...'}">{{saveText.personal}}</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

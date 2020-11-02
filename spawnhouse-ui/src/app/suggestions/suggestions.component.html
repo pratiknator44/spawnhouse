@@ -1,6 +1,7 @@
 <div class="d-flex position-relative">
     <input type="text" class="form form-control" [(ngModel)]="searchInput" [placeholder]="placeholder"
     [ngClass]="{'space-for-icon border-right-none': icon}" (keyup)="emitSearchWord()" />
+
     <div class="suggestions bg-white position-absolute z-nav">
         <ng-container [ngTemplateOutlet]="template"> </ng-container>
 
@@ -11,3 +12,5 @@
     <label class="icon-{{icon}} mt-1 m-0"></label>
     </span>
 </div>
+<div class="bg-secondary text-white text-center" *ngIf="inProgress">Searching...</div>
+

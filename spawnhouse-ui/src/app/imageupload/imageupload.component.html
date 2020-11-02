@@ -1,12 +1,12 @@
-<div class="position-absolute bg-white upload-div-size w-50" style="transform: translate(50%, 10%);">
-    <h4 class="m-2">New {{ mode === 'dp' ? 'Profile' : 'Cover'}} Picture</h4>
+<div class="position-absolute bg-white upload-div-size w-50" style="transform: translate(50%);">
+    <h4 class="p-2 bg-theme text-white">New {{ mode === 'dp' ? 'Profile' : 'Cover'}} Picture <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="hideUI()"></span></h4>
         <div class="row">
             <div class="col-12">    
                 <input type="file" class="d-none" #newdpOrCover (change)="fileChangeEvent($event)" [disabled]=isDisabled />
-                <button class="btn bg-theme text-white cursor-pointer mb-3" [ngClass]="{'btn-secondary': isDisabled}" (click)="newdpOrCover.click()">Browse an image</button>
-                <span (click)="removeImage()" class="text-danger float-right border-none hover-underline cursor-pointer mr-3" [ngClass]="{'text-secondary': isDisabled}" >Remove Current {{ mode === 'dp' ? 'Profile': 'Cover' }} Picture</span>
-
-                <div style="max-width: 30rem; height: 100%; transform: translate(25%, 0%);">
+                <button class="btn bg-theme text-white cursor-pointer mb-3 border-radius-none" [ngClass]="{'btn-secondary': isDisabled}" (click)="newdpOrCover.click()">Browse an image</button>
+                <span (click)="removeImage()" class="text-danger float-right border-none hover-underline cursor-pointer mr-3" [ngClass]="{'text-secondary': isDisabled}" ><span class="text-danger iconset icon-bin"></span> {{ mode === 'dp' ? 'Profile': 'Cover' }} Picture</span>
+                <div *ngIf="!temp" class="text-center" style="height: 15rem; color: #CCC"><span class="iconset icon-image" style="font-size: 10rem; "></span><br>Browse and select an image</div>
+                <div style="max-width: 30rem; transform: translate(25%, 0);">
                         <!-- {{imageSchema | json}} -->
                     <image-cropper *ngIf="temp" class="m-3"
                         [imageChangedEvent]="imageChangedEvent"

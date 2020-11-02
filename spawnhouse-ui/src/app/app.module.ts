@@ -21,8 +21,8 @@ import { OverlayComponent } from './overlay/overlay.component';
 import { OverlayService } from 'src/assets/services/overlay.service';
 import { LoaderComponent } from './loader/loader.component';
 import { RecepientComponent } from './recepient/recepient.component';
-import { NotFoundComponent } from './not-found/not-found.component';
 import { SuggestionsComponent } from './suggestions/suggestions.component';
+import { SharedModule } from './modules/shared.module';
 
 
 @NgModule({
@@ -35,8 +35,7 @@ import { SuggestionsComponent } from './suggestions/suggestions.component';
     OverlayComponent,
     LoaderComponent,
     RecepientComponent,
-    NotFoundComponent,
-    SuggestionsComponent
+    SuggestionsComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,6 +45,7 @@ import { SuggestionsComponent } from './suggestions/suggestions.component';
     ReactiveFormsModule,
     RecaptchaModule,  //this is the recaptcha main module
     // RecaptchaFormsModule, //this is the module for form incase form validation
+    SharedModule,
   ],
   exports: [
   ],

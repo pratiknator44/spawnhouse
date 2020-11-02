@@ -9,6 +9,7 @@ a {
 
 nav {
     background-color: smokewhite;
+    width: 100vw;
 }
 
 .search-suggestions {
@@ -70,7 +71,7 @@ nav {
 
 .edit-game-container {
     width: 50%;
-    transform: translate(25%, 0);
+    transform: translate(50%, 10%);
     box-shadow: 0 0 5px 0 #000;
 }
 

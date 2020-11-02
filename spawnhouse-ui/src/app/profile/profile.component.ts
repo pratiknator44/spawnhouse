@@ -1,16 +1,18 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
 import { FormGroup } from '@angular/forms';
-import { HttpClient, HttpEventType, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { APIservice } from 'src/assets/services/api.service';
 import { IPictureUploadSchema } from 'src/assets/interfaces/picture-upload-schema.interface';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-profile',
+  selector: 'sh-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
@@ -18,76 +20,153 @@ export class ProfileComponent implements OnInit {
 
   onlineStatus = 2;
   basicInfoToggle = false;
-  mymediaToggle = false;
   imageSchema: IPictureUploadSchema;
   uploadMode: string;
-  mediaArray = [
-                {name: 'All', value: 'all', total: 0},
-                {name: 'Photos', value: 'pics', total: 0},
-                {name: 'Videos', value: 'vids', total: 0},
-                {name: 'Text & Audio', value: 'tna', total: 0},
-                {name: 'Saved', value: 'saved', total: 0},
-                {name: 'Liked', value: 'liked', total: 0}
-              ];
-  selectedMedia = this.mediaArray[0].value;
   user;
-  userdp: any;
+  userdp: any;    // stores cover and dp link
   usercover: any;
+  showDeleteNowPlaying: boolean;
   newDpCoverForm: FormGroup;
   nowPlayingForm: FormGroup;
   disableImageUpload: boolean = false;;
   showImageUpload: boolean;
-  @ViewChild('overlay') overlay: ElementRef;
-  // @ViewChild('navbar', {static: true}) navbar: NavbarComponent;
+  isUserProfile = true;    // if user accesses someone else's profile, this is false;
+  followStatus: String;
+  bg = ['danger', 'warning', 'success', 'theme', 'danger'];
 
   constructor( private _storageService : StorageService,
     private http: HttpClient,
     private _apiService: APIservice,
     private _notifService: FloatNotificationService,
     private _navbarService: NavbarService,
-    private _overlayService: OverlayService) { }
+    private _overlayService: OverlayService,
+    private _router: Router,
+    private _activeRoute: ActivatedRoute,
+    private _dom: DomSanitizer) {
+      this._activeRoute.params.subscribe( val => {
+        this.ngOnInit();
+      })
+    }
   
   ngOnInit(): void {
-    this.user = this._storageService.currentUser;
-    this.onlineStatus = 1;
-    console.log(this._storageService.dpLink);
-    this.userdp = this._storageService.dpLink;
+    this.user = {};
+    let addusername;
+    if(this._activeRoute.snapshot.params.username) {
+      this.isUserProfile = false;
+      this.http.get(APIvars.APIdomain+'/'+APIvars.APIsignup+'/'+this._activeRoute.snapshot.params.username).subscribe( result => {
+        console.log(result);
+        if(!result || result['error']) {
+          console.log('user not found should route');
+          this._router.navigate(['../not-found']);
+          return;
+        }
+        
+        this.user = result['user'];
+        this.user['nowplaying'] = result['nowplaying'];
+        this.user['gamedata'] = result['gamedata'];
+        console.log(this.user);
+        this.getFollowData();
+      });
 
-    this._apiService.getCover();
-    this._apiService.coverPictureSubject.subscribe( coverurl => {
-      console.log("event ", coverurl);
-      this.usercover = coverurl.coverurl;
-    });
-    this._navbarService.getDpSubject.next(true);
-    this._navbarService.dpUpdated.asObservable().subscribe( updatedDp => {
-      console.log("inside subscribed dp updated ", updatedDp );
-      this.updatePic(updatedDp);
-    });
-    this.openGamingInfo();
-  }
+      // getting dp of the user
+      this.getDpOfUser(this._activeRoute.snapshot.params.username);
+      this.getCoverOfUser(this._activeRoute.snapshot.params.username);
+      this.getFollowStatus(this._activeRoute.snapshot.params.username);
+      addusername = this._activeRoute.snapshot.params.username;
 
-  getMedia(mediaType:string) {
-    this.selectedMedia = mediaType;
+    } else {
+      // if logged in user's profile
+      this.isUserProfile = true;
+      this.user = this._storageService.currentUser;
+      this.getFollowData();
+      console.log(this.user);
+      this.userdp = this._storageService.dpLink;
+      this._apiService.getCover();
+      this._navbarService.getDpSubject.next(true);
+
+      this.onlineStatus = 1;
+      this._apiService.coverPictureSubject.subscribe( coverurl => {
+        // console.log("event ", coverurl);
+        this.usercover = coverurl.coverurl;
+      });
+      this._navbarService.dpUpdated.asObservable().subscribe( updatedDp => {
+        // console.log("inside subscribed dp updated ", updatedDp );
+        this.updatePic(updatedDp);
+      });
+      // this.openGamingInfo();
+      this._notifService.closeOn.next(true);
+      this._apiService.getNowPlaying();
+      addusername = '';
+    }
+
+    this.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
+      this.user['gamedata'] = result['result'];
+      console.log(this.user);
+    });
   }
 
   updateNewDpCover() {
     
   }
 
-  checktoken() {
-    this.http.post('http://localhost:3000/login/testtoken', {}).subscribe( data => {
-      console.log('from token check api ', data);
-    })
-  }
-  getuploadUI() {
-    this.http.get('http://localhost:3000/ssr/dpUploadUI').subscribe( data => {
-      this.overlay.nativeElement.innerHTML = data['DOM'];
+  getFollowStatus(id: String) {
+    this.http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOW_STATUS_OF+'/'+id).subscribe(result => {
+      this.followStatus = result['status'];
     });
   }
 
+  // add or remove
+  setFollowStatus() {
+    const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
+    this.http.get(APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+this.user._id).subscribe(result => {
+      this.followStatus = result['status'];
+      this.user.followdata.followerCount = result['followerCount'];
+    });
+    
+  }
+
+  getDpOfUser(id) {
+    this.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
+
+      let reader = new FileReader();
+      reader.addEventListener('load', () => {
+        this.userdp = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+      }, false);
+      if (image) {
+         reader.readAsDataURL(image as Blob);
+      }
+    });
+  }
+
+  getCoverOfUser(id) {
+    this.http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
+      if(image['size'] <= 44) {
+        console.log('image errr')
+        this.usercover = null;
+        return;
+      }
+      let reader = new FileReader();
+      reader.addEventListener('load', () => {
+        this.usercover = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+      }, false);
+      if (image) {
+         reader.readAsDataURL(image as Blob);
+      }
+    });
+  }
+
+  getFollowData() {
+    const param = this.isUserProfile ? '' : this._activeRoute.snapshot.params.username;
+    this.http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOWDATA+param).subscribe( followdata => {
+      this.user['followdata'] = followdata['data'];
+      console.log('after follow data ', this.user);
+    });
+  }
+  
   submitNewImage(fd) {
     let imageApi: string;
     this.disableImageUpload = true;
+    this._notifService.config.next({text: 'Upading picture', icon: 'image'});
     if ( this.uploadMode === 'dp') 
     {
       imageApi = APIvars.APIdomain+'/'+ APIvars.SET_DP;
@@ -102,10 +181,12 @@ export class ProfileComponent implements OnInit {
       }
       if(result.type === HttpEventType.UploadProgress) {
         this.setVisibilityImageOverlay(false);
+        // console.log('sent config ');
+        this._notifService.config.next({text: 'Upading picture', icon: 'image'});
         this._notifService.progress.next(Math.round(result['loaded']*100/result['total'])+'%');
       }
       else if (result.type === HttpEventType.Response) {
-        console.log('event done ', result['message']);
+        // console.log('event done ', result['message']);
         this._notifService.closeOn.next(false);
       }
       if((result as HttpResponse<any>).body?.message === 'passed') {
@@ -114,19 +195,16 @@ export class ProfileComponent implements OnInit {
           this.uploadMode === 'dp' ? this._navbarService.getDpSubject.next(true) : this._apiService.getCover();
           // this.uploadMode === 'dp' ? this.navbar.getDp() : this._apiService.getCover();
           this.setVisibilityImageOverlay(false);
-
         }, 1000);
       }
-      console.log(result);
+      // console.log(result);
     });
   }
 
   updatePic(event) {
-    console.log("update dp in profile ", event);
     if(event.type === 'dp') {
       this.userdp = event.src;
       this.setVisibilityImageOverlay(false);
-      // console.log('userdp', this.userdp);
     }
   }
 
@@ -159,7 +237,7 @@ export class ProfileComponent implements OnInit {
   }
 
   refreshImage() {
-    console.log('upload mode ', this.uploadMode);
+    // console.log('upload mode ', this.uploadMode);
     if(this.uploadMode === 'dp') {
       // this.navbar.getDp();
       this._navbarService.getDpSubject.next(true);
@@ -178,12 +256,30 @@ export class ProfileComponent implements OnInit {
   getCover() { }
 
   openGamingInfo() {
-    this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
-    this._overlayService.showSubject.next(true);
+    this._navbarService.showOption.next('gamebroadcast');
+    this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
   }
   
   updateNowPlaying() {
 
+  }
+
+  routeToEditProfile() {
+    this._router.navigateByUrl('/manage');
+  }
+
+  gotoWebsite(url) {
+    if(url)
+      window.open(url, '__blank');
+  }
+
+  removeNowPlaying() {
+    this.showDeleteNowPlaying = false;
+    this.http.delete(APIvars.APIdomain+'/'+APIvars.REMOVE_NOW_PLAYING).subscribe( result => {
+      if(result['message']=== 'passed') {
+        this._apiService.getNowPlaying();
+      }
+    });
   }
 
 }

@@ -41,3 +41,8 @@
 .image-file:-webkit-file-upload-button {
     visibility: hidden;
 }
+
+[contentEditable=true]:empty:not(:focus):before{
+    content:attr(data-text);
+    color: #666;
+}

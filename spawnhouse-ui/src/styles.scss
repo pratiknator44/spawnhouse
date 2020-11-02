@@ -104,18 +104,9 @@ body {
     right: 0 !important;
 }
 
-// ::-webkit-input-placeholder {
-//     font-style: italic;
-//  }
-//  :-moz-placeholder {
-//     font-style: italic;  
-//  }
-//  ::-moz-placeholder {
-//     font-style: italic;  
-//  }
-//  :-ms-input-placeholder {  
-//     font-style: italic; 
-//  }
+.circle {
+    border-radius: 50%;
+}
 
  .animate-float {
     transition: width 20rem 3s !important;
@@ -205,6 +196,19 @@ body {
     background-color: #CCC;
 }
 
+.hover-bg-red:hover {
+    background-color: red !important;
+    color: white !important;
+}
+.hover-bg-theme:hover {
+    background-color: $theme-color !important;
+    color: white !important;
+}
+
+.border-thin-theme {
+    border: solid thin $theme-color;
+}
+
 .filter-greyscale {
     filter: grayscale(100%);
 }
@@ -212,4 +216,36 @@ body {
 .hover-remove-entry:hover {
     background-color: red !important;
     color: white;
+}
+
+.std-box-shadow {
+    box-shadow: 0 0 10px 0 #CCC;
+}
+
+.bg-black {
+    background-color: black !important;
+}
+
+.bg-off-black {
+    background-color: rgb(54, 54, 54) !important;
+}
+
+.bg-grey {
+    background-color: rgb(238, 238, 238) !important;
+}
+
+.text-twitch {
+    color: #9147ff !important;
+}
+
+.text-vimeo {
+    color: #00ADEF !important;
+}
+
+.border-radius-none {
+    border-radius: 0 !important;
+}
+
+label {
+    margin: 0 !important;
 }

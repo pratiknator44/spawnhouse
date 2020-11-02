@@ -1,43 +1,43 @@
-<nav class="navbar navbar-expand-lg bg-light nav-shadow1 w-100 d-flex">
+<nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex">
   <div>
-    <span class="iconset icon-spawnhouse color-theme positon-relative mt-3" style="font-size: 2rem;"></span> &nbsp;
+    <span class="iconset icon-sh text-theme positon-relative" style="font-size: 3rem;"></span> &nbsp;
   </div>
 
 
-    <div class="nav-item text-black d-block" style=" " title="{{user.fname}}"
-    (click)="selectedOption = user.fname">
-      <div>
-        <img [src]="dp" class="cursor-pointer dp" [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
+    <div class="nav-item text-black d-block overflow-none" title="{{user.fname}}" (click)="routeTo('profile')" (click)="selectedOption = user.fname">
+      <div class="text-center overflow-hidden" style="height: 100%;">
+        <div class="cursor-pointer text-center iconset icon-size icon-player text-theme" *ngIf="!dp"></div>       
+        <img [src]="dp" *ngIf="dp" class="cursor-pointer dp" [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
       </div>
-      <div class="text-center m-0 font-0-5-rem cursor-pointer" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.fname }}</div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div>
     </div>
-    <div class="nav-item text-black" style="   " title="Home" (click)="selectedOption = 'Home'">
+    <div class="nav-item text-black" title="Home" (click)="selectedOption = 'Home'; routeTo('/home')">
       <div class="cursor-pointer text-center iconset icon-size icon-home" [ngClass]="{'color-theme': selectedOption==='Home'}">
       </div>
       <div class="text-center m-0 font-0-5-rem cursor-pointer">Home</div>
     </div>
-    <div class="nav-item text-black" style="   " title="Followers"
+    <div class="nav-item text-black" title="Followers"
     (click)="selectedOption = 'Followers'">
-      <div class="cursor-pointer text-center iconset icon-size icon-users" [ngClass]="{'color-theme': selectedOption==='Followers'}">
+      <div class="cursor-pointer text-center iconset icon-size icon-user" [ngClass]="{'color-theme': selectedOption==='Followers'}">
       </div>  
       <div class="text-center m-0 font-0-5-rem cursor-pointer">Followers</div>
     </div>
   <!-- search bar and suggestions-->
   <div class="w-50">
-    <sh-suggestions [placeholder]="'Search name or @username'" [icon]="'search'" [template]="searchSuggestionTemplate"
-    (onkeyup)="searchThis($event)"></sh-suggestions>
+    <sh-suggestions [placeholder]="'Search by name, username, or email'" [icon]="'search'" [template]="searchSuggestionTemplate"
+    (inputChanged)="searchThis($event)"></sh-suggestions>
     <ng-template #searchSuggestionTemplate>
       <!-- search template -->
       <div class="position-relative" style="height: 3.5rem;" *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
         <div class="position-absolute search-icon-container">
-          <div class="" style="animation: rotate-left 1s infinite linear;">
+          <div style="animation: rotate-left 1s infinite linear;">
             <loader [type]="2"></loader>
           </div>
         </div>
       </div>
 
       <!-- data template -->
-      <div class="d-flex" *ngFor="let suggestion of searchSuggestions" (mouseover)="hoveringOn = suggestion.userid" [ngClass]="{'bg-lite': hoveringOn === suggestion.userid}" >
+      <div class="d-flex" *ngFor="let suggestion of searchSuggestions" (mouseover)="hoveringOn = suggestion.userid" [ngClass]="{'bg-lite': hoveringOn === suggestion.userid}" (click)="gotoProfile(suggestion)">
         <img class="m-1" style="width: 2.5rem; height: 2.5rem;"  />
         <div style="width: calc(100% - 3rem);">
             <div class="text-truncate hover-underline cursor-pointer" [ngClass]="{'mt-2': !suggestion.username }">&nbsp;{{ suggestion.fname + ' ' + suggestion.lname }}</div>
@@ -64,40 +64,42 @@
 
     <li class="nav-item text-black" title="Messages"
     (click)="selectedOption = 'Message'">
-      <div class="cursor-pointer text-center iconset icon-size icon-bubbles" [ngClass]="{'color-theme': selectedOption==='Message'}">
+      <div class="cursor-pointer text-center iconset icon-size icon-bubbles3" [ngClass]="{'color-theme': selectedOption==='Message'}">
         <span class="badge badge-danger" style="margin-left: -0.25rem;">5</span>
       </div>
 
         <div class="text-center m-0 font-0-5-rem cursor-pointer">Messages</div>
     </li>
 
-    <li class="nav-item text-black" (click)="updateOptions()" style="z-index: 2;" title="Update">
-      <div class="cursor-pointer text-center iconset icon-size icon-display" >
+    <li class="nav-item text-black mt-2" (click)="updateOptions()" style="z-index: 2;" title="Update">
+      <div class="cursor-pointer text-center iconset icon-size icon-dots-horizontal-triple" >
         <span class="badge badge-danger"></span>
       </div>
-        <div class="text-center m-0 font-0-5-rem cursor-pointer">v</div>
 
-        <div class="position-absolute bg-white cursor-pointer" *ngIf="showUpdateOptions">
-          <div class="font-0-5-rem hover-bg-grey p-2" >Post</div>
-          <div class="font-0-5-rem hover-bg-grey p-2" (click)="gameBroadcast()">Game Broadcast</div>
-        </div>
+      <div class="position-absolute bg-white cursor-pointer" *ngIf="showUpdateOptions">
+        <div class="hover-bg-grey p-2" >Post</div>
+        <div class="hover-bg-grey p-2" (click)="gameBroadcast()">
+          <span class="iconset icon-game-controller"></span>
+          Now Playing</div>
+      </div>
     </li>
 
-    <li class="nav-item ml-3 mt-1" style=""> 
+    <!-- <li class="nav-item ml-3 mt-1"> 
 
-    </li>
+    </li> -->
     <li>
       <div class="cursor-pointer mt-3 font-0-5-rem" style="width: 8rem;" (click)="userOptions()">Options v</div>        
       <div class="position-absolute mt-3 d-inline-block bg-white" style="z-index: 4;" *ngIf="showUserOptions">
-        <div class="setting-op p-2 cursor-pointer font-0-5-rem">Privacy & Settings</div>
-        <div class="setting-op p-2 cursor-pointer font-0-5-rem" (click)="logout()">Logout</div>
+        <div class="setting-op p-2 cursor-pointer font-0-5-rem"><span class="iconset icon-cog mr-2"></span>Privacy & Settings</div>
+        <div class="setting-op p-2 cursor-pointer font-0-5-rem" (click)="logout()"><span class="iconset icon-switch mr-2"></span>Logout</div>
       </div>
     </li>
   </ul>
 </nav>
 
-<div class="bg-white position-fixed z-nav edit-game-container mt-3" *ngIf="showGameBroadcast">
-  <h4 class="m-2 bg-grey">Tell people what you are playing</h4>
+<div class="bg-white position-fixed z-nav edit-game-container rounded" *ngIf="showGameBroadcast">
+  <h4 class="p-2 bg-theme text-white">Tell people what you are playing <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); showGameBroadcast = false"></span></h4>
+  <hr class="m-0">
   <form [formGroup]="nowplayingForm" (ngSubmit)="saveNowPlaying()" action="" method="POST">
     <div class="m-3">
       <div class="row">
@@ -105,11 +107,11 @@
           What are you playing today? <span class="text-danger">*</span>
 
           <sh-suggestions [icon]="'search'"
-          [placeholder]="'Call of Duty'"
-          (inputChanged)="searchGame($event)" [template]="gameTemplate" #gameSuggestComp></sh-suggestions>
+          [placeholder]="'Type a game name...'"
+          (inputChanged)="searchGame($event)" [inProgress]="searchingGame" [template]="gameTemplate" #gameSuggestComp></sh-suggestions>
                 
           <ng-template class="border-grey bg-white border-grey" #gameTemplate>
-            <div class="text-truncate hover-bg-grey p-2 cursor-pointer" *ngFor="let game of gameSuggestions" (click)="gameSelect(game)">{{ game.name }}</div>
+            <div class="text-truncate hover-bg-grey p-2 cursor-pointer" *ngFor="let game of gameSuggestions" (click)="gameSelect(game)">{{ game.label }}</div>
         </ng-template>
           <!-- <input type="text" formControlName="game" class="form form-control" placeholder="Type and Select a game" /> -->
 
@@ -148,11 +150,18 @@
       </div>
 
       <div class="row">
-        <div class="col-6">
-          <select class="form form-control"  formControlName="console">
-            <option value=''>Select a gaming console</option>
-            <option [value]="console.value" *ngFor="let console of consoles">{{ console.label}}</option>
-          </select>
+        <div class="col-6 position-relative">
+          <div (click)="showConsoleList = !showConsoleList">
+            <input type="text" class="form form-control d-inline-block bg-white" placeholder="Select a gaming console (optional)" disabled formControlName="console" style="width: calc(100% - 3rem);" formControlName="console" />
+            <div class="btn btn-default d-inline-block">
+              <div style="transform: rotate(90deg);"><span class="iconset icon-chevron-right"></span></div></div>
+          </div>
+          <div class="bg-white position-absolute z-nav w-100" style="max-height: 40vh; overflow:auto;" *ngIf="showConsoleList">
+            <div class="p-2 hover-bg-grey cursor-pointer" *ngFor="let console of consoles" (click)="selectConsole(console)"> 
+              <h5><span class="iconset icon-{{console.icon}}"></span> {{console.id | gameGenre: true}}
+              </h5>
+              </div>
+          </div>
         </div>
 
         <div class="col-6">
@@ -160,10 +169,10 @@
         </div>
       </div>
 
-      <div class="row"><div class="col-12"><input type="checkbox" id="haveroomid" formControlName="hasPrivateRoom"> &nbsp;<label for="haveroomid">I have a personal Room ID / Server IP</label>
+      <div class="row"><div class="col-12"><input type="checkbox" id="haveroomid" formControlName="hasPrivateRoom"> &nbsp;<label for="haveroomid">I have a personal Room ID / Server IP <span class="text-secondary font-italic">multiplayer / co-op</span></label>
       </div></div>
 
-      <div class="row mt-1" *ngIf="nowplayingForm.get('hasPrivateRoom').value">
+      <div class="row mt-1" *ngIf="nowplayingForm.get('hasPrivateRoom')?.value">
         <div class="col-6">
           <input type="text" class="form form-control" formControlName="roomid" placeholder="Room ID / 10.10.652.36" />
         </div>
@@ -175,9 +184,9 @@
       </div>
 
 
-      <div class="m-1">
-          <button type="submit" class="btn bg-theme text-white float-right w-25 mb-1">Broadcast</button>
-          <button class="btn float-right w-25 mb-1" (click)="closeOverlay(); showGameBroadcast = false">Cancel</button>
+      <div class="">
+        <button type="submit" class="btn bg-theme text-white float-right w-25" style="margin-right: -1rem; border-radius: 0;" >Save & Broadcast</button>
+        <button class="btn float-right w-25 border-grey" (click)="closeOverlay(); showGameBroadcast = false">Cancel</button>
       </div>
     </div>
   </form>

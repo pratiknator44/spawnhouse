@@ -11,9 +11,7 @@
 }
 
 .profile-media-container {
-    // margin-top: -11px;
-    width: 75%;
-    margin-left: 12.5%;
+    // height: 22.22%;
 }
 
 .cover-picture {
@@ -23,7 +21,8 @@
 
 .cover-picture > img {
     width: 100%;
-    height: 100%;
+    height: auto;
+    max-width: 100vw;
 }
 
 .user-dp-info {
@@ -33,7 +32,7 @@
 .dp-size {
     height: 9rem; width: 9rem;
     border-radius: 50%;
-    background-color: grey;
+    background-color: #06C;
     overflow: hidden;
     // background-image: url('./goku.jpg');
     background-size: contain;
@@ -151,5 +150,19 @@
 .message-add-container {
     height: 3rem;
     width: 20rem;
-    bottom: 0; right: 0;
+    bottom: 1rem; right: 0;
+}
+
+.font-2rem {
+    font-size: 2rem;
+}
+.t-0-5rem {
+    top: 0.5rem;
+}
+.animate-width {
+    animation: anim-width-auto 0.25s forwards linear;
+}
+@keyframes anim-width-auto {
+    0% { width: 0px;}
+    100% {width: 7rem;}
 }

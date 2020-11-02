@@ -1,0 +1,17 @@
+export enum GameConsoleEnum {
+    ps3 = 'PlayStation 3',
+    ps4 = 'PlayStation 4',
+    ps5 = 'PlayStation 5',
+    xb360 = 'XBOX 360',
+    xb1 = 'XBOX One',
+    xbx = 'XBOX Extreme',
+    xbsx17 = 'XBOX Series X',
+    xbsx20 = 'XBOX Series X (2020)',
+    m = 'Android',
+    wi = 'Nintendo Wii',
+    pc = 'PC',
+    ios = 'iOS',
+    mac = 'Mac',
+    wii = 'Wii',
+    ot = 'Other',
+}

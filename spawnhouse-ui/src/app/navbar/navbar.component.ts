@@ -11,6 +11,8 @@ import { HttpClient } from '@angular/common/http';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SuggestionsComponent } from '../suggestions/suggestions.component';
+import { FloatNotificationService } from 'src/assets/services/float-notification.service';
+import { GameGenrePipe } from 'src/assets/pipes/gamegenre.pipe';
 
 @Component({
   selector: 'navbar',
@@ -27,6 +29,7 @@ export class NavbarComponent implements OnInit {
   dp: any;
   userSearch = '';
   user;
+  searchingGame: boolean;
   showUserOptions: boolean;
   dpSubject = new Subject<any>();
   dpObservale;
@@ -34,17 +37,30 @@ export class NavbarComponent implements OnInit {
   noUserFound: boolean;
   showUpdateOptions = false;
   showGameBroadcast = false;
-  @ViewChild('gameSuggestComp') gameSuggestComp: SuggestionsComponent;
+  showConsoleList = false;
+  consolePipe;
+  selectedConsole: string;
   consoles = [
-    { label : 'PC', value: 'pc'},
-    { label : 'Phone', value: 'phone'},
-    { label : 'PlayStation', value: 'ps'},
-    { label : 'Wii', value: 'wii'},
-    { label : 'XBOX', value: 'xbox'},
-    { label : 'Other', value: 'other'},
+    {icon: 'android', id: 'm'},
+    {icon: 'windows8', id: 'pc'},
+    {icon: 'playstation3', id: 'ps3' },
+    {icon: 'playstation4', id: 'ps4' },
+    {icon: 'playstation5', id: 'ps5' },
+    {icon: 'xbox', id: 'xb360' },
+    {icon: 'xbox', id: 'xb1' },
+    {icon: 'xbox', id: 'xbx' },
+    {icon: 'xbox', id: 'xbsx17' },
+    {icon: 'xbox', id: 'xbsx20' },
+    {icon: 'wii', id: 'wii' },
+    {icon: 'appleinc', id: 'mac' },
+    {icon: 'appleinc', id: 'ios' },
+    {icon: '', id: 'ot'},
   ];
+  
   nowplayingForm: FormGroup;
   @Input() imageUploadMode: string;
+  @ViewChild('gameSuggestComp') gameSuggestComp: SuggestionsComponent;
+
   
   @Output() onPicUpdate = new EventEmitter(); 
   constructor(private _storageService: StorageService,
@@ -52,8 +68,9 @@ export class NavbarComponent implements OnInit {
     private _dom: DomSanitizer,
     private _router: Router,
     private _navbarService: NavbarService,
+    private _notifService: FloatNotificationService,
     private _overlayService: OverlayService,
-    private _http: HttpClient ) { }
+    private _http: HttpClient,) { }
 
   ngOnInit(): void {
     this.options = [
@@ -75,14 +92,26 @@ export class NavbarComponent implements OnInit {
     this._overlayService.closeSubject.asObservable().subscribe( closeOptions => {
       this.showUserOptions = false; this.showSuggestions = false; this.showUpdateOptions = false;
     });
+
+    this._navbarService.showOption.asObservable().subscribe( option => {
+      if(option === 'gamebroadcast') {
+        this.gameBroadcast();
+      }
+    });
+
+    setTimeout(() => {
+      this._navbarService.refreshUser.asObservable().subscribe( data => {
+        this.refreshUserVar();
+    });
+    }, 3000);
   }
 
   update(event) {
-    console.log('event = ', event);
+    // console.log('event = ', event);
   }
 
   searchThis(event) {
-    console.log(event);
+    // console.log(event);
     this.searchSuggestions = [];
     this.userSearch = event;
     if(this.userSearch.length < 3) {
@@ -93,26 +122,31 @@ export class NavbarComponent implements OnInit {
     this.showSuggestions = true;
     this.searchSuggestions = [];
     this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
-
-    setTimeout( () => {
-        this._http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER+'/'+this.userSearch).subscribe( res => {
-          console.log(res);
-          this.searchSuggestions = res['users'];
-          if(this.searchSuggestions.length === 0){
-            this.noUserFound = true;
-          }
+    
+    this._http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER+'/'+this.userSearch).subscribe( res => {
+      if(res['users'].length > 0) {
+        let userid = [];
+        res['users'].forEach( user => {
+          userid.push(user._id);
         });
-    }, 2000);
+      }
+      this.searchSuggestions = res['users'];
+      if(this.searchSuggestions.length === 0){
+        this.noUserFound = true;
+      }
+    });
   }
 
   logout() {
-    this._storageService.deleteSessionData('sh_auth_token');
+    this._storageService.reset();
+    // this._storageService.deleteSessionData('sh_auth_token');
+    // this._storageService.deleteCurrentData('user');
     this._router.navigate(['./login']);
   }
 
   getDp() {
     this._api.getPhotos('dp').subscribe( image => {
-      console.log("get Dp called ", image);
+      // console.log("get Dp called ", image);
 
       // if image size is less than 03 bytes
       if(image.size < 30) {
@@ -126,7 +160,7 @@ export class NavbarComponent implements OnInit {
         this._storageService.dpLink = this.dp;
         this.onPicUpdate.emit({type: 'dp', src: this.dp});
         this._navbarService.dpUpdated.next({type: 'dp', src: this.dp});
-        console.log("dp emitted ", this.dp);
+        // console.log("dp emitted ", this.dp);
       }, false);
       if (image) {
          reader.readAsDataURL(image);
@@ -157,6 +191,7 @@ export class NavbarComponent implements OnInit {
 
   gameBroadcast() {
     this.showGameBroadcast = !this.showGameBroadcast;
+    this.gameSuggestions = [];
     if(this.showGameBroadcast) {
       
       this.nowplayingForm = new FormGroup({
@@ -183,6 +218,19 @@ export class NavbarComponent implements OnInit {
 
   saveNowPlaying() {
     console.log(this.nowplayingForm.value);
+    this.showGameBroadcast = false;
+    this.closeOverlay();
+    this._notifService.config.next({text: 'Saving and broadcasting', icon: 'users'});
+    this._notifService.progress.next(null);
+    this._notifService.closeOn.next(true); // close notification
+
+    if(this.nowplayingForm.get('console').value.length > 0) {
+      this.nowplayingForm.patchValue({
+        console: this.selectedConsole
+      });
+      this.showConsoleList = false;
+    }
+
     if(!this.nowplayingForm.get('hasPrivateRoom').value) {
       this.nowplayingForm.removeControl('roomid');
       this.nowplayingForm.removeControl('password');
@@ -190,8 +238,12 @@ export class NavbarComponent implements OnInit {
     }
     this.nowplayingForm.removeControl('hasPrivateRoom');
     this._http.post(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING, this.nowplayingForm.value).subscribe(result => {
-      console.log(result);
-      // this.showGameBroadcast = false;
+      // console.log(result);
+      this._notifService.closeOn.next(false); // close notification
+      this.showGameBroadcast = false;
+      setTimeout(() => {
+        this._api.getNowPlaying();
+      },500);
     });
   }
 
@@ -200,21 +252,43 @@ export class NavbarComponent implements OnInit {
   }
 
   gameSuggestions = [];
+
   searchGame(searchword) {
-    console.log('game searched ', searchword);
+    this.searchingGame = true;
     if(searchword < 2) {
       return;
     }
 
-    this._http.get(APIvars.APIdomain+'/'+APIvars.GET_GAMELIST+'/'+searchword).subscribe(res => {
-      this.gameSuggestions = res['gamelist'];
+    this._http.get(APIvars.APIdomain+'/'+APIvars.GET_GAMEDATA+'/'+searchword).subscribe(res => {
+      this.gameSuggestions = res['gamedata'];
+      this.searchingGame = false;
     });
   }
 
   gameSelect(game) {
-    this.gameSuggestComp.searchInput = game.name;
-    this.nowplayingForm.patchValue({game: game.name});
+    this.gameSuggestComp.searchInput = game.label;
+    this.nowplayingForm.patchValue({game: game.label});
     this.gameSuggestions = [];
   }
 
+  routeTo(place) {
+    this._router.navigate(['./'+place]);
+  }
+
+  refreshUserVar() {
+    this.user = JSON.parse(sessionStorage.getItem('user'));
+  }
+
+  
+  gotoProfile(suggestion){
+    this._router.navigate(['/', suggestion._id]);
+  }
+
+  selectConsole(console) {
+    this.nowplayingForm.patchValue({
+      console: new GameGenrePipe().transform(console.id,true)
+    });
+    this.selectedConsole = console.id;
+    this.showConsoleList = false;
+  }
 }

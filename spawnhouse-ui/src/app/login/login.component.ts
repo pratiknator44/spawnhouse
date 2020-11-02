@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   signupForm: FormGroup;
   showForgotPassword: boolean;
+  loginError: String = '';
 
   constructor(private _metaService: Meta,
     private _renderer: Renderer2,
@@ -102,13 +103,17 @@ export class LoginComponent implements OnInit {
   }
 
   attemptSignUp() {
+    this.loginError = '';
     if(this.signupForm.get('fname').value.trim() !== '' && this.signupForm.get('lname').value.trim() !== ''){
       this.signupForm.patchValue({
         signedVia: 'mail'
       });
       console.log(this.signupForm.value);
       this._http.post(APIvars.APIdomain+'/'+APIvars.APIsignup, this.signupForm.value).subscribe( data => {
+        console.log('data     ', data);
         this.onLoginSuccess(data);
+      }, error => {
+        this.loginError = error['error']['message'];
       });
     }
   }
@@ -119,7 +124,7 @@ export class LoginComponent implements OnInit {
     this._storageService.currentUser = data['user'];
     this._storageService.setSessionData('user', JSON.stringify(data['user']));
     this._navService.isLoggedIn.next(true); 
-    this._router.navigate(['/profile']);
+    this._router.navigate(['/home']);
   }
 
   forgotPassword() {

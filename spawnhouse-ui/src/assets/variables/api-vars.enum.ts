@@ -12,11 +12,22 @@ export enum APIvars {
     GET_HASHTAGS  = 'mentions',
     GET_DP = 'resources/getdp',
     SET_DP = 'resources/setdp',
+    GET_DP_OF_USER = 'resources/dpofuser',
+    GET_COVER_OF_USER = 'resources/coverofuser',
     REMOVE_DP = 'resources/dp',
     GET_COVER = 'resources/getcover',
     SET_COVER = 'resources/setcover',
     REMOVE_COVER = 'resources/cover',
     SEARCH_USER = 'search/user',
     NOW_PLAYING = 'nowplaying',
-    GET_GAMELIST = 'nowplaying/gamelist'
+    REMOVE_NOW_PLAYING = 'nowplaying/remove',
+    GET_GAMELIST = 'nowplaying/gamelist',
+    GET_GAMEDATA = 'gamedata/getGame',
+    SET_USER_GAMEDATA = 'gamedata/saveusergamedata',
+    GET_USERDATA = 'signup/getuserdata',
+    SET_USERDATA = 'signup/setuserdata',
+    GAMEDATA = 'gamedata',
+    GET_FOLLOW_STATUS_OF = 'resources/getfollowstatus',
+    SET_FOLLOWING = 'resources/setfollowing',
+    GET_FOLLOWDATA = 'resources/getfollowdata/'
 }

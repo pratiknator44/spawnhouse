@@ -1,26 +1,25 @@
-<textarea class="form form-control" placeholder="Hey, what's happening today ?"></textarea>
-<label class="text-secondary font-italic">or add </label>
+<!-- <textarea class="form form-control" style="height: 10rem;" cols="10" placeholder="Hey, what's happening today ?"></textarea> -->
+<!-- <label class="text-secondary font-italic">or add </label> -->
+<div class="position-relative">
+    <div class="m-2 border-none border-grey position-relative" style="height: 8rem; border-bottom: solid 1px #CCC !important;" contenteditable="true"  data-text="Write something..." (input)="updateText2($event);" (keydown)="getText($event)" #update>
+    </div>
+</div>
+<div *ngIf="isSuggestionActive" class="bg-white std-box-shadow" style="width: fit-content">
+    <label *ngIf="userSuggestions.length === 0"> type to mention someone</label>
+    <div class="p-2 hover-bg-grey cursor-pointer" (click)="appendUser(user)" *ngFor="let user of userSuggestions">
+        {{user.fname+' '+user.lname}} <label class="text-secondary font-italic" *ngIf="user?.username"> {{user?.username}} </label>
+    </div>
+</div>
+
 <div class="d-inline-block cursor-pointer media-container">
     <span class="m-1 pt-1 d-inline-block">
         <h4 class="ml-2 iconset icon-image"></h4><h6>Image</h6>
         <input type="file" class="d-none position-absolute" #mediafile />
-    </span>
-    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-video-camera"></h4> <h6>Video</h6></span>
-    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-music"></h4> <h6>Voide Note</h6></span>
-    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-location"></h4> <h6>Location</h6></span>
-    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-user"></h4> <h6>Mood</h6></span>
+    </span> 
+    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-video-camera"></h4> <h6>Moment</h6></span>
+    <!-- <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-music"></h4> <h6>Voide Note</h6></span> -->
+    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-location2"></h4> <h6>Location</h6></span>
+    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-smile2"></h4> <h6>Feeling</h6></span>
+    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-game-controller"></h4> <h6>Playing</h6></span>
 </div>
 <div class="btn btn-primary d-block w-25 float-right mt-1 bg-theme">Post</div>
-
-
-
-    <!-- <div style="border: solid 2px #CCC;" class="col-10">
-        <div class="editor border-none text-area position-relative" contenteditable="true" (keyup)="getText($event)" placeholder="type something...." spellcheck="false" #textUpdate></div>
-        <div class="position-relative d-inline-block suggestions" *ngIf="isSuggestionActive && mentionState">
-            <div class="cursor-pointer p-1" *ngFor="let hashtag of hashtagSuggestions" (click)="appendText(hashtag.tagname);">
-            #{{ hashtag.tagname }}</div>
-        </div> 
-    </div>-->
-<!-- <div class="row">
-    <button class="btn btn-primary w-100">Post</button>
-</div> -->

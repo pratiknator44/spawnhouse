@@ -1,6 +1,5 @@
-<div class="w-75 z-nav" style="margin-left: 12.5%; z-index: 9;">
-    <navbar *ngIf="isLoggedIn"></navbar>
-
+<div class="z-nav position-fixed" style="z-index: 9; top:0;">
+    <navbar *ngIf="isLoggedIn" #navbar></navbar>
 </div>
 
 <sh-overlay 
@@ -13,6 +12,9 @@
 <sh-float-notification class="position-fixed r-0 float-size row mr-3 z-nav"
 *ngIf="isNotifVisible"
 [ngClass]="{'float-in': isNotifVisible}"
+[config]="floatNotifConfig"
 ></sh-float-notification>
 
+<div class="mt-0" [ngClass]="{'mt-3rem': isLoggedIn}">
 <router-outlet></router-outlet>
+</div>

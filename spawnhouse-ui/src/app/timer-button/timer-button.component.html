@@ -1,0 +1,9 @@
+<!-- <div class="bg-primary text-white text-center container position-relative cursor-pointer">
+    <div class="h-100 position-absolute" [ngStyle]="{'width': currentWidth+'%'}"></div>
+    {{text}}
+</div> -->
+
+<div class="container d-inline-block position-relative overflow-none" (click)="toggled();">
+    <div class="w-100 position-absolute rounded slider" [ngClass]="{'bg-on': isOn}"></div>
+    <div class="h-100 position-absolute cursor-pointer" [ngClass]="{'lotAnim': isOn, 'rtolAnim': !isOn}"></div>
+</div>

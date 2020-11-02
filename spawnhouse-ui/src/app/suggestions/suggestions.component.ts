@@ -10,6 +10,7 @@ export class SuggestionsComponent implements OnInit {
   @Input() placeholder: string;
   @Input() icon: string;
   @Input() template: TemplateRef<any>
+  @Input() inProgress: boolean;
   @Output() inputChanged = new EventEmitter();
   @Output() selected = new EventEmitter();
   searchInput: string ='';
@@ -22,5 +23,4 @@ export class SuggestionsComponent implements OnInit {
     console.log('emitting  ', this.searchInput);
     this.inputChanged.emit(this.searchInput);
   }
-
 }

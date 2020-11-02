@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { APIvars } from '../variables/api-vars.enum';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
+import { IUser } from '../interfaces/user.interface';
+import { StorageService } from './storage.service';
 @Injectable()
 export class APIservice {
 
@@ -11,10 +13,9 @@ export class APIservice {
   coverUrl: any;
   coverPictureSubject = new Subject<any>();
   coverPictureObservable;
-  // dpSubject = new Subject<any>();
-  // dpObservale;
+  user: IUser;
 
-  constructor(private _http: HttpClient, private _dom: DomSanitizer) {}
+  constructor(private _http: HttpClient, private _dom: DomSanitizer, private _storageService: StorageService) {}
 
   getPhotos(type?) {
     if(type === 'dp') {
@@ -27,7 +28,7 @@ export class APIservice {
   
   getCover() {      // get cover picture
     this.getPhotos('cover').subscribe( image => {
-      console.log("get cover called ", image);
+      // console.log("get cover called ", image);
 
       // remove blank img tag border if size is less than 30 bytes
       if(image.size < 30) {
@@ -48,7 +49,15 @@ export class APIservice {
       if (image) {
          reader.readAsDataURL(image);
       }
-      console.log("dp url = ");
+    });
+  }
+
+      
+  getNowPlaying() {
+    this._http.get(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING).subscribe( np => {
+      // console.log('***now playing', np);
+      this._storageService.nowplaying = np['np'][0];
+      this._storageService.currentUser['nowplaying'] = np['np'][0];
     });
   }
 }

@@ -5,8 +5,8 @@ export class StorageService {
     currentData = {};
     currentUser: any;
     dpLink: any
+    nowplaying: any;
     constructor() {}
-    
     setSessionData(key, value) {
         sessionStorage.setItem(key, value);
     }
@@ -43,6 +43,11 @@ export class StorageService {
     setUserFromSession() {
         if(sessionStorage.getItem('user'))
         this.currentUser = JSON.parse(sessionStorage.getItem('user'));
+    }
+
+    reset() {
+        localStorage.clear();
+        sessionStorage.clear();
     }
 
 }
