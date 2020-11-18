@@ -11,6 +11,7 @@ export class SuggestionsComponent implements OnInit {
   @Input() icon: string;
   @Input() template: TemplateRef<any>
   @Input() inProgress: boolean;
+  @Input() showSuggestions: boolean;
   @Output() inputChanged = new EventEmitter();
   @Output() selected = new EventEmitter();
   searchInput: string ='';

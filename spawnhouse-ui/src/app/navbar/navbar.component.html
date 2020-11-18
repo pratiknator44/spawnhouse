@@ -99,7 +99,6 @@
 
 <div class="bg-white position-fixed z-nav edit-game-container rounded" *ngIf="showGameBroadcast">
   <h4 class="p-2 bg-theme text-white">Tell people what you are playing <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); showGameBroadcast = false"></span></h4>
-  <hr class="m-0">
   <form [formGroup]="nowplayingForm" (ngSubmit)="saveNowPlaying()" action="" method="POST">
     <div class="m-3">
       <div class="row">

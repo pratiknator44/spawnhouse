@@ -12,6 +12,8 @@ export class APIservice {
   dpUrl: any; // contains the local address of the current user dp
   coverUrl: any;
   coverPictureSubject = new Subject<any>();
+  dpObservable;
+  dpSubject = new Subject<any>();
   coverPictureObservable;
   user: IUser;
 
@@ -28,9 +30,7 @@ export class APIservice {
   
   getCover() {      // get cover picture
     this.getPhotos('cover').subscribe( image => {
-      // console.log("get cover called ", image);
 
-      // remove blank img tag border if size is less than 30 bytes
       if(image.size < 30) {
         this.coverPictureSubject.next( {coverurl: null});
         this.coverPictureObservable = this.coverPictureSubject.asObservable();
@@ -44,6 +44,30 @@ export class APIservice {
         // console.log("dp emitted");
         this.coverPictureSubject.next({ coverurl: this.coverUrl});
         this.coverPictureObservable = this.coverPictureSubject.asObservable();
+      }, false);
+  
+      if (image) {
+         reader.readAsDataURL(image);
+      }
+    });
+  }
+
+  getDp() {
+    this.getPhotos('dp').subscribe( image => {
+
+      if(image.size < 30) {
+        this.dpSubject.next( {dpUrl: null});
+        this.dpObservable = this.dpSubject.asObservable();
+        return;
+      }
+      // convert raw image to Blob object
+      let reader = new FileReader();
+      reader.addEventListener('load', () => {
+        this.dpUrl = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+        // this.onPicUpdate.emit({type: 'dp', src: this.dp});
+        // console.log("dp emitted");
+        this.dpSubject.next({ dpUrl: this.dpUrl});
+        this.dpObservable = this.dpSubject.asObservable();
       }, false);
   
       if (image) {

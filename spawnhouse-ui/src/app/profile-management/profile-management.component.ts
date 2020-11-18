@@ -20,8 +20,8 @@ export class ProfileManagementComponent implements OnInit {
   saveText= {videogame: 'Save', personal: 'Save'};
   genres = [
     {id: 'action', genre: 'Action', example: 'PUBG, Call of Duty, Counter-Strike', checked: ''},
-    {id: 'actionadv', genre: 'Action Adventure', example: '(GTA, Legend Of Zelda, Metal Gear, Assassins\' Creed', checked: ''},
-    {id: 'race', genre: 'Racing', example: 'Need for Speed, Asphault, Moto GP, Manx TT', checked: ''},
+    {id: 'actionadv', genre: 'Action Adventure', example: 'GTA, Legend Of Zelda, Metal Gear, Assassins\' Creed', checked: ''},
+    {id: 'race', genre: 'Racing', example: 'Need for Speed, Asphault, Moto GP, Midtown Madness', checked: ''},
     {id: 'adv', genre: 'Adventure', example: 'Day of the Tentacle, Indiana Jones, Broken Sword: Shadow of Templars', checked: ''},
     {id: 'rpg', genre: 'RPGs (Role Playing Games)', example: 'Witcher, Skyrim, Dark Souls, Mass Effect, Fall', checked: ''},
     {id: 'sim', genre: 'Simulation', example: 'Flight Simulator, X-Planes', checked: ''},

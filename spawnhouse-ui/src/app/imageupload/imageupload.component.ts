@@ -17,7 +17,7 @@ export class ImageuploadComponent implements OnInit {
   temp: any;
   loadingFailed: string;
   @ViewChild('newdpOrCover') newdpOrCover: ElementRef;
-  @ViewChild('finalimage') finalImage: ElementRef;
+  // @ViewChild('finalimage') finalImage: ElementRef;
 
   @Input() imageSchema: IPictureUploadSchema;
   @Input() mode: string = 'dp';

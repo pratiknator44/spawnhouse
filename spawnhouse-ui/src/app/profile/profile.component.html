@@ -4,7 +4,7 @@
         <div class="position-absolute float-right text-white m-2 cursor-pointer edit-cover-photo" (click)="setupImageUpload(false)" *ngIf="isUserProfile">Edit</div>
         <div class="w-100 h-100 bg-theme text-center" *ngIf="!usercover">
             <div style="transform: rotate(-30deg);">
-                <span class="iconset icon-game-controller" style="color:#06C; font-size: 18rem;top: -2rem;"></span></div>
+                <span class="iconset icon-game-controller" style="color:#06C; font-size: 18rem; top: -2rem;"></span></div>
             </div>
         <img [src]="usercover" *ngIf="usercover" />
         <div class="user-dp-info position-absolute cursor-pointer d-flex">
@@ -25,9 +25,9 @@
             <!-- <div class="btn bg-white d-inline m-1 border-grey"><span class="iconset icon-bubbles"></span> Message</div>
             <div class="btn bg-white d-inline m-1 border-grey"><span class="iconset icon-user-plus"></span>Follow</div> -->
             
-            <div class="btn btn-default cursor-pointer bg-white d-inline m-1 border-grey float-right mt-3" *ngIf="!isUserProfile"><span class="iconset icon-bubbles"></span> Message</div>
+            <div class="btn btn-default cursor-pointer bg-white d-inline m-1 border-grey float-right mt-3" *ngIf="!isUserProfile"><span class="iconset icon-bubbles3"></span> Message</div>
 
-            <div class="btn cursor-pointer d-inline m-1 border-grey float-right mt-3" [ngClass]="{'btn-danger': followStatus === 'Unfollow', 'bg-white': followStatus !== 'Unfollow'}" *ngIf="!isUserProfile" (click)="setFollowStatus()"><span class="iconset" [ngClass]="{'icon-user-plus': followStatus==='Follow', 'icon-user-minus': followStatus==='Unfollow'}"></span> {{ followStatus }}</div>
+            <div class="btn cursor-pointer d-inline m-1 border-grey float-right mt-3" [ngClass]="{'btn-danger': followStatus === 'Unfollow', 'bg-white': followStatus !== 'Unfollow'}" *ngIf="!isUserProfile" (click)="setFollowStatus()"><span class="iconset" [ngClass]="{'icon-user-plus': followStatus==='+Follow', 'icon-user-minus': followStatus==='Unfollow'}"></span> {{ followStatus }}</div>
             
             <div class="btn btn-default cursor-pointer bg-white d-inline m-1 border-grey float-right mt-3"  *ngIf="isUserProfile" (click)="routeToEditProfile()"><span class="iconset icon-edit-pencil"></span> Update Profile</div>            
         </div>
@@ -64,18 +64,18 @@
                     <span *ngIf="user?.nowplaying?.roomid">Room ID: </span><label class="text-secondary"> {{ user?.nowplaying?.roomid }}</label>
                 <div *ngIf="user?.nowplaying?.password">
                     Password:
-                    <label class="font-italic" *ngIf="!user?.nowplaying?.password && user?.nowplaying?.roomid">open to all</label> <a class="text-theme cursor-pointer" *ngIf="user?.nowplaying?.exposepassword">request password</a>
+                    <label class="font-italic" *ngIf="!user?.nowplaying?.password && user?.nowplaying?.roomid">open to all</label> <a class="text-theme cursor-pointer" *ngIf="user?.nowplaying?.exposepassword">
+                        <span class="iconset icon-lock text-warning"></span>request password</a>
                     <label *ngIf="!user?.nowplaying?.exposepassword">{{ user?.nowplaying?.password }}</label>
                     </div>
                 </div>
 
                 <div>
-                    <span class="float-right overflow-hidden" style="height: 1.5rem;" [ngClass]="{'animate-width': showDeleteNowPlaying}" *ngIf="showDeleteNowPlaying">
-                        <span>Sure? <span class="badge badge-danger cursor-pointer" (click)="removeNowPlaying()">Yes</span><span class="text-danger badge cursor-pointer" (click)="showDeleteNowPlaying = false">No</span></span>
+                    <span class="float-right overflow-hidden" style="height: 1.5rem;" [ngClass]="{'animate-width': nowPlayingFlags.showDeleteNowPlaying}" *ngIf="nowPlayingFlags.showDeleteNowPlaying">
+                        <span>Sure? <span class="badge badge-danger cursor-pointer" (click)="showAddToFavWarning()">Yes</span><span class="text-danger badge cursor-pointer" (click)="nowPlayingFlags.showDeleteNowPlaying = false">No</span></span>
                     </span>
-                    <span class="ml-3 d-inline-block iconset icon-bin float-right text-danger cursor-pointer" *ngIf="isUserProfile"  title="Remove, not playing this anymore" (click)="showDeleteNowPlaying = true">
-                    </span>
-                    
+                    <span class="ml-3 d-inline-block iconset icon-bin float-right text-danger cursor-pointer" *ngIf="isUserProfile"  title="Remove, not playing this anymore" (click)="nowPlayingFlags.showDeleteNowPlaying = true">
+                    </span>                    
                 </div>
 
                 <!-- <hr *ngIf="user?.nowplaying"> -->
@@ -88,8 +88,12 @@
                 <div *ngIf="user?.gamedata?.fav?.length > 0">
                     <div style="font-size: 1.5rem;" class="d-inline-block"><span class="iconset icon-favorite text-secondary mr-1"></span></div>
                     <h4 class="text-secondary d-inline-block">Favourites</h4>
-                    <div class="text-theme cursor-pointer" style="word-wrap: break-word;" [title]="'See who all are playing '+fav.label " [ngClass]="{'d-inline-block mr-2': fav.value === ''}" *ngFor="let fav of user?.gamedata?.fav | slice: 0: 5"><span *ngIf="fav.value !== ''" class="iconset icon-favorite"></span>{{ fav.label }} <span *ngIf="fav.value === ''" class="text-black">, </span></div>
-                    <label *ngIf="user?.gamedata?.fav?.length > 5"> +{{ user?.gamedata?.fav?.length - 5}} more</label>
+                    <div class="text-theme cur badgesor-pointer" style="word-wrap: break-word;" [title]="'See who all are playing '+fav.label " [ngClass]="{'d-inline-block mr-2': fav.value === ''}" *ngFor="let fav of tempFavGamesArray">
+                        <span *ngIf="fav.value !== ''" class="iconset icon-favorite"></span>
+                        {{ fav.label }}
+                        <span *ngIf="fav.value === ''" class="text-black">,</span>
+                    </div>
+                    <label class="text-theme hover-underline cursor-pointer badge" *ngIf="user?.gamedata?.fav?.length > 5 && tempFavGamesArray.length === 5" (click)="showAllFavourites();"> +{{ user?.gamedata?.fav?.length - 5}} more</label>
                 </div>
                 
                 <div *ngIf="user?.gamedata?.genres?.length > 0" class="mt-3">
@@ -102,12 +106,12 @@
                 </div>
             </div>
 
-            <hr *ngIf="user?.nowplaying || user?.gamedata">
-            <!-- <span class="icon-pencil iconset text-secondary float-right" *ngIf="isUserProfile"></span> -->
-            <label>{{user?.bio}}</label>
-            <label class="text-primary hover-underline cursor-pointer" (click)="gotoWebsite(user?.website)">{{user?.website}}</label>
-            
-            <label class="font-italic text-secondary mt-3">{{ user?.quote }}</label>
+            <div class="mt-3" *ngIf="user?.bio || user?.quote || user?.website">
+                <h4 class="text-secondary d-inline-block"><span class="iconset icon-user"></span>About</h4>
+                    <label>{{user?.bio}}</label>
+                    <div class="text-primary hover-underline cursor-pointer" (click)="gotoWebsite(user?.website)">{{user?.website}}</div>
+                    <label class="font-italic text-secondary mt-3">{{ user?.quote }}</label>
+            </div>
         </div>
         
         <hr *ngIf="user?.gamedata">
@@ -116,12 +120,17 @@
     <div style="background-color: red; width: 70%;" class="bg-white ml-1 std-box-shadow">
         <h1 class="text-secondary text-center mt-1">{{this.user?.followdata?.followerCount || 0}} Followers &nbsp; &nbsp; {{this.user?.followdata?.followingCount || 0}} Following</h1>
         <hr>
-    
         <sh-textbox></sh-textbox>
-
-
 </div>
 
-<div class="position-absolute w-100 mt-belownav" style="z-index: 2; top:0;" *ngIf="showImageUpload">
+<div class="position-fixed w-100 mt-belownav" style="z-index: 2; top:0;" *ngIf="showImageUpload">
     <sh-imageupload [imageSchema]="imageSchema" [isDisabled]="disableImageUpload" [mode]="uploadMode" (close)="setVisibilityImageOverlay(false)" (onImageRemove)="refreshImage()" (newsubmit)="submitNewImage($event)"></sh-imageupload>
+</div>
+
+<!-- confirm to remove now playing -->
+
+<div class="bg-white position-fixed z-nav edit-game-container w-25" *ngIf="nowPlayingFlags.showAddToFavs">
+    <h4 class="p-2 bg-theme text-white"> <span class="iconset icon-bin mr-1"></span>Remove Playing Data <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); nowPlayingFlags.showAddToFavs = false"></span></h4>
+    <div class="m-3 text-center">Would you like to add <div class="h6">{{user?.nowplaying?.game}}</div> in your favourites?</div>
+    <div class="mt-2 text-center"><div class="btn btn-default" (click)="removeNowPlaying()">No, just remove</div> <div class="btn bg-theme text-white" (click)="removeNowPlaying(true)">Yes, add it to <span class="iconset icon-favorite"></span></div></div>
 </div>

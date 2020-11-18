@@ -13,6 +13,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SuggestionsComponent } from '../suggestions/suggestions.component';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { GameGenrePipe } from 'src/assets/pipes/gamegenre.pipe';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'navbar',
@@ -70,7 +71,8 @@ export class NavbarComponent implements OnInit {
     private _navbarService: NavbarService,
     private _notifService: FloatNotificationService,
     private _overlayService: OverlayService,
-    private _http: HttpClient,) { }
+    private _http: HttpClient,
+    private _cookieService: CookieService) { }
 
   ngOnInit(): void {
     this.options = [
@@ -139,16 +141,14 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     this._storageService.reset();
-    // this._storageService.deleteSessionData('sh_auth_token');
-    // this._storageService.deleteCurrentData('user');
+    this._cookieService.deleteAll('');
     this._router.navigate(['./login']);
   }
 
   getDp() {
     this._api.getPhotos('dp').subscribe( image => {
-      // console.log("get Dp called ", image);
 
-      // if image size is less than 03 bytes
+      // if image size is less than 30 bytes
       if(image.size < 30) {
         this.onPicUpdate.emit({type: 'dp', src: null});
         return;
@@ -172,12 +172,12 @@ export class NavbarComponent implements OnInit {
   }
 
   userOptions() {
-    this.showUserOptions = !this.showUserOptions; this.showSuggestions = !this.showSuggestions;
-    if(this.showUserOptions) {
-      this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
-    } else {
+    this.showUserOptions = !this.showUserOptions;
+    this.showSuggestions = !this.showSuggestions;
+    this.showUserOptions ?
+      this._overlayService.configSubject.next({transparent: true, closeOnClick: true })
+      : 
       this._overlayService.closeSubject.next();
-    }
   }
 
   updateOptions() {
@@ -281,6 +281,7 @@ export class NavbarComponent implements OnInit {
 
   
   gotoProfile(suggestion){
+    this._overlayService.closeSubject.next();
     this._router.navigate(['/', suggestion._id]);
   }
 

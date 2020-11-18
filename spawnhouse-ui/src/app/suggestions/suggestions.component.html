@@ -4,11 +4,10 @@
 
     <div class="suggestions bg-white position-absolute z-nav">
         <ng-container [ngTemplateOutlet]="template"> </ng-container>
-
-        <!--default template-->
-        <!-- <div class="hover-bg-grey" (click)="selected.emit()"></div> -->
     </div>
-    <span *ngIf="icon" class="iconset bg-white border-grey pr-1 text-secondary" style="line-height: 1.5; border-left: none; border-top-right-radius: 5px;border-bottom-right-radius: 5px;">
+
+    <span *ngIf="icon" class="iconset bg-white border-grey pr-1 text-secondary"
+    style="line-height: 1.5; border-left: none; border-top-right-radius: 5px;border-bottom-right-radius: 5px;">
     <label class="icon-{{icon}} mt-1 m-0"></label>
     </span>
 </div>

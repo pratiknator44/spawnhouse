@@ -1,25 +1,73 @@
-<!-- <textarea class="form form-control" style="height: 10rem;" cols="10" placeholder="Hey, what's happening today ?"></textarea> -->
-<!-- <label class="text-secondary font-italic">or add </label> -->
-<div class="position-relative">
-    <div class="m-2 border-none border-grey position-relative" style="height: 8rem; border-bottom: solid 1px #CCC !important;" contenteditable="true"  data-text="Write something..." (input)="updateText2($event);" (keydown)="getText($event)" #update>
+<form [formGroup]="statusUpdateForm" (ngSubmit)="submitStatusUpdate()">
+    <div class="position-relative">
+        <div class="m-2 border-none border-grey position-relative" style="height: 8rem; border-bottom: solid 1px #CCC !important;" contenteditable="true"  data-text="Write something..." (input)="updateText2($event);" (keydown)="getText($event)" #update>
+        </div>
     </div>
-</div>
-<div *ngIf="isSuggestionActive" class="bg-white std-box-shadow" style="width: fit-content">
-    <label *ngIf="userSuggestions.length === 0"> type to mention someone</label>
-    <div class="p-2 hover-bg-grey cursor-pointer" (click)="appendUser(user)" *ngFor="let user of userSuggestions">
-        {{user.fname+' '+user.lname}} <label class="text-secondary font-italic" *ngIf="user?.username"> {{user?.username}} </label>
+    <div *ngIf="isSuggestionActive" class="bg-white std-box-shadow" style="width: fit-content">
+        <label *ngIf="userSuggestions.length === 0"> type to mention someone</label>
+        <div class="p-2 hover-bg-grey cursor-pointer" (click)="appendUser(user)" *ngFor="let user of userSuggestions">
+            {{user.fname+' '+user.lname}} <label class="text-secondary font-italic" *ngIf="user?.username"> {{user?.username}} </label>
+        </div>
     </div>
-</div>
 
-<div class="d-inline-block cursor-pointer media-container">
-    <span class="m-1 pt-1 d-inline-block">
-        <h4 class="ml-2 iconset icon-image"></h4><h6>Image</h6>
-        <input type="file" class="d-none position-absolute" #mediafile />
-    </span> 
-    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-video-camera"></h4> <h6>Moment</h6></span>
-    <!-- <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-music"></h4> <h6>Voide Note</h6></span> -->
-    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-location2"></h4> <h6>Location</h6></span>
-    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-smile2"></h4> <h6>Feeling</h6></span>
-    <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-game-controller"></h4> <h6>Playing</h6></span>
-</div>
-<div class="btn btn-primary d-block w-25 float-right mt-1 bg-theme">Post</div>
+    <!-- image upload -->
+    <div class="m-0 border-grey" *ngIf="imageFlags.showPreview">
+        <div class="row">
+            <div class="col-4 position-relative" *ngIf="imageFlags.showCropper" style="height: 8rem !important;">
+                <image-cropper 
+                    [imageChangedEvent]="imageChangedEvent"
+                    [maintainAspectRatio]="false"
+                    [resizeToWidth]="800"
+                    [format]="'jpg'"
+                    (imageCropped)="imageCropped($event)"
+                    (loadImageFailed)="loadImageFailed()">
+                </image-cropper>
+            </div>
+            <div class="col-4">
+                <img [src]="croppedImage" style="max-height: 8rem;"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="btn btn-default float-right" *ngIf="imageFlags.showCropper" (click)="imageFlags.ok = true; imageFlags.showCropper = false;">Finalize</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-inline-block cursor-pointer media-container">
+        <div class="audeince d-flex">
+            <span class="badge badge-default ml-2" [ngClass]="{'bg-theme text-white': statusUpdateForm.get('audience').value === aud.value}" *ngFor="let aud of audience" (click)="setAudience(aud.value)">
+                <span class="iconset icon-{{aud.icon}}"></span> {{aud.label}}
+            </span>
+        </div>
+        <span class="m-1 pt-1 d-inline-block" (click)="imageFlags.ok ? clearMedia() : mediafile.click();" [ngClass]="{'text-danger': croppedImage}">
+            <h6 class="ml-2 iconset icon-image" *ngIf="!imageFlags.ok"></h6><h6 *ngIf="!imageFlags.ok">Image</h6>
+            <h6 *ngIf="imageFlags.ok" class="d-inline"><span class="iconset icon-cross d-inline h6"></span>  Clear Image</h6>
+            <input type="file" class="position-absolute d-none" #mediafile (change)="fileChangeEvent($event);"  />
+        </span> 
+        <!-- <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-video-camera"></h4> <h6>Moment</h6></span> -->
+        <!-- <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-music"></h4> <h6>Voide Note</h6></span> -->
+        <span class="m-1 d-inline-block" (click)="getLocation()" [ngClass]="{'text-danger': statusUpdateForm.get('location').value}"><h6 class="ml-2 iconset icon-location2"></h6> <h6>Location</h6></span>
+        <!-- <span class="m-1 d-inline-block"><h4 class="ml-2 iconset icon-smile2"></h4> <h6>Feeling</h6></span> -->
+        <span class="m-1 d-inline-block position-relative" (click)="setupPlaying()">
+
+            <div class="d-flex">
+                <div class="d-flex" *ngIf="playingFlags.showTextbox">
+                    <input type="text" (keypress)="searchGame($event.target.value); playingFlags.showSuggestions = true;" *ngIf="playingFlags.showTextbox" />
+                    <div class="bg-white position-absolute border-grey w-100" style="top: 2rem;" *ngIf="playingFlags.showSuggestions">
+                        <div class="hover-bg-grey z-nav" *ngFor="let game of gameSuggestions" (click)="playingFlags.showTextbox = false; playingFlags.showSuggestions = false; playStatus = game.label">
+                            {{game.label}}
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="d-flex" [ngClass]="{'text-danger': playStatus !== 'Playing'}" (click)="playingFlags.showTextbox = !playingFlags.showTextbox; playingFlags.showSuggestions = false; playStatus = 'Playing'">
+                    <h4 class="ml-2 iconset icon-game-controller h6" style="transform: rotate(45deg);"></h4> <h6>
+                    {{ playStatus }}
+                    </h6>
+                </div>
+            </div>
+        </span>
+    </div>
+    <div class="btn btn-primary d-block w-25 float-right mt-1 bg-theme" type="submit">Post</div>
+</form>

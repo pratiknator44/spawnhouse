@@ -33,7 +33,8 @@ import { PipesModule } from './pipes.module';
         ImageCropperModule
     ],
     providers: [
-        NavbarService
+        NavbarService,
+        UserService
     ],
     exports: [
         CommonModule,

@@ -4,10 +4,39 @@
     format:('opentype');
 }
 
+.icon-wrench-left:before {
+  content: "\e920";
+}
+.icon-wrench-right:before {
+  content: "\e921";
+}
+.icon-star-outline .path1:before {
+  content: "\e91c";
+  color: rgb(0, 0, 0);
+}
+.icon-star-outline .path2:before {
+  content: "\e91e";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-star:before {
+  content: "\e91f";
+}
 .icon-sh:before {
   content: "\e900";
 }
-
+.icon-playstation5:before {
+  content: "\e91b";
+}
+.icon-player:before {
+  content: "\e919";
+}
+.icon-playstation4:before {
+  content: "\e917";
+}
+.icon-playstation3:before {
+  content: "\e918";
+}
 .icon-brave:before {
   content: "\e901";
 }
@@ -19,12 +48,6 @@
 }
 .icon-playstation:before {
   content: "\e904";
-}
-.icon-playstation4:before {
-  content: "\e917";
-}
-.icon-playstation3:before {
-  content: "\e918";
 }
 .icon-edit-pencil:before {
   content: "\e905";
@@ -51,6 +74,9 @@
   content: "\e90c";
 }
 .icon-paper-plane:before {
+  content: "\e90d";
+}
+.icon-send:before {
   content: "\e90d";
 }
 .icon-mode_comment:before {
@@ -101,6 +127,15 @@
 .icon-stopwatch:before {
   content: "\e952";
 }
+.icon-display:before {
+  content: "\e956";
+}
+.icon-mobile:before {
+  content: "\e958";
+}
+.icon-tv:before {
+  content: "\e95b";
+}
 .icon-bubble2:before {
   content: "\e96e";
 }
@@ -109,6 +144,15 @@
 }
 .icon-user:before {
   content: "\e971";
+}
+.icon-users:before {
+  content: "\e972";
+}
+.icon-user-plus:before {
+  content: "\e973";
+}
+.icon-user-minus:before {
+  content: "\e974";
 }
 .icon-quotes-left:before {
   content: "\e977";
@@ -119,14 +163,38 @@
 .icon-spinner11:before {
   content: "\e984";
 }
+.icon-search:before {
+  content: "\e986";
+}
+.icon-enlarge2:before {
+  content: "\e98b";
+}
+.icon-lock:before {
+  content: "\e98f";
+}
+.icon-unlocked:before {
+  content: "\e990";
+}
 .icon-cog:before {
   content: "\e994";
+}
+.icon-aid-kit:before {
+  content: "\e998";
 }
 .icon-bug:before {
   content: "\e999";
 }
 .icon-stats-dots:before {
   content: "\e99b";
+}
+.icon-stats-bars:before {
+  content: "\e99c";
+}
+.icon-glass:before {
+  content: "\e9a0";
+}
+.icon-glass2:before {
+  content: "\e9a1";
 }
 .icon-mug:before {
   content: "\e9a2";
@@ -136,6 +204,15 @@
 }
 .icon-fire:before {
   content: "\e9a9";
+}
+.icon-bin:before {
+  content: "\e9ac";
+}
+.icon-shield:before {
+  content: "\e9b4";
+}
+.icon-power:before {
+  content: "\e9b5";
 }
 .icon-switch:before {
   content: "\e9b6";
@@ -154,6 +231,9 @@
 }
 .icon-link:before {
   content: "\e9cb";
+}
+.icon-eye:before {
+  content: "\e9ce";
 }
 .icon-eye-blocked:before {
   content: "\e9d1";
@@ -196,6 +276,15 @@
 }
 .icon-confused2:before {
   content: "\e9f6";
+}
+.icon-hipster2:before {
+  content: "\e9fa";
+}
+.icon-sleepy2:before {
+  content: "\e9fe";
+}
+.icon-frustrated2:before {
+  content: "\ea00";
 }
 .icon-crying2:before {
   content: "\ea02";
@@ -257,12 +346,6 @@
 .icon-edge:before {
   content: "\eadc";
 }
-.icon-bin:before {
-  content: "\e9ac";
-}
-.icon-playstation5:before {
-  content: "\e91b";
-}
-.icon-player:before {
-  content: "\e919";
+.icon-sleep:before {
+  content: "\e922";
 }

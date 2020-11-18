@@ -10,6 +10,7 @@ import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'sh-profile',
@@ -25,7 +26,6 @@ export class ProfileComponent implements OnInit {
   user;
   userdp: any;    // stores cover and dp link
   usercover: any;
-  showDeleteNowPlaying: boolean;
   newDpCoverForm: FormGroup;
   nowPlayingForm: FormGroup;
   disableImageUpload: boolean = false;;
@@ -33,7 +33,7 @@ export class ProfileComponent implements OnInit {
   isUserProfile = true;    // if user accesses someone else's profile, this is false;
   followStatus: String;
   bg = ['danger', 'warning', 'success', 'theme', 'danger'];
-
+  tempFavGamesArray = []; // used to show before user clicks 'show all' option
   constructor( private _storageService : StorageService,
     private http: HttpClient,
     private _apiService: APIservice,
@@ -42,7 +42,8 @@ export class ProfileComponent implements OnInit {
     private _overlayService: OverlayService,
     private _router: Router,
     private _activeRoute: ActivatedRoute,
-    private _dom: DomSanitizer) {
+    private _dom: DomSanitizer,
+    private _cookieService: CookieService) {
       this._activeRoute.params.subscribe( val => {
         this.ngOnInit();
       })
@@ -64,6 +65,7 @@ export class ProfileComponent implements OnInit {
         this.user = result['user'];
         this.user['nowplaying'] = result['nowplaying'];
         this.user['gamedata'] = result['gamedata'];
+        this.tempFavGamesArray = result['gamedata']? result['gamedata']['fav']: [];
         console.log(this.user);
         this.getFollowData();
       });
@@ -86,11 +88,14 @@ export class ProfileComponent implements OnInit {
 
       this.onlineStatus = 1;
       this._apiService.coverPictureSubject.subscribe( coverurl => {
-        // console.log("event ", coverurl);
         this.usercover = coverurl.coverurl;
       });
+
+      this._apiService.dpSubject.subscribe(dpUrl => {
+        this.userdp = dpUrl.dpUrl;
+      });
+
       this._navbarService.dpUpdated.asObservable().subscribe( updatedDp => {
-        // console.log("inside subscribed dp updated ", updatedDp );
         this.updatePic(updatedDp);
       });
       // this.openGamingInfo();
@@ -101,12 +106,9 @@ export class ProfileComponent implements OnInit {
 
     this.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
       this.user['gamedata'] = result['result'];
+      this.tempFavGamesArray = result['result'] ? result['result']['fav'].slice(0, 5) : [];
       console.log(this.user);
     });
-  }
-
-  updateNewDpCover() {
-    
   }
 
   getFollowStatus(id: String) {
@@ -221,7 +223,7 @@ export class ProfileComponent implements OnInit {
     else {
       this.imageSchema =
       {
-        aspectRatio: 1139/240,
+        aspectRatio: 1920/400,
         format: 'jpg',
         resizeToWidth: '1000',
         maintainAspectRatio: true
@@ -237,23 +239,22 @@ export class ProfileComponent implements OnInit {
   }
 
   refreshImage() {
-    // console.log('upload mode ', this.uploadMode);
     if(this.uploadMode === 'dp') {
-      // this.navbar.getDp();
+      this._apiService.getDp();
       this._navbarService.getDpSubject.next(true);
     } else if(this.uploadMode === 'cover') {
       this._apiService.getCover();
-      this.setVisibilityImageOverlay(false);
     }
+    this.setVisibilityImageOverlay(false);
   }
 
   setVisibilityImageOverlay( visibility: boolean) {
     if(visibility)
       this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
+    
     this._overlayService.showSubject.next(visibility);
     this.showImageUpload = visibility;
   }
-  getCover() { }
 
   openGamingInfo() {
     this._navbarService.showOption.next('gamebroadcast');
@@ -273,13 +274,30 @@ export class ProfileComponent implements OnInit {
       window.open(url, '__blank');
   }
 
-  removeNowPlaying() {
-    this.showDeleteNowPlaying = false;
+  nowPlayingFlags = {showDeleteNowPlaying: false, showAddToFavs: false};
+  removeNowPlaying(addToFav?: boolean) {
+    this.nowPlayingFlags.showDeleteNowPlaying = false;
     this.http.delete(APIvars.APIdomain+'/'+APIvars.REMOVE_NOW_PLAYING).subscribe( result => {
       if(result['message']=== 'passed') {
         this._apiService.getNowPlaying();
       }
     });
+    this.closeOverlay();
+    this.nowPlayingFlags.showAddToFavs = false;
+  }
+
+  showAddToFavWarning() {
+    this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
+    this.nowPlayingFlags.showAddToFavs = true;
+    this.nowPlayingFlags.showDeleteNowPlaying = false;
+  }
+  showAllFavourites() {
+    console.log("ulalala mu me lo", this.user.gamedata.fav);
+    this.tempFavGamesArray  = this.user.gamedata.fav;
+  }
+
+  closeOverlay() {
+    this._overlayService.showSubject.next(false);
   }
 
 }

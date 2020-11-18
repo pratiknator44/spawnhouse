@@ -23,7 +23,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { RecepientComponent } from './recepient/recepient.component';
 import { SuggestionsComponent } from './suggestions/suggestions.component';
 import { SharedModule } from './modules/shared.module';
-
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -61,7 +61,8 @@ import { SharedModule } from './modules/shared.module';
     APIservice,
     FloatNotificationService,
     NavbarService,
-    OverlayService
+    OverlayService,
+    CookieService
   ],
   bootstrap: [AppComponent]
 })

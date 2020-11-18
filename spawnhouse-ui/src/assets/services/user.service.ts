@@ -9,4 +9,18 @@ export class UserService {
     
     constructor(private _http: HttpClient) {
     }
+
+    getLocation() {
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(loc => {
+                console.log(loc);
+                return {long: loc.coords.longitude, lat: loc.coords.latitude, accuracy: loc.coords.accuracy};
+            }, error => {
+                console.log(error);
+                return null;
+            });
+        } else {
+            return null;
+        }
+    }
 }

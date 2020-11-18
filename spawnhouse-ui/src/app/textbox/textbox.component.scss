@@ -46,3 +46,11 @@
     content:attr(data-text);
     color: #666;
 }
+
+.img-cropper > div {
+    width: auto !important;
+}
+
+.btn {
+    border-radius: 0;
+}

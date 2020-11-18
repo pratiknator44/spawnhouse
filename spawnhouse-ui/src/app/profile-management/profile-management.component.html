@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-12">
                     <div *ngFor="let genre of genres">
-                        <input [disabled]="gamedataForm.get('genres').value?.length > 3 && !gamedataForm.get('genres').value?.includes(genre.id)" type="checkbox" (click)="updateGenreCheckList($event, genre.id)" class="form" id="{{genre.id}}" checked="{{genre.checked}}" /> <label class="ml-1" for="{{genre.id}}">{{genre.genre}} <label class="ml-1 text-secondary" for={{genre.id}}>{{ genre.example }} etc.</label></label> 
+                        <input [disabled]="gamedataForm.get('genres').value?.length > 3 && !gamedataForm.get('genres').value?.includes(genre.id)" type="checkbox" (click)="updateGenreCheckList($event, genre.id)" class="form" id="{{genre.id}}" checked="{{genre.checked}}" /> <label class="ml-1" for="{{genre.id}}">{{genre.genre}} <label class="ml-1 text-secondary font-italic" for={{genre.id}}>{{ genre.example }} etc.</label></label> 
                     </div>
                 </div>
             </div>

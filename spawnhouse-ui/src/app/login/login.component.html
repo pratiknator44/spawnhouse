@@ -393,10 +393,13 @@
 					</div>
 					<div class="row mt-3">
 						<div class="col-6">
+							<input type="checkbox" value='rememberMe' id="rememberme" formControlName="rememberme" /> 
+							<span class="text-white ml-1" for="rememberme">Remember me</span> 
 							<button class="btn btn-primary w-100" type="submit">Login</button>
 						</div>
 						<div class="col-6 text-white font-italic">
-							<label class="mt-2 float-right cursor-pointer" (click)="forgotPassword(); showForgotPassword = true">forgot password</label>
+							<label class="mt-2 float-right cursor-pointer" (click)="injectRecaptchaScript(); loginFlags.showForgotPassword = true">forgot password</label>
+							
 						</div>
 					</div>
 				</form>
@@ -413,12 +416,11 @@
             </div>
 
 
-			<form [formGroup]="signupForm" (ngSubmit)="attemptSignUp()">
-
+			<form [formGroup]="signupForm" (ngSubmit)="setupOTP(); loginFlags.otpresent = false;">
 				<div class="row mt-3">
 					<h5 class="col-12 text-secondary">or provide the following details</h5>
 					<div class="col-6">
-						<input type="text" class="form form-control" placeholder="First Name" formControlName="fname" />
+						<input type="text" class="form form-control" placeholder="First Name or X Æ A-12" formControlName="fname" />
 						<p class="text-danger">First name is needed</p>
 					</div>
 					<div class="col-6">
@@ -434,7 +436,7 @@
 						<input type="text" class="form form-control" placeholder="New Password" formControlName="password" />
 					</div>
 				</div>
-				<div class="row">
+				<!-- <div class="row">
 					<div class="col-4 mt-2">
 						<select type="text" class="form form-control" formControlName="gender" >
 							<option value="">Gender</option>
@@ -443,7 +445,7 @@
 							<option value="3">Other</option>
 						</select>
 					</div>
-				</div>
+				</div> -->
 
 				<div class="row text-danger" *ngIf="loginError!== ''">
 					<div class="col-12">{{loginError | json}}</div>
@@ -451,11 +453,11 @@
 
 				<div class="row mt-3">
 					<div class="col-6">
-					<div class="mt-2"><input type="checkbox" formControlName="tnc" /> I agree the usage of this service
+					<div class="mt-2"><input type="checkbox" id="tnc" formControlName="tnc" /> <label class="ml-2" for="tnc">I agree the usage of this service</label>
 					</div> 
 					</div>
 					<div class="col-6">
-						<button class="btn btn-success w-100" type="submit"> Sign Up </button>
+						<button class="btn btn-success w-100" type="submit" [ngClass]="{'btn-secondary':loginFlags.gettingOTP}"> {{loginFlags.gettingOTP ? 'Please Wait...' : 'Sign up!' }} </button>
 					</div>
 				</div>
 			</form>
@@ -464,13 +466,49 @@
 </div>
 
 
-
-<div class="overlay position-absolute" *ngIf="showForgotPassword">
-
-	<div class="forgot-password bg-white">
-		<re-captcha (resolved)="resolved($event)" 
-		siteKey="6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU">  
-		</re-captcha>
+<div class="bg-white position-fixed z-nav w-25" style="top: 10%; margin-left: 37.5%;" *ngIf="loginFlags.showOTPEntry">
+    <h4 class="p-2 bg-theme text-white">Verfiy Email address <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="loginFlags.showOTPEntry = false; closeOverlay();"></span></h4>
+	<div class="m-3 text-center">An OTP has been to your email {{ signupForm.get('email').value}}, please enter it below, valid for 1 hour </div>
+	<input type="text" class="form form-control text-center" [(ngModel)]="otp"/>
+	<div class="text-danger text-center">{{ loginFlags.otpErrorText }}</div>
+	<div class="text-success" *ngIf="loginFlags.otpresent">OTP Resent</div>
+	<div class="badge badge-default w-50 cursor-pointer" (click)="setupOTP(true); loginFlags.otpresent = true;">Resend OTP</div>
+	<div class="badge badge-default w-50 cursor-pointer" (click)="loginFlags.showOTPEntry = false; closeOverlay()">Change Email</div>
+	<div class="mt-2 text-center">
+		<div class="btn bg-theme text-white w-100" [ngClass]="{'btn-secondary': loginFlags.confirmingOTP}" (click)="confirmOTP()">{{ loginFlags.confirmingOTP ? 'Confirming, please wait...' : 'Confirm' }}</div>
 	</div>
+</div>
 
+
+<div class="position-fixed z-nav w-25 bg-white" style="top: 10%; margin-left: 37.5%;" *ngIf="loginFlags.showForgotPassword">
+	<h4 class="p-2 bg-theme text-white">Who are you, mortal?<span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="loginFlags.showForgotPassword = false; closeOverlay();"></span></h4>
+	
+	<div class="m-3" *ngIf="!loginFlags.recoveryLinkSent">
+		<div class="row">
+			<div class="col-12">Please enter your email id or username</div>
+			<div class="col-12">
+				<input type="text" [(ngModel)]="recoverPassword.user" class="form form-control" placeholder="email or username"  />
+			</div>
+		</div>
+		<div class="row mt-3">
+			<div class="col-12 text-center">
+				<div>
+					<re-captcha (resolved)="resolved($event)" 
+					siteKey="6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU">  
+					</re-captcha>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div *ngIf="!loginFlags.recoveryLinkSent" class="btn bg-theme text-white w-100" (click)="attemptGetRecoveryLink()">{{ loginFlags.submittingPasswordRecovery ? 'Submiting...' : 'Submit' }}</div>
+
+	<div class="text-center" *ngIf="loginFlags.recoveryLinkSent">
+		<div class="iconset icon-confused2 text-warning" style="font-size: 7rem;"></div>
+		<h3>"We take care of our friends!"</h3>
+		A recovery link has been sent on your email id
+		<h6>{{ recoverPassword.assocEmail }} </h6>
+		please click on the link and follow the procedure
+		<h6>Do check Spam folder too <span class="iconset icon-grin2 text-theme"></span></h6>
+	<div class="mt-3 btn bg-theme text-white w-100" (click)="loginFlags.showForgotPassword = false; closeOverlay();">Okay</div>
+	</div>
 </div>

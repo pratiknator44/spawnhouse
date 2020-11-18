@@ -1,6 +1,7 @@
 export enum APIvars {
     APIdomain = 'http://localhost:3000',
     APIlogin = 'login',
+    APIemailOTP = 'signup/emailverification',
     APIsignup = 'signup',
     APIgoogleSignup = 'https://apis.google.com/js/platform.js',
     APIrecaptcha = 'https://www.google.com/recaptcha/api.js',
@@ -29,5 +30,12 @@ export enum APIvars {
     GAMEDATA = 'gamedata',
     GET_FOLLOW_STATUS_OF = 'resources/getfollowstatus',
     SET_FOLLOWING = 'resources/setfollowing',
-    GET_FOLLOWDATA = 'resources/getfollowdata/'
+    GET_FOLLOWDATA = 'resources/getfollowdata/',
+    CONFIRM_OTP = 'signup/confirmOTP',
+    RECOVERY = 'recovery',
+    CHANGE_PASSWORD = 'recovery/newp'
+}
+
+export enum GlobalContantsEnum {
+    RECAPTCHA_SITE_KEY = '6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU'
 }

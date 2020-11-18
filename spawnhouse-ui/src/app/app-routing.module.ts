@@ -7,6 +7,7 @@ import { ProfileGuardService } from 'src/assets/services/profile-guard.service';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ProfileManagementComponent } from './profile-management/profile-management.component';
 import { HomeComponent } from './home/home.component';
+import { PasswordresetComponent } from './passwordreset/passwordreset.component';
 
 const routes: Routes = [
   {
@@ -31,7 +32,12 @@ const routes: Routes = [
     canActivate: [ProfileGuardService],
     loadChildren: () => import('./modules/editProfile.module').then(m=> m.ProfileEditModule),
     component: ProfileManagementComponent
-  },  
+  },
+  {
+    path: 'resetpassword/:token',
+    loadChildren: () => import('./modules/passwordreset.module').then(m=> m.ResetModule),
+    component: PasswordresetComponent
+  },
   {
     path: 'not-found',
     component: NotFoundComponent
