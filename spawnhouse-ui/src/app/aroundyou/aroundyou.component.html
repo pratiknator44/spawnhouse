@@ -1,0 +1,20 @@
+<div class="user-suggestions-container w-50 std-box-shadow">
+
+    <div class="text-secondary h3 m-2" style="margin-top: 5rem;">
+        <div class="mt-3"> <br>
+            Catch up with gamers and potential teammates around you
+        </div>
+    </div>
+    <div class="user-suggestions m-3">
+        <div class="user-card d-inline-block std-box-shadow rounnded bg-white text-center m-3 position-relative" *ngFor="let user of userSuggestions; let i = index">
+            <span class="iconset icon-cross text-grey position-absolute m-1 cursor-pointer" style="top:0; right:0;font-size: 0.75rem;" (click)="removeByIndex(i)"></span>
+            <!-- <div class="image-area text-center"></div> -->
+            <div class="bg-secondary text-white text-center mt-2 circle default-img"><div class="h-100 iconset icon-user" style="font-size: 3rem;"></div></div>
+
+            <h4 class="name mt-1 ">@{{user?.username || user?.fname }}</h4>
+            <span class="text-secondary">{{ user.basis }}</span>
+            <div class="btn bg-theme w-75 mt-2" [ngClass]="{'bg-white text-black': user.youFollow, 'text-white': !user.youFollow}">{{ user.youFollow ? 'Unfollow' : '+Follow'  }}</div>
+        </div>
+    </div>
+</div>
+<!-- <h3 class="text-secondary">Your global location: {{location?.lat+' , '+location?.long}}</h3> -->

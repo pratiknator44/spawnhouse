@@ -377,7 +377,7 @@
 
         <div class="col-4">
             <!-- login -->
-            <div class="bg-blue p-3">
+            <div class="bg-theme p-3">
 				<form [formGroup]="loginForm" (ngSubmit)="attemptLogin()">
 					<div class="row text-white">
 						<h6 class="col-6">Username or Email</h6>
@@ -391,7 +391,10 @@
 							<input type="password" class="form form-control" formControlName="password" />
 						</div>
 					</div>
-					<div class="row mt-3">
+					<div class="row mt-3" *ngIf="loginFlags.wrongCreds">
+						<div class="col-12 h6 bg-danger text-white">Incorrect credentials, soldier!</div>
+					</div>
+					<div class="row mt-1">
 						<div class="col-6">
 							<input type="checkbox" value='rememberMe' id="rememberme" formControlName="rememberme" /> 
 							<span class="text-white ml-1" for="rememberme">Remember me</span> 
@@ -453,7 +456,7 @@
 
 				<div class="row mt-3">
 					<div class="col-6">
-					<div class="mt-2"><input type="checkbox" id="tnc" formControlName="tnc" /> <label class="ml-2" for="tnc">I agree the usage of this service</label>
+					<div class=""><input type="checkbox" id="tnc" formControlName="tnc" /> <label class="ml-2 d-inline" for="tnc">I agree the usage of this service and cookies</label>
 					</div> 
 					</div>
 					<div class="col-6">

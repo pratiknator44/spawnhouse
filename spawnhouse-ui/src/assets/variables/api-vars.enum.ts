@@ -25,6 +25,7 @@ export enum APIvars {
     GET_GAMELIST = 'nowplaying/gamelist',
     GET_GAMEDATA = 'gamedata/getGame',
     SET_USER_GAMEDATA = 'gamedata/saveusergamedata',
+    GET_USER_GAMEDATA = 'gamedata/saveusergamedata',
     GET_USERDATA = 'signup/getuserdata',
     SET_USERDATA = 'signup/setuserdata',
     GAMEDATA = 'gamedata',
@@ -33,7 +34,9 @@ export enum APIvars {
     GET_FOLLOWDATA = 'resources/getfollowdata/',
     CONFIRM_OTP = 'signup/confirmOTP',
     RECOVERY = 'recovery',
-    CHANGE_PASSWORD = 'recovery/newp'
+    CHANGE_PASSWORD = 'recovery/newp',
+    SET_NEW_FAV = 'gamedata/addfavorite',
+    GET_IMAGE = 'resources/getImage'
 }
 
 export enum GlobalContantsEnum {

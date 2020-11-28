@@ -11,17 +11,19 @@ export class SuggestionsComponent implements OnInit {
   @Input() icon: string;
   @Input() template: TemplateRef<any>
   @Input() inProgress: boolean;
-  @Input() showSuggestions: boolean;
+  @Input() showSuggestions: boolean = true;
+  @Input() searchInput: string ='';
   @Output() inputChanged = new EventEmitter();
   @Output() selected = new EventEmitter();
-  searchInput: string ='';
 
   constructor() { }
   ngOnInit(): void {
   }
 
   emitSearchWord() {
-    console.log('emitting  ', this.searchInput);
+    if(this.searchInput === '') {
+      this.showSuggestions = false;
+    } else this.showSuggestions = true;
     this.inputChanged.emit(this.searchInput);
   }
 }

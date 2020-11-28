@@ -15,6 +15,13 @@
 [config]="floatNotifConfig"
 ></sh-float-notification>
 
+<div class="position-fixed w-100"style="bottom:0;">
+    <sh-toast>    <!-- this component communicates via notification service-->
+    </sh-toast>
+    
+</div>
+
+
 <div class="mt-0" [ngClass]="{'mt-3rem': isLoggedIn}">
 <router-outlet></router-outlet>
 </div>

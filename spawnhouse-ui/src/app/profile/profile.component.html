@@ -1,7 +1,7 @@
 <!-- <navbar style="z-index: 10;" (onPicUpdate)="updatePic($event)" #navbar></navbar> -->
-<div class="profile-media-container">
+<div>
     <div class="cover-picture position-relative overflow-hidden">
-        <div class="position-absolute float-right text-white m-2 cursor-pointer edit-cover-photo" (click)="setupImageUpload(false)" *ngIf="isUserProfile">Edit</div>
+        <div class="position-absolute float-right text-white m-2 cursor-pointer edit-cover-photo" (click)="setupImageUpload(false)" *ngIf="isUserProfile"><span class="iconset icon-edit-pencil"></span></div>
         <div class="w-100 h-100 bg-theme text-center" *ngIf="!usercover">
             <div style="transform: rotate(-30deg);">
                 <span class="iconset icon-game-controller" style="color:#06C; font-size: 18rem; top: -2rem;"></span></div>
@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="user-name text-bold">
-                <label class="text-white position-relative cursor-pointer ml-3">{{ user.username ? user.username : user?.fname + ' ' + user?.lname}} </label>
+                <label class="text-white position-relative cursor-pointer ml-3">{{ user.username ? user.username : user?.fname + ' ' + user?.lname}}</label>
                 <span class="online-dot" [ngClass]="{ 'bg-online': onlineStatus === 1, 'bg-offline': onlineStatus === 0, 'bg-busy' : onlineStatus === 2 }" title="You are being shown online"></span>
             </div>
         </div>
@@ -88,7 +88,7 @@
                 <div *ngIf="user?.gamedata?.fav?.length > 0">
                     <div style="font-size: 1.5rem;" class="d-inline-block"><span class="iconset icon-favorite text-secondary mr-1"></span></div>
                     <h4 class="text-secondary d-inline-block">Favourites</h4>
-                    <div class="text-theme cur badgesor-pointer" style="word-wrap: break-word;" [title]="'See who all are playing '+fav.label " [ngClass]="{'d-inline-block mr-2': fav.value === ''}" *ngFor="let fav of tempFavGamesArray">
+                    <div class="text-theme cursor-pointer" style="word-wrap: break-word;" [title]="'See who all are playing '+fav.label " [ngClass]="{'d-inline mr-2': fav.value === ''}" *ngFor="let fav of tempFavGamesArray">
                         <span *ngIf="fav.value !== ''" class="iconset icon-favorite"></span>
                         {{ fav.label }}
                         <span *ngIf="fav.value === ''" class="text-black">,</span>
@@ -131,6 +131,12 @@
 
 <div class="bg-white position-fixed z-nav edit-game-container w-25" *ngIf="nowPlayingFlags.showAddToFavs">
     <h4 class="p-2 bg-theme text-white"> <span class="iconset icon-bin mr-1"></span>Remove Playing Data <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); nowPlayingFlags.showAddToFavs = false"></span></h4>
-    <div class="m-3 text-center">Would you like to add <div class="h6">{{user?.nowplaying?.game}}</div> in your favourites?</div>
-    <div class="mt-2 text-center"><div class="btn btn-default" (click)="removeNowPlaying()">No, just remove</div> <div class="btn bg-theme text-white" (click)="removeNowPlaying(true)">Yes, add it to <span class="iconset icon-favorite"></span></div></div>
+    <div class="m-3 text-center">Would you like to add <div class="h6">{{user?.nowplaying?.game}}</div> in your favourite games?</div>
+        <div class="mt-2">
+            <div class="btn btn-default w-50" (click)="removeNowPlaying(); addFavgame(user?.nowplaying, false)">No, just remove</div>
+            <div class="btn bg-theme text-white w-50" (click)="removeNowPlaying(); addFavgame(user?.nowplaying, true)">Yes, add it to <span class="iconset icon-favorite"></span> list
+            </div>
+        </div>
+    </div>
+    
 </div>

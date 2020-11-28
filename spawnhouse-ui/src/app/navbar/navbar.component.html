@@ -1,78 +1,86 @@
 <nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex">
-  <div>
-    <span class="iconset icon-sh text-theme positon-relative" style="font-size: 3rem;"></span> &nbsp;
-  </div>
+  
+  <div class="w-100 d-flex" style="height: auto; flex-wrap: wrap;">
+    <div class="w-10 text-white navbar-item text-center bg-theme">
+      <div class="cursor-pointer iconset icon-size icon-sh font-lg">
+      </div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer">Spawnhouse</div>
+    </div>
 
-
-    <div class="nav-item text-black d-block overflow-none" title="{{user.fname}}" (click)="routeTo('profile')" (click)="selectedOption = user.fname">
+    <div class="navbar-item text-black overflow-none" title="{{user.fname}}" (click)="routeTo('profile')" (click)="selectedOption = user.fname">
       <div class="text-center overflow-hidden" style="height: 100%;">
         <div class="cursor-pointer text-center iconset icon-size icon-player text-theme" *ngIf="!dp"></div>       
         <img [src]="dp" *ngIf="dp" class="cursor-pointer dp" [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
+        <div class="text-center m-0 font-0-5-rem cursor-pointer" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div>
       </div>
-      <div class="text-center m-0 font-0-5-rem cursor-pointer" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div>
+      
     </div>
-    <div class="nav-item text-black" title="Home" (click)="selectedOption = 'Home'; routeTo('/home')">
+
+    <div class="navbar-item text-black" title="Home" (click)="selectedOption = 'Home'; routeTo('/home')">
       <div class="cursor-pointer text-center iconset icon-size icon-home" [ngClass]="{'color-theme': selectedOption==='Home'}">
       </div>
       <div class="text-center m-0 font-0-5-rem cursor-pointer">Home</div>
     </div>
-    <div class="nav-item text-black" title="Followers"
-    (click)="selectedOption = 'Followers'">
-      <div class="cursor-pointer text-center iconset icon-size icon-user" [ngClass]="{'color-theme': selectedOption==='Followers'}">
+
+    <div class="navbar-item text-black" title="FolAroundyoulowers"
+    (click)="selectedOption = 'Aroundyou'; routeTo('/aroundyou')">
+      <div class="cursor-pointer text-center iconset icon-size icon-compass2" [ngClass]="{'color-theme': selectedOption==='Aroundyou'}">
       </div>  
-      <div class="text-center m-0 font-0-5-rem cursor-pointer">Followers</div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer">Around You</div>
     </div>
-  <!-- search bar and suggestions-->
-  <div class="w-50">
-    <sh-suggestions [placeholder]="'Search by name, username, or email'" [icon]="'search'" [template]="searchSuggestionTemplate"
-    (inputChanged)="searchThis($event)"></sh-suggestions>
-    <ng-template #searchSuggestionTemplate>
-      <!-- search template -->
-      <div class="position-relative" style="height: 3.5rem;" *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
-        <div class="position-absolute search-icon-container">
-          <div style="animation: rotate-left 1s infinite linear;">
-            <loader [type]="2"></loader>
+
+
+      <!-- search bar and suggestions-->
+    <div class="mt-1 mob-search-flex">
+      <sh-suggestions [placeholder]="'Search by name, username, or email'" [icon]="'search'" [template]="searchSuggestionTemplate" (inputChanged)="searchThis($event)" [showSuggestions]="showUserSuggestions"></sh-suggestions>
+      <ng-template #searchSuggestionTemplate>
+        <!-- search template -->
+        <div class="position-relative" style="height: 3.5rem;" *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
+          <div class="position-absolute search-icon-container">
+            <div style="animation: rotate-left 1s infinite linear;">
+              <loader [type]="2"></loader>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- data template -->
-      <div class="d-flex" *ngFor="let suggestion of searchSuggestions" (mouseover)="hoveringOn = suggestion.userid" [ngClass]="{'bg-lite': hoveringOn === suggestion.userid}" (click)="gotoProfile(suggestion)">
-        <img class="m-1" style="width: 2.5rem; height: 2.5rem;"  />
-        <div style="width: calc(100% - 3rem);">
-            <div class="text-truncate hover-underline cursor-pointer" [ngClass]="{'mt-2': !suggestion.username }">&nbsp;{{ suggestion.fname + ' ' + suggestion.lname }}</div>
-            <div class="text-secondary" *ngIf="suggestion.username">&nbsp;@{{ suggestion.username }}</div>
+        <!-- data template -->
+        <div class="d-flex hover-bg-grey" *ngFor="let suggestion of searchSuggestions" (click)="gotoProfile(suggestion)">
+          <img class="m-1 circle" [src]="suggestion?.dpaddress" style="width: 2.5rem; height: 2.5rem;" *ngIf="suggestion?.dp" /> <div class="bg-secondary m-1 circle text-white" style="width: 2.5rem; height: 2.5rem;" *ngIf="!suggestion?.dp">
+          <span class="iconset icon-player h3 ml-1"></span>
+          </div>
+          <div style="width: calc(100% - 3rem);">
+              <div class="text-truncate hover-underline cursor-pointer" [ngClass]="{'mt-2': !suggestion.username }">&nbsp;{{ suggestion.fname + ' ' + suggestion.lname }}</div>
+              <div class="text-secondary" *ngIf="suggestion.username">&nbsp;@{{ suggestion.username }}</div>
+          </div>
         </div>
-      </div>
 
-      <!-- not found template -->
-      <div class="class text-center text-secondary cursor-pointer" *ngIf="noUserFound">No users found, try adding '@' before search word  </div>
-      <div class="class text-center hover-underline text-primary cursor-pointer" *ngIf="searchSuggestions.length > 5">See All</div>
-    </ng-template>
-  </div>
+        <!-- not found template -->
+        <div class="class text-center text-secondary cursor-pointer" *ngIf="noUserFound">No users found, try adding '@' before search word  </div>
+        <div class="class text-center hover-underline text-primary cursor-pointer" *ngIf="searchSuggestions.length > 5">See All</div>
+      </ng-template>
+    </div>
 
-  <!-- list contd-->
-  <ul class="navbar-nav w-25">
-    <li class="nav-item text-black" title="Notifications"
+
+    <div class="navbar-item text-black text-center" title="Notifications"
     (click)="selectedOption = 'Notification'">
-      <div class="cursor-pointer text-center iconset icon-size icon-bell" [ngClass]="{'color-theme': selectedOption==='Notification'}">
+      <div class="cursor-pointer" [ngClass]="{'color-theme': selectedOption==='Notification'}">
+        <span class="iconset icon-size icon-bell"></span>
         <span class="badge badge-danger" style="margin-left: -0.25rem;">9+</span>
       </div>
-
         <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div>
-    </li>
+    </div>
 
-    <li class="nav-item text-black" title="Messages"
-    (click)="selectedOption = 'Message'">
-      <div class="cursor-pointer text-center iconset icon-size icon-bubbles3" [ngClass]="{'color-theme': selectedOption==='Message'}">
-        <span class="badge badge-danger" style="margin-left: -0.25rem;">5</span>
+    <div class="navbar-item text-black text-center" title="Messages"
+    (click)="selectedOption = 'Messages'">
+      <div class="cursor-pointer" [ngClass]="{'color-theme': selectedOption==='Messages'}">
+        <span class="iconset icon-size icon-bubbles3"></span>
+        <span class="badge badge-danger" style="margin-left: -0.25rem;">9+</span>
       </div>
-
         <div class="text-center m-0 font-0-5-rem cursor-pointer">Messages</div>
-    </li>
+    </div>
 
-    <li class="nav-item text-black mt-2" (click)="updateOptions()" style="z-index: 2;" title="Update">
-      <div class="cursor-pointer text-center iconset icon-size icon-dots-horizontal-triple" >
+    <div class="navbar-item text-black mt-2" (click)="updateOptions()" style="z-index: 2;" title="Update">
+      <div class="cursor-pointer text-center iconset icon-size icon-plus" >
         <span class="badge badge-danger"></span>
       </div>
 
@@ -82,19 +90,20 @@
           <span class="iconset icon-game-controller"></span>
           Now Playing</div>
       </div>
-    </li>
+    </div>
 
-    <!-- <li class="nav-item ml-3 mt-1"> 
 
-    </li> -->
-    <li>
-      <div class="cursor-pointer mt-3 font-0-5-rem" style="width: 8rem;" (click)="userOptions()">Options v</div>        
-      <div class="position-absolute mt-3 d-inline-block bg-white" style="z-index: 4;" *ngIf="showUserOptions">
-        <div class="setting-op p-2 cursor-pointer font-0-5-rem"><span class="iconset icon-cog mr-2"></span>Privacy & Settings</div>
-        <div class="setting-op p-2 cursor-pointer font-0-5-rem" (click)="logout()"><span class="iconset icon-switch mr-2"></span>Logout</div>
+    <div class="navbar-item position-relative">
+      <div class="cursor-pointer font-0-5-rem mt-3 text-center" (click)="userOptions()"><span class="iconset icon-dots-horizontal-triple h6 mt-3"></span></div>        
+      <div class="position-absolute d-inline-block bg-white position-relative w-100" style="z-index: 4; top: 100%; left:0;" *ngIf="showUserOptions">
+        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem" (click)="logout()"><span class="iconset icon-bug mr-2"></span>Report a problem / bug</div>
+        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem font-left"><span class="iconset icon-cog mr-2"></span>Privacy &nbsp;</div>
+        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem" (click)="logout()"><span class="iconset icon-switch mr-2"></span>Logout</div>
       </div>
-    </li>
-  </ul>
+    </div>
+
+  </div>
+  
 </nav>
 
 <div class="bg-white position-fixed z-nav edit-game-container rounded" *ngIf="showGameBroadcast">
@@ -177,7 +186,7 @@
         </div>
         <div class="col-6 text-secondary">
           <input type="password" class="form form-control" formControlName="password" placeholder="Room/server password" />
-          <input type="checkbox" id="keepassprivate" formControlName="exposepassword" /> &nbsp;<label for="keepassprivate" class="m-0">Keep my password private</label><br>
+          <input type="checkbox" id="keepassprivate" formControlName="privatepassword" /> &nbsp;<label for="keepassprivate" class="m-0">Keep my password private</label><br>
           <label class="text-small">(you will receive request for password if someone asks)</label>
         </div>
       </div>

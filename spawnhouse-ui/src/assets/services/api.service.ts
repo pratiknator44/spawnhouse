@@ -84,4 +84,18 @@ export class APIservice {
       this._storageService.currentUser['nowplaying'] = np['np'][0];
     });
   }
+
+  async getGamedata() {
+    return await this._http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).toPromise()
+    // .then(resolve => {return resolve['result']});
+  }
+
+  async addRemoveFollower(currentFollowStatus, userid) {
+    const operation = currentFollowStatus === 'Follow' ? 'add' : 'sub';
+    console.log("seinding to ... ", APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+userid);
+    return this._http.get(APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+userid).toPromise();
+    // subscribe(result => {
+      // this.followStatus = result['status'];
+      // this.user.followdata.followerCount = result['followerCount'];  
+  }
 }

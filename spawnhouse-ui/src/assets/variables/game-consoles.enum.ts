@@ -9,7 +9,7 @@ export enum GameConsoleEnum {
     xbsx20 = 'XBOX Series X (2020)',
     m = 'Android',
     wi = 'Nintendo Wii',
-    pc = 'PC',
+    pc = 'Windows PC',
     ios = 'iOS',
     mac = 'Mac',
     wii = 'Wii',

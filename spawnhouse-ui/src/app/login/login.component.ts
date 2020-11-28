@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   signupForm: FormGroup;
   loginError: String = '';
   rememberMe = false;
-  loginFlags = {showOTPEntry: false, otpresent: false, confirmingOTP: false, gettingOTP: false, otpErrorText: null, showForgotPassword: false, submittingPasswordRecovery: false, recoveryLinkSent: false};
+  loginFlags = {showOTPEntry: false, otpresent: false, confirmingOTP: false, gettingOTP: false, otpErrorText: null, showForgotPassword: false, submittingPasswordRecovery: false, recoveryLinkSent: false, wrongCreds: false};
   recoverPassword = {user: null, recaptchaKey: null, assocEmail: null};
   otp: String;
   constructor(private _metaService: Meta,
@@ -83,6 +83,8 @@ export class LoginComponent implements OnInit {
   }
 
   attemptLogin() {
+    this.loginFlags.wrongCreds = false;
+    console.log("Attempt login");
     if(!this.loginForm.valid) {
       return;
     }
@@ -91,8 +93,10 @@ export class LoginComponent implements OnInit {
       this._cookieService.set('password', this.loginForm.get('password').value);
     }
     this._http.post(APIvars.APIdomain+'/'+APIvars.APIattemptLogin, this.loginForm.value).subscribe( data => {
-      if(data) {
-        this.onLoginSuccess(data);
+      this.onLoginSuccess(data);
+    }, err => {
+      if(err['message']) {
+        this.loginFlags.wrongCreds = true; return;
       }
     })
   }

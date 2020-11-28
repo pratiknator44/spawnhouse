@@ -14,6 +14,8 @@ import { SuggestionsComponent } from '../suggestions/suggestions.component';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { GameGenrePipe } from 'src/assets/pipes/gamegenre.pipe';
 import { CookieService } from 'ngx-cookie-service';
+import { UserService } from 'src/assets/services/user.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'navbar',
@@ -25,13 +27,13 @@ export class NavbarComponent implements OnInit {
   selectedOption: string;
   options = [];
   searchSuggestions: any = [];
-  hoveringOn = '';
   showSuggestions: boolean;
   dp: any;
   userSearch = '';
   user;
   searchingGame: boolean;
   showUserOptions: boolean;
+  showUserSuggestions: boolean = true;
   dpSubject = new Subject<any>();
   dpObservale;
   imageSchema: IPictureUploadSchema;
@@ -72,7 +74,7 @@ export class NavbarComponent implements OnInit {
     private _notifService: FloatNotificationService,
     private _overlayService: OverlayService,
     private _http: HttpClient,
-    private _cookieService: CookieService) { }
+    private _userService: UserService) { }
 
   ngOnInit(): void {
     this.options = [
@@ -80,7 +82,7 @@ export class NavbarComponent implements OnInit {
       { name: 'Friends', icon: 'users', alert: 2 },
       { name: 'Streams', icon: 'display', alert: 0, showSubmenu: false, submenu: { options: ['Story', 'Status', 'Now Playingaaaaa'], triggerFunction: this.update(event) }},
       { name: 'Notifcations', icon: 'bell', alert: 99 },
-      { name: 'Messages', icon: 'bubbles', alert: 3 }]
+      { name: 'Messages', icon: 'bubbles', alert: 3 }];
      // { name: 'Settings & Privacy', icon: 'cog', alert: 0 }];
       
     this.selectedOption = this.options[0].name;
@@ -113,19 +115,20 @@ export class NavbarComponent implements OnInit {
   }
 
   searchThis(event) {
-    // console.log(event);
+    this.showUserSuggestions = true;
     this.searchSuggestions = [];
     this.userSearch = event;
     if(this.userSearch.length < 3) {
-      this._overlayService.closeSubject.next();
+      this._overlayService.showSubject.next(false);
       return;
     }
     this.noUserFound = false;
     this.showSuggestions = true;
     this.searchSuggestions = [];
-    this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
+    // this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
+    // this._overlayService.showSubject.next(true);
     
-    this._http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER+'/'+this.userSearch).subscribe( res => {
+    this._http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER+'/'+this.userSearch).pipe(debounceTime(1000), distinctUntilChanged()).subscribe( res => {
       if(res['users'].length > 0) {
         let userid = [];
         res['users'].forEach( user => {
@@ -133,6 +136,24 @@ export class NavbarComponent implements OnInit {
         });
       }
       this.searchSuggestions = res['users'];
+      // getting user photos
+      const l = this.searchSuggestions.length;
+      if(l > 0) {
+        for( let x=0; x<l; x++) {
+          if(!this.searchSuggestions[x].dp) continue;
+          this._http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+this.searchSuggestions[x]._id, { responseType: 'blob' }).subscribe(image => {
+            let reader = new FileReader();
+            reader.addEventListener('load', () => {
+              this.searchSuggestions[x]['dpaddress']= this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+            }, false);
+            if (image) {
+               reader.readAsDataURL(image as Blob);
+            }
+          });
+        }
+      }
+
+
       if(this.searchSuggestions.length === 0){
         this.noUserFound = true;
       }
@@ -140,9 +161,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    this._storageService.reset();
-    this._cookieService.deleteAll('');
-    this._router.navigate(['./login']);
+    this._userService.logout();
   }
 
   getDp() {
@@ -203,13 +222,14 @@ export class NavbarComponent implements OnInit {
         hasPrivateRoom: new FormControl(),
         roomid: new FormControl(),
         password: new FormControl(),
-        exposepassword: new FormControl(),
+        privatepassword: new FormControl(),
         desc: new FormControl()
       });
       this.nowplayingForm.patchValue({
         audience: '0',
         console: '',
-        hasPrivateRoom: false
+        hasPrivateRoom: false,
+        privatepassword: true
       });
 
       this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
@@ -234,7 +254,7 @@ export class NavbarComponent implements OnInit {
     if(!this.nowplayingForm.get('hasPrivateRoom').value) {
       this.nowplayingForm.removeControl('roomid');
       this.nowplayingForm.removeControl('password');
-      this.nowplayingForm.removeControl('exposepassword');
+      this.nowplayingForm.removeControl('privatepassword');
     }
     this.nowplayingForm.removeControl('hasPrivateRoom');
     this._http.post(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING, this.nowplayingForm.value).subscribe(result => {
@@ -279,9 +299,10 @@ export class NavbarComponent implements OnInit {
     this.user = JSON.parse(sessionStorage.getItem('user'));
   }
 
-  
   gotoProfile(suggestion){
-    this._overlayService.closeSubject.next();
+    this._overlayService.showSubject.next(false);
+    this.showUserSuggestions = false;
+    this.searchSuggestions = [];
     this._router.navigate(['/', suggestion._id]);
   }
 

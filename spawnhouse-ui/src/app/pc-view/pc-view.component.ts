@@ -13,7 +13,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 export class PcViewComponent {
   
   title = 'spawnhouse-ui';
-  isNotifVisible: boolean = true  ;
+  isNotifVisible: boolean;
   config: {closeOnClick: boolean, transparent: boolean} = {closeOnClick: false, transparent: false};
   floatNotifConfig: FloatNotificationSchema;
   showOverlay: boolean;
@@ -49,6 +49,10 @@ export class PcViewComponent {
       // console.log('got config as ', config);
     });
 
+    // this._floatNoteService.showToastOb.subscribe( show => {
+    //   this.showToast = show;
+    // });
+
     this._overlayService.showSubject.asObservable().subscribe( show => {
       this.showOverlay = show;
     });
@@ -57,6 +61,5 @@ export class PcViewComponent {
     this.showOverlay = !this.config.closeOnClick
     this._overlayService.closeSubject.next();
   }
-
 
 }

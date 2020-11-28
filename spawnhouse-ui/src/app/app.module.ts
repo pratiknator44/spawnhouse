@@ -11,7 +11,7 @@ import { ProfileGuardService } from 'src/assets/services/profile-guard.service';
 import { WildcardGuardService } from 'src/assets/services/wildcard-guard.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { APIservice } from 'src/assets/services/api.service';
-import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { RecaptchaModule } from 'ng-recaptcha';
 import { FloatNotificationComponent } from './float-notification/float-notification.component';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { PcViewComponent } from './pc-view/pc-view.component';
@@ -23,7 +23,10 @@ import { LoaderComponent } from './loader/loader.component';
 import { RecepientComponent } from './recepient/recepient.component';
 import { SuggestionsComponent } from './suggestions/suggestions.component';
 import { SharedModule } from './modules/shared.module';
+import { AroundYouModule } from './modules/aroundyou.module';
 import { CookieService } from 'ngx-cookie-service';
+import { ToastComponent } from './toast/toast.component';
+import { UserService } from 'src/assets/services/user.service';
 
 @NgModule({
   declarations: [
@@ -36,6 +39,7 @@ import { CookieService } from 'ngx-cookie-service';
     LoaderComponent,
     RecepientComponent,
     SuggestionsComponent,
+    ToastComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,6 +50,7 @@ import { CookieService } from 'ngx-cookie-service';
     RecaptchaModule,  //this is the recaptcha main module
     // RecaptchaFormsModule, //this is the module for form incase form validation
     SharedModule,
+    AroundYouModule
   ],
   exports: [
   ],
@@ -62,7 +67,8 @@ import { CookieService } from 'ngx-cookie-service';
     FloatNotificationService,
     NavbarService,
     OverlayService,
-    CookieService
+    CookieService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })

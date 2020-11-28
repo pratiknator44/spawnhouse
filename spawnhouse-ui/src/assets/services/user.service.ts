@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { Subject } from 'rxjs';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { StorageService } from './storage.service';
 
 @Injectable()
 export class UserService {
 
     bg = ['primary', 'warning', 'success', 'theme', 'danger'];
     
-    constructor(private _http: HttpClient) {
+    constructor(private _http: HttpClient, private _storageService: StorageService, private _cookieService: CookieService, private _router: Router) {
     }
 
     getLocation() {
@@ -23,4 +25,16 @@ export class UserService {
             return null;
         }
     }
+
+
+  logout() {
+    this.relogin();
+    this._cookieService.deleteAll('');
+  }
+
+  relogin() {
+    this._storageService.reset();
+    // this._cookieService.deleteAll('');
+    this._router.navigate(['./login']);
+  }
 }

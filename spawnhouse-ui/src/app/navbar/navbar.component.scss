@@ -1,4 +1,8 @@
 @import '../../assets/variables/variables.scss';
+
+nav {
+    padding: 0;
+}
 a {
     cursor: pointer;
 }
@@ -89,4 +93,20 @@ nav {
 .nav-item {
     padding-left: 1rem;
     padding-right: 1rem;
+}
+
+
+.mob-search-flex {
+    flex: 45%;
+}
+
+@media only screen and (max-width: 1000px) {
+    .mob-search-flex {
+        flex: 25%;
+    }
+} 
+
+.navbar-item {
+    // width: 3rem;
+    flex: 5%;
 }

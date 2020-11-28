@@ -4,15 +4,17 @@ import { Injectable } from '@angular/core';
 export class StorageService {
     currentData = {};
     currentUser: any;
-    dpLink: any
+    dpLink: any;
+    coverLink: any;
     nowplaying: any;
+    gameData: any;
     constructor() {}
     setSessionData(key, value) {
         sessionStorage.setItem(key, value);
     }
 
     getSessionData(key) {
-        sessionStorage.getItem(key);
+        return sessionStorage.getItem(key);
     }
 
     deleteSessionData(key) {

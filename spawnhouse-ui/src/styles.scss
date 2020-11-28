@@ -20,6 +20,7 @@ body {
     display: flex !important;
 }
 
+
 .d-inline-block {
     display: inline-block !important;
 }
@@ -221,6 +222,9 @@ body {
     background-color: red !important;
     color: white;
 }
+.bg-red {
+    background-color: red;
+}
 
 .std-box-shadow {
     box-shadow: 0 0 10px 0 #CCC;
@@ -253,3 +257,7 @@ body {
 label {
     margin: 0 !important;
 }
+
+
+// emojione classes do not touch
+.emojione{font-size:inherit;height:3ex;width:3.1ex;min-height:20px;min-width:20px;display:inline-block;margin:-.2ex .15em .2ex;line-height:normal;vertical-align:middle}img.emojione{width:auto}

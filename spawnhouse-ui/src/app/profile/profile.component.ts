@@ -42,9 +42,9 @@ export class ProfileComponent implements OnInit {
     private _overlayService: OverlayService,
     private _router: Router,
     private _activeRoute: ActivatedRoute,
-    private _dom: DomSanitizer,
-    private _cookieService: CookieService) {
+    private _dom: DomSanitizer) {
       this._activeRoute.params.subscribe( val => {
+        if(this._activeRoute.snapshot.params.username)
         this.ngOnInit();
       })
     }
@@ -55,7 +55,7 @@ export class ProfileComponent implements OnInit {
     if(this._activeRoute.snapshot.params.username) {
       this.isUserProfile = false;
       this.http.get(APIvars.APIdomain+'/'+APIvars.APIsignup+'/'+this._activeRoute.snapshot.params.username).subscribe( result => {
-        console.log(result);
+        console.log("guest user", result);
         if(!result || result['error']) {
           console.log('user not found should route');
           this._router.navigate(['../not-found']);
@@ -66,7 +66,7 @@ export class ProfileComponent implements OnInit {
         this.user['nowplaying'] = result['nowplaying'];
         this.user['gamedata'] = result['gamedata'];
         this.tempFavGamesArray = result['gamedata']? result['gamedata']['fav']: [];
-        console.log(this.user);
+        console.log("logged in user ", this.user);
         this.getFollowData();
       });
 
@@ -83,14 +83,21 @@ export class ProfileComponent implements OnInit {
       this.getFollowData();
       console.log(this.user);
       this.userdp = this._storageService.dpLink;
-      this._apiService.getCover();
+
+      if(!this._storageService.coverLink) {
+        this._apiService.getCover();
+
+        this._apiService.coverPictureSubject.subscribe( coverurl => {
+          this.usercover = coverurl.coverurl;
+          this._storageService.coverLink = coverurl.coverurl;
+        });
+
+      } else {
+        this.usercover = this._storageService.coverLink;
+      }
+
       this._navbarService.getDpSubject.next(true);
-
       this.onlineStatus = 1;
-      this._apiService.coverPictureSubject.subscribe( coverurl => {
-        this.usercover = coverurl.coverurl;
-      });
-
       this._apiService.dpSubject.subscribe(dpUrl => {
         this.userdp = dpUrl.dpUrl;
       });
@@ -99,16 +106,11 @@ export class ProfileComponent implements OnInit {
         this.updatePic(updatedDp);
       });
       // this.openGamingInfo();
-      this._notifService.closeOn.next(true);
       this._apiService.getNowPlaying();
       addusername = '';
+      this.getGamedata();
     }
 
-    this.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
-      this.user['gamedata'] = result['result'];
-      this.tempFavGamesArray = result['result'] ? result['result']['fav'].slice(0, 5) : [];
-      console.log(this.user);
-    });
   }
 
   getFollowStatus(id: String) {
@@ -117,19 +119,36 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  getGamedata() {
+    this.user['gamedata'] = null;
+    // this.user['gamedata'] = this._apiService.getGamedata().then(resolve => {
+      // this.tempFavGamesArray = resolve['result'] ? resolve['result']['fav'].slice(0, 5) : [];
+      // return resolve['result'];});
+    
+    const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
+    this.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
+      this.user['gamedata'] = result['result'];
+      this.tempFavGamesArray = result['result'] ? result['result']['fav'].slice(0, 5) : [];
+    });
+  }
+
   // add or remove
   setFollowStatus() {
-    const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
-    this.http.get(APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+this.user._id).subscribe(result => {
-      this.followStatus = result['status'];
-      this.user.followdata.followerCount = result['followerCount'];
+    // const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
+    this._apiService.addRemoveFollower(this.followStatus, this.user._id).then(resolve => {
+      console.log("resulrr   ", resolve);
+      this.followStatus = resolve['status'] || '+Follow';
+      this.user.followdata.followerCount = resolve['followerCount'];
     });
-    
+
+    // this.http.get(APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+this.user._id).subscribe(result => {
+    //   this.followStatus = result['status'];
+    //   this.user.followdata.followerCount = result['followerCount'];
+    // });
   }
 
   getDpOfUser(id) {
     this.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
-
       let reader = new FileReader();
       reader.addEventListener('load', () => {
         this.userdp = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
@@ -225,7 +244,7 @@ export class ProfileComponent implements OnInit {
       {
         aspectRatio: 1920/400,
         format: 'jpg',
-        resizeToWidth: '1000',
+        resizeToWidth: '1080',
         maintainAspectRatio: true
       }
       this.uploadMode = 'cover';
@@ -275,7 +294,7 @@ export class ProfileComponent implements OnInit {
   }
 
   nowPlayingFlags = {showDeleteNowPlaying: false, showAddToFavs: false};
-  removeNowPlaying(addToFav?: boolean) {
+  removeNowPlaying() {
     this.nowPlayingFlags.showDeleteNowPlaying = false;
     this.http.delete(APIvars.APIdomain+'/'+APIvars.REMOVE_NOW_PLAYING).subscribe( result => {
       if(result['message']=== 'passed') {
@@ -298,6 +317,20 @@ export class ProfileComponent implements OnInit {
 
   closeOverlay() {
     this._overlayService.showSubject.next(false);
+  }
+
+  addFavgame(nowplaying, setFav?: boolean) {
+    console.log(nowplaying);
+    const favgame =  {label: nowplaying.game, value: setFav ? 'fav': ''};
+    nowplaying.game ? favgame['username'] = nowplaying.username : '';
+    if(nowplaying.game) {
+      this.http.patch(APIvars.APIdomain+'/'+ APIvars.SET_NEW_FAV, {newFavs: [favgame, favgame]}).subscribe( result => {
+        this.user['gamedata'] = null;
+        if(result['message']=== 'passed') {
+          this.getGamedata();
+        }
+      });
+    }
   }
 
 }

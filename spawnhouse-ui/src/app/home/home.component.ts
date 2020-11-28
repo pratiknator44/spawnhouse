@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FloatNotificationService } from 'src/assets/services/float-notification.service';
+import { StorageService } from 'src/assets/services/storage.service';
+import { UserService } from 'src/assets/services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +10,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _notifService: FloatNotificationService, private _storageService: StorageService) { }
 
   ngOnInit(): void {
+    this._notifService.checkForLocation();
   }
 
 }

@@ -3,7 +3,6 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserService } from 'src/assets/services/user.service';
 
 @Component({
   selector: 'sh-textbox',
@@ -30,7 +29,7 @@ export class TextboxComponent implements OnInit {
   @ViewChild('update') update: ElementRef;
   @ViewChild('mediaFile') mediaFile: ElementRef;
 
-  constructor( private _http: HttpClient, private _userService: UserService) { }
+  constructor( private _http: HttpClient) { }
 
   ngOnInit(): void {
     this.statusUpdateForm = new FormGroup({

@@ -8,7 +8,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { ProfileManagementComponent } from './profile-management/profile-management.component';
 import { HomeComponent } from './home/home.component';
 import { PasswordresetComponent } from './passwordreset/passwordreset.component';
-
+import { AroundyouComponent } from './aroundyou/aroundyou.component';
 const routes: Routes = [
   {
     path: 'home',
@@ -34,6 +34,12 @@ const routes: Routes = [
     component: ProfileManagementComponent
   },
   {
+    path: 'aroundyou',
+    canActivate: [ProfileGuardService],
+    loadChildren: () => import('./modules/aroundyou.module').then( m => m.AroundYouModule),
+    component: AroundyouComponent
+  },
+  {
     path: 'resetpassword/:token',
     loadChildren: () => import('./modules/passwordreset.module').then(m=> m.ResetModule),
     component: PasswordresetComponent
@@ -56,6 +62,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {useHash: true})],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: []
 })
 export class AppRoutingModule { }
