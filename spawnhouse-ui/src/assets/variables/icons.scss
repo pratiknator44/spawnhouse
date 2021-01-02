@@ -352,3 +352,39 @@
 .icon-compass2:before {
   content: "\e94a";
 }
+.icon-checkmark:before {
+  content: "\ea10";
+}
+.icon-assaulter:before {
+  content: "\e923";
+}
+.icon-defender:before {
+  content: "\e924";
+}
+.icon-fragger:before {
+  content: "\e927";
+}
+.icon-medic:before {
+  content: "\e928";
+}
+.icon-sniper:before {
+  content: "\e929";
+}
+.icon-medic:before {
+  content: "\e928";
+}
+.icon-explorer .path1:before {
+  content: "\e925";
+  color: #000;
+}
+.icon-explorer .path2:before {
+  content: "\e926";
+  color: #fff;
+  margin-left: -1em;
+}
+.icon-support:before {
+  content: "\e92a";
+}
+.icon-bag:before {
+  content: "\e92b";
+}

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AgoPipe } from 'src/assets/pipes/ago.pipe';
-import { ConsoleIconPipe, GameGenrePipe, RandomBgPipe, StreamLinkPipe } from 'src/assets/pipes/gamegenre.pipe';
+import { ConsoleIconPipe, GameGenrePipe, PLayerTypePipe, RandomBgPipe, StreamLinkPipe } from 'src/assets/pipes/gamegenre.pipe';
 
 @NgModule({
     declarations: [
@@ -8,7 +8,8 @@ import { ConsoleIconPipe, GameGenrePipe, RandomBgPipe, StreamLinkPipe } from 'sr
         GameGenrePipe,
         ConsoleIconPipe,
         RandomBgPipe,
-        StreamLinkPipe
+        StreamLinkPipe,
+        PLayerTypePipe
     ],
     imports: [],
     exports: [
@@ -16,7 +17,8 @@ import { ConsoleIconPipe, GameGenrePipe, RandomBgPipe, StreamLinkPipe } from 'sr
         GameGenrePipe,
         ConsoleIconPipe,
         RandomBgPipe,
-        StreamLinkPipe
+        StreamLinkPipe,
+        PLayerTypePipe
     ],
     providers: []
 })

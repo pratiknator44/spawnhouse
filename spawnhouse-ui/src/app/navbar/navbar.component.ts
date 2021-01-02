@@ -13,9 +13,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SuggestionsComponent } from '../suggestions/suggestions.component';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { GameGenrePipe } from 'src/assets/pipes/gamegenre.pipe';
-import { CookieService } from 'ngx-cookie-service';
 import { UserService } from 'src/assets/services/user.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { INavbarMessage, INotification } from 'src/assets/interfaces/MsgNotif.interface';
 
 @Component({
   selector: 'navbar',
@@ -43,6 +43,11 @@ export class NavbarComponent implements OnInit {
   showConsoleList = false;
   consolePipe;
   selectedConsole: string;
+  navbarFlags = {showMessages: false, messagelistLoading: false, showNotification: false, notificationLoaded: false};
+  messages: INavbarMessage[] | any= [];
+  notifications: INotification[] = [];
+  dpLinks = []; // cuz sanetized links cant be binded to object properties of messages.dpLink
+
   consoles = [
     {icon: 'android', id: 'm'},
     {icon: 'windows8', id: 'pc'},
@@ -59,21 +64,18 @@ export class NavbarComponent implements OnInit {
     {icon: 'appleinc', id: 'ios' },
     {icon: '', id: 'ot'},
   ];
-  
+  alerts = {notifications: 0, messages: null};
   nowplayingForm: FormGroup;
   @Input() imageUploadMode: string;
-  @ViewChild('gameSuggestComp') gameSuggestComp: SuggestionsComponent;
-
-  
   @Output() onPicUpdate = new EventEmitter(); 
-  constructor(private _storageService: StorageService,
-    private _api: APIservice,
-    private _dom: DomSanitizer,
-    private _router: Router,
+  @ViewChild('gameSuggestComp') gameSuggestComp: SuggestionsComponent;
+  
+  constructor(
+    private _storageService: StorageService,
+    private _apiService: APIservice,
     private _navbarService: NavbarService,
     private _notifService: FloatNotificationService,
     private _overlayService: OverlayService,
-    private _http: HttpClient,
     private _userService: UserService) { }
 
   ngOnInit(): void {
@@ -82,19 +84,25 @@ export class NavbarComponent implements OnInit {
       { name: 'Friends', icon: 'users', alert: 2 },
       { name: 'Streams', icon: 'display', alert: 0, showSubmenu: false, submenu: { options: ['Story', 'Status', 'Now Playingaaaaa'], triggerFunction: this.update(event) }},
       { name: 'Notifcations', icon: 'bell', alert: 99 },
-      { name: 'Messages', icon: 'bubbles', alert: 3 }];
+      { name: 'Messages', icon: 'bubbles', alert: 0 }];
      // { name: 'Settings & Privacy', icon: 'cog', alert: 0 }];
       
+    this._navbarService.refreshUnseenMessages.subscribe(res => {
+      this.getUnseenMessageCount();
+    })
+
+
     this.selectedOption = this.options[0].name;
     // call profile picture api
-    this.user = JSON.parse(sessionStorage.getItem('user'));
+    this.user = JSON.parse(this._storageService.getSessionData('user'));
     // this.dp = this._api.getDp();
     this.getDp();
     this._navbarService.getDpSubject.asObservable().subscribe( status => {
       if(status) this.getDp();
     });
-    this._overlayService.closeSubject.asObservable().subscribe( closeOptions => {
+    this._overlayService.closeSubject.asObservable().toPromise().then( closeOptions => {
       this.showUserOptions = false; this.showSuggestions = false; this.showUpdateOptions = false;
+      this.navbarFlags.showMessages = false; this.navbarFlags.showNotification = false;
     });
 
     this._navbarService.showOption.asObservable().subscribe( option => {
@@ -108,6 +116,9 @@ export class NavbarComponent implements OnInit {
         this.refreshUserVar();
     });
     }, 3000);
+
+    this.getUnseenMessageCount();
+
   }
 
   update(event) {
@@ -128,7 +139,7 @@ export class NavbarComponent implements OnInit {
     // this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
     // this._overlayService.showSubject.next(true);
     
-    this._http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER+'/'+this.userSearch).pipe(debounceTime(1000), distinctUntilChanged()).subscribe( res => {
+    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER+'/'+this.userSearch).pipe(debounceTime(1000), distinctUntilChanged()).subscribe( res => {
       if(res['users'].length > 0) {
         let userid = [];
         res['users'].forEach( user => {
@@ -141,10 +152,10 @@ export class NavbarComponent implements OnInit {
       if(l > 0) {
         for( let x=0; x<l; x++) {
           if(!this.searchSuggestions[x].dp) continue;
-          this._http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+this.searchSuggestions[x]._id, { responseType: 'blob' }).subscribe(image => {
+          this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+this.searchSuggestions[x]._id, { responseType: 'blob' }).subscribe(image => {
             let reader = new FileReader();
             reader.addEventListener('load', () => {
-              this.searchSuggestions[x]['dpaddress']= this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+              this.searchSuggestions[x]['dpaddress']= this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
             }, false);
             if (image) {
                reader.readAsDataURL(image as Blob);
@@ -165,7 +176,7 @@ export class NavbarComponent implements OnInit {
   }
 
   getDp() {
-    this._api.getPhotos('dp').subscribe( image => {
+    this._apiService.getPhotos('dp').subscribe( image => {
 
       // if image size is less than 30 bytes
       if(image.size < 30) {
@@ -175,7 +186,7 @@ export class NavbarComponent implements OnInit {
       // convert raw image to Blob object
       let reader = new FileReader();
       reader.addEventListener('load', () => {
-        this.dp = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+        this.dp = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
         this._storageService.dpLink = this.dp;
         this.onPicUpdate.emit({type: 'dp', src: this.dp});
         this._navbarService.dpUpdated.next({type: 'dp', src: this.dp});
@@ -257,12 +268,12 @@ export class NavbarComponent implements OnInit {
       this.nowplayingForm.removeControl('privatepassword');
     }
     this.nowplayingForm.removeControl('hasPrivateRoom');
-    this._http.post(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING, this.nowplayingForm.value).subscribe(result => {
+    this._apiService.http.post(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING, this.nowplayingForm.value).subscribe(result => {
       // console.log(result);
       this._notifService.closeOn.next(false); // close notification
       this.showGameBroadcast = false;
       setTimeout(() => {
-        this._api.getNowPlaying();
+        this._apiService.getNowPlaying();
       },500);
     });
   }
@@ -279,7 +290,7 @@ export class NavbarComponent implements OnInit {
       return;
     }
 
-    this._http.get(APIvars.APIdomain+'/'+APIvars.GET_GAMEDATA+'/'+searchword).subscribe(res => {
+    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_GAMEDATA+'/'+searchword).subscribe(res => {
       this.gameSuggestions = res['gamedata'];
       this.searchingGame = false;
     });
@@ -292,7 +303,7 @@ export class NavbarComponent implements OnInit {
   }
 
   routeTo(place) {
-    this._router.navigate(['./'+place]);
+    this._apiService.router.navigate(['./'+place]);
   }
 
   refreshUserVar() {
@@ -303,7 +314,7 @@ export class NavbarComponent implements OnInit {
     this._overlayService.showSubject.next(false);
     this.showUserSuggestions = false;
     this.searchSuggestions = [];
-    this._router.navigate(['/', suggestion._id]);
+    this._apiService.router.navigate(['/', suggestion._id]);
   }
 
   selectConsole(console) {
@@ -312,5 +323,91 @@ export class NavbarComponent implements OnInit {
     });
     this.selectedConsole = console.id;
     this.showConsoleList = false;
+  }
+
+  navOptionSelected(option) {
+    // if(option === this.selectedOption.toLocaleLowerCase()) this.closeOverlay();
+    
+    switch (option) {
+      case 'messages':
+        if(this.navbarFlags.showMessages) { this.navbarFlags.showMessages = false; return; }
+        this.navbarFlags.showMessages = true;
+        this.navbarFlags.messagelistLoading = true;
+        this.messages = [];
+        this.briefmessages();
+
+    }
+    this._overlayService.configSubject.next({closeOnClick: true, transparent: true});
+    this._overlayService.showSubject.next(true);
+  }
+
+  briefmessages() {
+    return this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_BRIEF_MESSAGES).toPromise().then(result => {
+      console.log(result);
+      this.groupMessages(result['result']);
+    });
+  }
+
+  getUnseenMessageCount() {
+    this.alerts.messages = this._navbarService.getUnseenMessageCount();
+  }
+
+  groupMessages(messages) {
+    const l = messages.length;
+    if( l === 0) {
+      this.navbarFlags.messagelistLoading = null;
+      return;
+    }
+    this.messages = []
+    this.dpLinks = [];
+    // seen is already sorted
+    for(let x=0; x<l; x++) {
+      this.messages.push({
+        userid: messages[x]['senderid'],
+        username: this.getUserdataById(messages[x]['senderid'], 'username fname lname').then(res => {return (res['data']['username'] || res['data']['fname']+' '+res['data']['lname']);}),
+        text: messages[x]['text'],
+        time: messages[x]['time'],
+        seen: messages[x]['seen'],
+        lastSender: messages[x].lastSender
+      });
+      this.getUserImageById(messages[x]['senderid'], 'dp');
+    }
+
+    this.messages.sort((m1, m2) => {
+      return m1.time > m2.time ? -1 : 1;
+    });
+    console.log("messages ", this.messages);
+    this.navbarFlags.messagelistLoading = false;
+  }
+
+  async getUserdataById(userid: string, fields?: string, index?: any) {
+    console.log("user id ", userid);
+    if(!userid) return;
+    return await this._apiService.http.post(APIvars.APIdomain+"/"+APIvars.GET_USERDATA_BY_ID, {id: userid, fields}).toPromise();
+  }
+  getUserImageById(userid: string, type: string, index?: any) {
+    if(!userid) return;
+    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+userid, { responseType: 'blob' }).subscribe( image => {
+      if(image['type'] === 'application/json')  {
+        this.dpLinks[index] = null;
+        return;
+      }
+
+      let reader = new FileReader();
+
+      reader.addEventListener('load', () => {
+        const i = this.messages.findIndex( message => message.userid === userid);
+        this.messages[i].dp = '';
+        this.dpLinks[i] = this._apiService.dom.bypassSecurityTrustUrl(reader.result.toString());
+      }, false);
+      if (image) {
+         reader.readAsDataURL(image as Blob);
+      }
+    });
+  }
+
+  routeToMessaging() {
+    this._apiService.router.navigate(['./messaging']);
+    this._overlayService.showSubject.next(false);
   }
 }

@@ -2,18 +2,51 @@
 
     <div class="text-secondary h3 m-2" style="margin-top: 5rem;">
         <div class="mt-3"> <br>
-            Catch up with gamers and potential teammates around you
+            Videogamers around your location
         </div>
     </div>
-    <div class="user-suggestions m-3">
-        <div class="user-card d-inline-block std-box-shadow rounnded bg-white text-center m-3 position-relative" *ngFor="let user of userSuggestions; let i = index">
-            <span class="iconset icon-cross text-grey position-absolute m-1 cursor-pointer" style="top:0; right:0;font-size: 0.75rem;" (click)="removeByIndex(i)"></span>
-            <!-- <div class="image-area text-center"></div> -->
-            <div class="bg-secondary text-white text-center mt-2 circle default-img"><div class="h-100 iconset icon-user" style="font-size: 3rem;"></div></div>
 
-            <h4 class="name mt-1 ">@{{user?.username || user?.fname }}</h4>
-            <span class="text-secondary">{{ user.basis }}</span>
-            <div class="btn bg-theme w-75 mt-2" [ngClass]="{'bg-white text-black': user.youFollow, 'text-white': !user.youFollow}">{{ user.youFollow ? 'Unfollow' : '+Follow'  }}</div>
+    <div class="text-center" *ngIf="loadingUsers">
+        <loader2 [type]="0"></loader2><br>
+        Getting Suggestions...
+    </div>
+
+    <h5 class="text-center text-theme hover-underline cursor-pointer" (click)="getLocation()" *ngIf="!location">Enable <span class="iconset icon-bin"></span>&nbsp;Location</h5>
+    <h6 *ngIf="sessionLocation && !location">Using your last location</h6>
+    <div class="user-suggestions m-3">
+        <div class="user-card rounded bg-white text-center m-3 position-relative"*ngFor="let user of userSuggestions; let i = index">
+            <span class="text-grey position-absolute m-1 cursor-pointer z-nav" style="top:0; right:0;font-size: 1rem;" (click)="removeByIndex(i)">x</span>
+            <!-- <div class="image-area text-center"></div> -->
+            <div class="row text-left">
+                <div class="col-4">
+                    <div class="bg-secondary text-white text-center mt-2 circle default-img cursor-pointer" (click)="routeToProfile(user._id)">
+                        <img [src]="dpLinks[i]" class="h-100 w-100 circle" *ngIf="dpLinks[i]" />
+                        <div class="h-100 iconset icon-user" style="font-size: 3rem;"></div>
+                    </div>        
+                </div>
+
+                <div class="col-5">
+                    <h4 class="hover-underline cursor-pointer text-left m-0" (click)="routeToProfile(user._id)">{{user?.username || user?.fname }}</h4>
+                    <h6 class="text-secondary m-0">{{user.fname+' '+user.lname}}</h6>
+                    <span class="text-secondary">{{ user?.basis }} Playing Global Offensive </span>
+
+                    <div class="d-inline-block">
+                        <div class="d-flex" style="font-size: 1.5rem;">
+                            <div class="ml-2 mr-2 iconset icon-{{type | playertype: true}} text-{{type | playertype : false : true}}" *ngFor="let type of user?.playerType" title="{{type | playertype : false : false : true}}" title="{{ type | playertype | titlecase }}">
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="text-left" style="margin-top: 25%;">
+                        <div class="btn btn-danger" *ngIf="user?.isFollowing" (click)="addRemoveUser(user?._id, i)"><span class="iconset icon-user-minus"></span>&nbsp;Unfollow</div>
+                        <div class="btn bg-theme text-white" *ngIf="!user?.isFollowing" (click)="addRemoveUser(user?._id, i)"><span class="iconset icon-user-plus"></span>&nbsp; Follow</div>
+                        <div class="d-block"></div>
+                        <!-- <div class="badge border-grey"><span class="iconset icon-bubbles3"></span>&nbsp;Message</div>     -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

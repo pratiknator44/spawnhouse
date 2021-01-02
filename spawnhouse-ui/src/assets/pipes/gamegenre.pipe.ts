@@ -62,3 +62,68 @@ export class StreamLinkPipe implements PipeTransform {
         return returnValue;
     }
 }
+
+// determines the full name of the player type
+@Pipe({
+    name: 'playertype',
+    pure: true
+})
+export class PLayerTypePipe implements PipeTransform {
+
+    transform(str: string, isIcon?: boolean, iconColor?: boolean, desc?: boolean) {
+        let full = str;
+        if(desc) {
+            switch(str) {
+                case 'as': full = 'Forward shooter, aggressive and highly lethal to enemies';
+                break;
+                case 'md': full = 'Carried supplies for health, stamina, and mana for teammates';
+                break;
+                case 'df': full = 'Defends the area, bomb, spike or tower behind the enemy lines. Highly tactical';
+                break;
+                case 'sn': full = 'The Sharpest shooter in town';
+                break;
+                case 'sp': full = 'Carries the lethal object, acts as imposter or divergent, secondary shooter';
+                break;
+                case 'fr': full = 'Good wih grenades, flashbangs, and stealth';
+                break;
+                case 'co': full = 'Loots while you blink, the main supplier of the team';
+                break;
+            }
+        }
+        else if(iconColor) {
+            switch(str) {
+                case 'as': full = 'danger';
+                break;
+                case 'md': full = 'black';
+                break;
+                case 'df': full = 'theme';
+                break;
+                case 'sn': full = 'black';
+                break;
+                case 'sp': full = 'danger';
+                break;
+                case 'fr': full = 'success';
+                break;
+                case 'co': full = 'theme';
+                break;
+            }
+        } else
+        switch(str) {
+            case 'as': full = 'assaulter';
+            break;
+            case 'md': full = 'medic';
+            break;
+            case 'df': full = 'defender';
+            break;
+            case 'sn': full = 'sniper';
+            break;
+            case 'sp': full = 'support';
+            break;
+            case 'fr': full = 'fragger';
+            break;
+            case 'co': full = isIcon ? 'bag' : 'collector';
+            break;
+        }
+        return full;
+    }
+}

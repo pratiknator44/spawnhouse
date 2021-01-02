@@ -48,7 +48,6 @@ nav {
 .dp {
     height: 2rem;
     width: 2rem;
-    border-radius: 50%;
 }
 
 .setting-op:hover {
@@ -109,4 +108,24 @@ nav {
 .navbar-item {
     // width: 3rem;
     flex: 5%;
+}
+
+.message-container {
+    width: 20rem;
+    left: -5rem;
+}
+
+.message-container::before {
+    content: '';
+    position: absolute;
+    background-color: white;
+    width: 1rem; 
+    height: 1rem;
+    top: -0.5rem;
+    left: 40%;
+    transform: rotate(45deg);
+}
+
+.user-message-row {
+    height: auto;
 }

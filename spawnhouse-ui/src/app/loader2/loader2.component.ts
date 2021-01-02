@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'loader2',
@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./loader2.component.scss']
 })
 export class Loader2Component implements OnInit {
-
+  @Input() type: Number;
   constructor() { }
 
   ngOnInit(): void {

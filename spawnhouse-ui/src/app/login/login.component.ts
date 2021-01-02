@@ -182,6 +182,7 @@ export class LoginComponent implements OnInit {
     this._storageService.setSessionData('sh_auth_token', data['auth_token']);
     sessionStorage.setItem('user', data['user']);
     this._storageService.currentUser = data['user'];
+    console.log("efeaffe", data['user']);
     this._storageService.setSessionData('user', JSON.stringify(data['user']));
     this._navService.isLoggedIn.next(true); 
     this._router.navigate(['/home']);

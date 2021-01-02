@@ -1,10 +1,13 @@
 .minimessage-container {
-    width: 50%;
     height: auto;
-    transform: translate(50%);
+    min-width: 30vw;
 }
 
 .message-container {
     height: 10rem !important;
     border: solid 5px #CCC;
+}
+
+.btn {
+    border-radius: 0;
 }

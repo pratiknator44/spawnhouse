@@ -11,7 +11,7 @@ export class NotFoundComponent {
   constructor( private _router: Router) { }
 
   gotoHome() {
-    this._router.navigate(['/profile']);
+    this._router.navigate(['/home']);
   }
 
 }

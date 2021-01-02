@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
+import { Title } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { FloatNotificationSchema } from '../interfaces/float-notification-config.interface';
 import { StorageService } from './storage.service';
+import { UserService } from './user.service';
 @Injectable()
 export class FloatNotificationService {
 
@@ -15,7 +17,9 @@ export class FloatNotificationService {
     toastOkaySubject = new Subject();
     toastDismissSubject = new Subject();
     getLocationSubject = new Subject();
-    constructor(private _storageService: StorageService) {}
+    constructor(private _storageService: StorageService,
+        private _userService: UserService,
+        private _titleService: Title) {}
 
     createFloat() {
     }
@@ -44,10 +48,12 @@ export class FloatNotificationService {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(location => {
                 console.log("location === === ", location);
-                const formattedLocation = {long: location['coords']['longitude'], lat: location['coords']['latitude']};   
+                const formattedLocation = [location['coords']['latitude'], location['coords']['longitude'] ];   
         
                 this._storageService.setSessionData('location', JSON.stringify(formattedLocation));
-        
+
+                this._userService.saveLocation(formattedLocation);
+                
                 this.getLocationSubject.next(formattedLocation);
                 this.configToast("Getting Location... Found you :D", "Dismiss");
                 setTimeout( () => {
@@ -61,6 +67,13 @@ export class FloatNotificationService {
         } else {
             this.configToast("Error getting location. Some features might not work correctly", "Dismiss");
         }
+    }
+
+    setTitle(title: string) {
+        this._titleService.setTitle(title);
+    }
+    getTitle() {
+        return this._titleService.getTitle();
     }
     
 }

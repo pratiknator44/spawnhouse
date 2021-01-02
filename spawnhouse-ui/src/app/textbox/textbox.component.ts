@@ -200,7 +200,7 @@ getLocation() {
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(loc => {
       this.statusUpdateForm.patchValue({
-        location: loc.coords.longitude+','+loc.coords.latitude
+        location: [loc.coords.longitude,loc.coords.latitude]
       });
     });
   }

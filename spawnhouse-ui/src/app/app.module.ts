@@ -9,7 +9,7 @@ import { StorageService } from 'src/assets/services/storage.service';
 import { LoginGuardService } from 'src/assets/services/login-guard.service';
 import { ProfileGuardService } from 'src/assets/services/profile-guard.service';
 import { WildcardGuardService } from 'src/assets/services/wildcard-guard.service';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { APIservice } from 'src/assets/services/api.service';
 import { RecaptchaModule } from 'ng-recaptcha';
 import { FloatNotificationComponent } from './float-notification/float-notification.component';
@@ -19,7 +19,6 @@ import { NavbarService } from 'src/assets/services/navbar.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { OverlayComponent } from './overlay/overlay.component';
 import { OverlayService } from 'src/assets/services/overlay.service';
-import { LoaderComponent } from './loader/loader.component';
 import { RecepientComponent } from './recepient/recepient.component';
 import { SuggestionsComponent } from './suggestions/suggestions.component';
 import { SharedModule } from './modules/shared.module';
@@ -36,7 +35,6 @@ import { UserService } from 'src/assets/services/user.service';
     PcViewComponent,
     NavbarComponent,
     OverlayComponent,
-    LoaderComponent,
     RecepientComponent,
     SuggestionsComponent,
     ToastComponent,
@@ -49,8 +47,8 @@ import { UserService } from 'src/assets/services/user.service';
     ReactiveFormsModule,
     RecaptchaModule,  //this is the recaptcha main module
     // RecaptchaFormsModule, //this is the module for form incase form validation
+    AroundYouModule,
     SharedModule,
-    AroundYouModule
   ],
   exports: [
   ],
@@ -68,7 +66,8 @@ import { UserService } from 'src/assets/services/user.service';
     NavbarService,
     OverlayService,
     CookieService,
-    UserService
+    UserService,
+    Title
   ],
   bootstrap: [AppComponent]
 })

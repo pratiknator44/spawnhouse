@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { APIservice } from 'src/assets/services/api.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
 import { StorageService } from 'src/assets/services/storage.service';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
@@ -17,7 +18,7 @@ export class ProfileManagementComponent implements OnInit {
   gameSuggestions: {label: string, value: string}[] = [];
   gamedataForm: FormGroup;
   userinfoForm: FormGroup;
-  saveText= {videogame: 'Save', personal: 'Save'};
+  saveText = {videogame: 'Save', personal: 'Save', type: 'Save'};
   genres = [
     {id: 'action', genre: 'Action', example: 'PUBG, Call of Duty, Counter-Strike', checked: ''},
     {id: 'actionadv', genre: 'Action Adventure', example: 'GTA, Legend Of Zelda, Metal Gear, Assassins\' Creed', checked: ''},
@@ -29,7 +30,21 @@ export class ProfileManagementComponent implements OnInit {
     {id: 'board', genre: 'Board Games', example: '(Chess Master, Ludo King', checked: ''},
     ];
   
-  constructor(private _storageService: StorageService, private _http: HttpClient, private _navbarService: NavbarService) { }
+  playerTypes = [
+    {id: 'as', icon: 'assaulter', checked: false},
+    {id: 'df', checked: false},
+    {id: 'sn', checked: false},
+    {id: 'md', checked: false},
+    {id: 'sp', checked: false},
+    {id: 'fr', checked: false},
+    {id: 'co', checked: false},
+  ]
+  
+  constructor(
+    private _storageService: StorageService,
+    private _http: HttpClient,
+    private _navbarService: NavbarService,
+    private _apiService: APIservice) { }
 
   ngOnInit(): void {
     this.user = this._storageService.currentUser;
@@ -55,7 +70,7 @@ export class ProfileManagementComponent implements OnInit {
 
     this._http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
       if(result['result']) {
-        this.items = result['result'].fav;
+        console.log("main result ==== ", result);
         let l = result['result']['genres'].length || 0;
         let gl = this.genres.length;
         for(let x=0; x<l; x++) {
@@ -65,15 +80,22 @@ export class ProfileManagementComponent implements OnInit {
             }
           }
         }
+        this.items = result['result']['fav'];
         this.gamedataForm.patchValue({
           genres: result['result']['genres']
         });
+
+        if(result['result']['playerType']) {
+          l = result['result']['playerType'].length;  
+          for(let x=0; x<l; x++) {
+            for(let y=0; y<7; y++) {
+              console.log(this.playerTypes[y].id+" "+result['result']['playerType'][x]);
+              this.playerTypes[y].id === result['result']['playerType'][x] ? this.playerTypes[y].checked = true : false;
+            }
+          }
+        }
       }
-    });
-
-    // personal info settings
-  
-
+    });  
   }
 
   newSelections(items) {
@@ -136,5 +158,22 @@ export class ProfileManagementComponent implements OnInit {
     });
   }
   
+  selectType(index) {
+    const count = this.playerTypes.filter((obj) => obj.checked === true).length;
+    if(count > 2 && !this.playerTypes[index].checked) {
+      return;
+    }
+    this.playerTypes[index].checked = !this.playerTypes[index].checked;
+  }
+
+  savePlayerType() {
+    if(this.saveText.type === 'Saving...')  return;
+    this.saveText.type = 'Saving...';
+    const selected = this.playerTypes.filter((obj) => obj.checked).map(ob => ob.id);
+    this._apiService.updatePlayerType(selected).then(result => {
+      console.log("saving done");
+      this.saveText.type = 'Saved!';
+    });
+  }
 
 }

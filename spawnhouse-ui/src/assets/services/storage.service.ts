@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class StorageService {
     currentData = {};
     currentUser: any;
@@ -45,6 +47,16 @@ export class StorageService {
     setUserFromSession() {
         if(sessionStorage.getItem('user'))
         this.currentUser = JSON.parse(sessionStorage.getItem('user'));
+    }
+
+    setCover(url) {
+        this.setSessionData('cover', url);
+        this.coverLink = url;
+    }
+
+    setDp(url) {
+        this.setSessionData('dp', url);
+        this.dpLink = url;
     }
 
     reset() {

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { APIservice } from 'src/assets/services/api.service';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { StorageService } from 'src/assets/services/storage.service';
+import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
   selector: 'app-aroundyou',
@@ -9,36 +12,81 @@ import { StorageService } from 'src/assets/services/storage.service';
 })
 export class AroundyouComponent implements OnInit {
 
-  location: any= 'afae';
+  location;
+  sessionLocation: any;
+  dpLinks = []; // temp
+  loadingUsers: boolean = true;
 
-  dpLink; // temp
-  userSuggestions = [];
-  constructor(private _storageService: StorageService, private _floatNotifService: FloatNotificationService) { }
+  userSuggestions = []; // {_id: <userid>, username: <username>, name: <name>, isFollower: <true/false>};
+  constructor(
+    private _storageService: StorageService,
+    private _floatNotifService: FloatNotificationService,
+    private _apiService: APIservice,
+    private _router: Router) { }
 
   ngOnInit(): void {
 
-    this.userSuggestions = [
-      {_id: '123478', username: 'flashborne', fname: 'Mohit', basis: 'within 5km', youFollow: false},
-      {_id: '568', username: 'hulk614', fname: 'Ayush', basis: 'also plays PUBG', youFollow: false},
-      {_id: 'ad', username: 'atherocks', fname: 'Arunabh', basis: 'also plays Valorant', youFollow: true},
-      {_id: 'advad', username: 'assassinator', fname: 'Shivam', basis: 'likes Racing games', youFollow: false},
-      {_id: '123brws478', username: 'hawkeye', fname: 'Sudama', basis: 'plays GTA V', youFollow: false},
-    ]
-
-    // this.location = JSON.parse(this._storageService.getSessionData('location'));
-    // console.log(this.location);
-    // this._floatNotifService.checkForLocation();
-    // this._floatNotifService.getLocationSubject.asObservable().subscribe(location => {
-    //   this.location = location;
-    // });
-    this.location = '@@@@@';
+    this.userSuggestions = [];
     this._floatNotifService.getLocationToast();
+    this.sessionLocation = this._storageService.getSessionData('location');
 
-    this.dpLink = this._storageService.dpLink;
+    if(this.sessionLocation) this.getUsers(this.sessionLocation);
+    this.getLocation();
+  }
+
+  getUsers(location) {
+    this._apiService.getUsersAround(location).then( result => {
+      this.userSuggestions = result['result'] || [];
+      const l = result['result'].length;
+      this.loadingUsers = false;
+      for(let x=0; x < l; x++) {
+        this.getDpById(this.userSuggestions[x]._id, x);
+      }
+    });
+  }
+
+  getDpById(id, x) {
+    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
+      if(image['type'] === 'application/json')  {
+        this.dpLinks[x] = null;
+        return;
+      }
+      let reader = new FileReader();
+      reader.addEventListener('load', () => {
+        this.dpLinks[x] = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+      }, false);
+      if (image) {
+         reader.readAsDataURL(image as Blob);
+      }
+    });
   }
   
   removeByIndex(i: number) {
     this.userSuggestions.splice(i,1);
+    this.dpLinks.splice(i, 1);
+  }
+
+  addRemoveUser(id, index) {
+    this._apiService.addRemoveFollower(this.userSuggestions[index]['isFollowing'] ? '' : 'Follow', id).then(resolve => {
+      if(resolve['message'] === "passed") {
+        this.userSuggestions[index]['isFollowing'] = !this.userSuggestions[index]['isFollowing'];
+      }
+    });
+  }
+
+  routeToProfile(id) {
+    this._router.navigate(['/'+id]);
+  }
+
+  getLocation() {
+    console.log("lets get location");
+    this._floatNotifService.getLocationToast();
+    this._floatNotifService.getLocationSubject.asObservable().subscribe(data => {
+      console.log("got data");
+      this.location = data;
+      this._storageService.setSessionData('location', data);
+      this.getUsers(data);
+    })
   }
 
 }

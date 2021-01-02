@@ -1,11 +1,21 @@
+.bg-top {
+    
+}
+
 .profile-management {
     width: 75%;
     margin-left: 12.5%;
     min-width: 720px;
     // transform: translate(50%,0);
-    box-shadow: 0 0 10px 0 #CCC;
+    // box-shadow: 0 0 10px 0 #CCC;
 }
 
 .label {
     margin-bottom: 0 !important;
+}
+
+.player-type-choice-container {
+}
+.player-type-choice-container > span {
+    line-height: 1 !important;
 }

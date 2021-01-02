@@ -13,7 +13,15 @@ import { TextboxComponent } from '../textbox/textbox.component';
 import { TimerButtonComponent } from '../timer-button/timer-button.component';
 import { PipesModule } from './pipes.module';
 import { NgxJoypixelsModule } from 'ngx-joypixels';
+import { PerfectScrollbarConfigInterface, PerfectScrollbarModule, PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+import { LoaderComponent } from '../loader/loader.component';
 
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+    suppressScrollX: true,
+    // suppressScrollY: true
+  };
+
+  
 @NgModule({
     declarations: [
         NotFoundComponent,
@@ -24,7 +32,8 @@ import { NgxJoypixelsModule } from 'ngx-joypixels';
         TimerButtonComponent,
         DividerComponent,
         MinimessageComponent,
-        MediatextComponent
+        MediatextComponent,
+        LoaderComponent
     ],
     imports: [
         PipesModule.forRoot(),
@@ -32,10 +41,15 @@ import { NgxJoypixelsModule } from 'ngx-joypixels';
         FormsModule,
         ReactiveFormsModule,
         ImageCropperModule,
-        NgxJoypixelsModule
+        NgxJoypixelsModule,
+        PerfectScrollbarModule
     ],
     providers: [
-        NavbarService,
+        NavbarService,            
+        {
+            provide: PERFECT_SCROLLBAR_CONFIG,
+            useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+        },
     ],
     exports: [
         CommonModule,
@@ -48,6 +62,9 @@ import { NgxJoypixelsModule } from 'ngx-joypixels';
         DividerComponent,
         MinimessageComponent,
         MediatextComponent,
+        Loader2Component,
+        PerfectScrollbarModule,
+        LoaderComponent
     ]
 })
 

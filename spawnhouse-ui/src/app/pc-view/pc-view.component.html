@@ -2,6 +2,11 @@
     <navbar *ngIf="isLoggedIn" #navbar></navbar>
 </div>
 
+
+<div class="position-absolute" style="top: 10%; left: calc(50% - 12.5vw);" *ngIf="minimessage?.show">
+    <sh-minimessage (fireMessage)="sendMessage($event)" [user]="minimessage?.userdata" (close)="closeMinimessage($event)"></sh-minimessage>
+</div>
+
 <sh-overlay 
 [closeOnClick]="config.closeOnClick"
 [transparent]="config.transparent"
@@ -18,9 +23,7 @@
 <div class="position-fixed w-100"style="bottom:0;">
     <sh-toast>    <!-- this component communicates via notification service-->
     </sh-toast>
-    
 </div>
-
 
 <div class="mt-0" [ngClass]="{'mt-3rem': isLoggedIn}">
 <router-outlet></router-outlet>

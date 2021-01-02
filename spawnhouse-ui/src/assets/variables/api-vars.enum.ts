@@ -31,12 +31,27 @@ export enum APIvars {
     GAMEDATA = 'gamedata',
     GET_FOLLOW_STATUS_OF = 'resources/getfollowstatus',
     SET_FOLLOWING = 'resources/setfollowing',
-    GET_FOLLOWDATA = 'resources/getfollowdata/',
+    GET_FOLLOWDATA = 'resources/getfollowdata',
     CONFIRM_OTP = 'signup/confirmOTP',
     RECOVERY = 'recovery',
     CHANGE_PASSWORD = 'recovery/newp',
     SET_NEW_FAV = 'gamedata/addfavorite',
-    GET_IMAGE = 'resources/getImage'
+    GET_IMAGE = 'resources/getImage',
+    SEND_MESSAGE = 'resources/message',
+    GET_MESSAGE_PINGS = 'messages/messagepings', 
+    GET_UNSEEN_MESSAGE_COUNT = 'messages/unseenmessagecount',
+    GET_BRIEF_MESSAGES = 'messages/briefmessages',
+    SET_LOCATION = 'signup/location',
+    GET_USERDATA_BY_ID = 'signup/getuserdatabyid',
+    GET_CHATROOM_ID_BY_USERS = 'messages/getchatroomid',
+    SAVE_MESSAGE = 'messages',
+    GET_ALL_MESSAGES = 'messages/getall',
+    GET_MESSAGES_BY_ID = 'messages/getbyid',
+    CLEAR_CONVO = 'messages/clearconvo',
+    DELETE_CONVO = 'messages/deleteconvo',
+    GET_FOLLOWERS = 'follow/getfollowers',
+    GET_FOLLOWING = 'follow/getfollowing',
+    GET_USERS_AROUND = "signup/getusersbydistance"
 }
 
 export enum GlobalContantsEnum {

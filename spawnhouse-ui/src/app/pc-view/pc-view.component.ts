@@ -3,6 +3,7 @@ import { FloatNotificationSchema } from 'src/assets/interfaces/float-notificatio
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
+import { UserService } from 'src/assets/services/user.service';
 import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
@@ -18,10 +19,13 @@ export class PcViewComponent {
   floatNotifConfig: FloatNotificationSchema;
   showOverlay: boolean;
   isLoggedIn: boolean;
+  minimessage; // {show: false, userdata: {}};
+
   @ViewChild('navbar') navbar: NavbarComponent;
   constructor(private _floatNoteService: FloatNotificationService,
     private _overlayService: OverlayService,
-    private _navbarService: NavbarService)
+    private _navbarService: NavbarService,
+    private _userService: UserService)
   {}
 
   ngAfterViewInit() {
@@ -42,7 +46,6 @@ export class PcViewComponent {
         return;
       }
     });
-
     
     this._floatNoteService.config.asObservable().subscribe(config => {
       this.floatNotifConfig = config;
@@ -56,10 +59,25 @@ export class PcViewComponent {
     this._overlayService.showSubject.asObservable().subscribe( show => {
       this.showOverlay = show;
     });
+
+    this._userService.minimessageConfigSubject.asObservable().subscribe( result => {
+      this.minimessage = result;
+    });
+
   }
   overlayClicked(event) {
     this.showOverlay = !this.config.closeOnClick
     this._overlayService.closeSubject.next();
+  }
+
+  sendMessage(event) {
+    console.log("inside pc view ", event);
+    this._userService.minimessageFiredSubject.next(event);
+  }
+
+  closeMinimessage(status) {
+    this.minimessage = {show: false, userdata: null};
+    this._overlayService.showSubject.next(false);
   }
 
 }

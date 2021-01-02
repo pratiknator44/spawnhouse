@@ -9,6 +9,7 @@ import { ProfileManagementComponent } from './profile-management/profile-managem
 import { HomeComponent } from './home/home.component';
 import { PasswordresetComponent } from './passwordreset/passwordreset.component';
 import { AroundyouComponent } from './aroundyou/aroundyou.component';
+import { MessagingComponent } from './messaging/messaging.component';
 const routes: Routes = [
   {
     path: 'home',
@@ -38,6 +39,12 @@ const routes: Routes = [
     canActivate: [ProfileGuardService],
     loadChildren: () => import('./modules/aroundyou.module').then( m => m.AroundYouModule),
     component: AroundyouComponent
+  },
+  {
+    path: 'messaging',
+    canActivate: [ProfileGuardService],
+    loadChildren: () => import('./modules/messaging.module').then(m => m.MessagingModule),
+    component: MessagingComponent
   },
   {
     path: 'resetpassword/:token',

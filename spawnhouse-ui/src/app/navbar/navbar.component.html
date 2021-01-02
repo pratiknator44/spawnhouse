@@ -10,7 +10,7 @@
     <div class="navbar-item text-black overflow-none" title="{{user.fname}}" (click)="routeTo('profile')" (click)="selectedOption = user.fname">
       <div class="text-center overflow-hidden" style="height: 100%;">
         <div class="cursor-pointer text-center iconset icon-size icon-player text-theme" *ngIf="!dp"></div>       
-        <img [src]="dp" *ngIf="dp" class="cursor-pointer dp" [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
+        <img [src]="dp" *ngIf="dp" class="cursor-pointer dp circle" [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
         <div class="text-center m-0 font-0-5-rem cursor-pointer" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div>
       </div>
       
@@ -44,13 +44,15 @@
         </div>
 
         <!-- data template -->
-        <div class="d-flex hover-bg-grey" *ngFor="let suggestion of searchSuggestions" (click)="gotoProfile(suggestion)">
-          <img class="m-1 circle" [src]="suggestion?.dpaddress" style="width: 2.5rem; height: 2.5rem;" *ngIf="suggestion?.dp" /> <div class="bg-secondary m-1 circle text-white" style="width: 2.5rem; height: 2.5rem;" *ngIf="!suggestion?.dp">
-          <span class="iconset icon-player h3 ml-1"></span>
-          </div>
-          <div style="width: calc(100% - 3rem);">
-              <div class="text-truncate hover-underline cursor-pointer" [ngClass]="{'mt-2': !suggestion.username }">&nbsp;{{ suggestion.fname + ' ' + suggestion.lname }}</div>
-              <div class="text-secondary" *ngIf="suggestion.username">&nbsp;@{{ suggestion.username }}</div>
+        <div class="hover-bg-grey std-box-shadow" *ngFor="let suggestion of searchSuggestions" (click)="gotoProfile(suggestion)">
+          <div class="d-flex">
+            <img class="m-1 circle" [src]="suggestion?.dpaddress" style="width: 2.5rem; height: 2.5rem;" *ngIf="suggestion?.dp" /> <div class="bg-secondary m-1 circle text-white" style="width: 2.5rem; height: 2.5rem;" *ngIf="!suggestion?.dp">
+              <span class="iconset icon-player h3 ml-1"></span>
+              </div>
+              <div style="width: calc(100% - 3rem);">
+                  <div class="text-truncate hover-underline cursor-pointer" [ngClass]="{'mt-2': !suggestion.username }">&nbsp;{{ suggestion.fname + ' ' + suggestion.lname }}</div>
+                  <div class="text-secondary" *ngIf="suggestion.username">&nbsp;@{{ suggestion.username }}</div>
+              </div>
           </div>
         </div>
 
@@ -65,18 +67,47 @@
     (click)="selectedOption = 'Notification'">
       <div class="cursor-pointer" [ngClass]="{'color-theme': selectedOption==='Notification'}">
         <span class="iconset icon-size icon-bell"></span>
-        <span class="badge badge-danger" style="margin-left: -0.25rem;">9+</span>
+        <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
       </div>
         <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div>
     </div>
 
-    <div class="navbar-item text-black text-center" title="Messages"
-    (click)="selectedOption = 'Messages'">
+    <div class="navbar-item text-black text-center position-relative" title="Messages"
+    (click)="selectedOption = 'Messages'; navOptionSelected('messages')">
       <div class="cursor-pointer" [ngClass]="{'color-theme': selectedOption==='Messages'}">
         <span class="iconset icon-size icon-bubbles3"></span>
-        <span class="badge badge-danger" style="margin-left: -0.25rem;">9+</span>
+        <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.messages !== 0">{{alerts.messages | async}}</span>
       </div>
         <div class="text-center m-0 font-0-5-rem cursor-pointer">Messages</div>
+
+    
+      <div class="message-container bg-white position-absolute mt-3 std-box-shadow rounded" *ngIf="navbarFlags.showMessages">
+        <div class="text-center font-italic text-secondary" *ngIf="navbarFlags.messagelistLoading===null">No messages yet</div>
+        <div class="m-3" *ngIf="navbarFlags.messagelistLoading"><loader2 [type]="0"></loader2><br>
+          <div class="text-secondary font-italic cursor-pointer text-center h6 mt-1">Loading</div>
+        </div>
+        <div>
+        </div>
+        <div class="user-message-row hover-bg-grey cursor-pointer d-flex mt-1" [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}" *ngFor="let msg of messages; let i = index">
+          <div class="h-100 m-3 position-relative">
+            <img class="circle dp-big" [src]="dpLinks[i]" *ngIf="dpLinks[i]" />
+            <div class="dp-big circle" style="transform: rotate(-45deg);" *ngIf="!dpLinks[i]">
+              <div class="cursor-pointer text-center iconset icon-player text-theme" style="font-size: 3rem; margin-top:-1rem; margin-left: -1rem;"></div>       
+            </div>
+            
+            <h3 class="badge badge-danger position-absolute" style="bottom: calc(100% - 4rem); left: 75%;">{{msg.totalunseen}}</h3>
+          </div>
+          <div class="m-2 text-left">
+            <div class="text-theme mt-3">{{msg.username | async}}</div>
+            <div class="text-secondary mr-2" style="text-overflow: ellipsis; overflow: hidden; width: 11rem; white-space: nowrap;">
+              {{ msg.text }}
+            </div>
+            <div class="text-secondary font-italic">{{msg.time | ago }}</div>
+          </div>
+      </div>
+        <div class="text-theme hover-underline cursor-pointer text-center mt-3" *ngIf="!navbarFlags.messagelistLoading"(click)="routeToMessaging()">Show All</div>
+      </div>
+
     </div>
 
     <div class="navbar-item text-black mt-2" (click)="updateOptions()" style="z-index: 2;" title="Update">
@@ -103,7 +134,7 @@
     </div>
 
   </div>
-  
+
 </nav>
 
 <div class="bg-white position-fixed z-nav edit-game-container rounded" *ngIf="showGameBroadcast">

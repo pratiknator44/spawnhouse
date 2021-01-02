@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
 import { FormGroup } from '@angular/forms';
-import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { APIservice } from 'src/assets/services/api.service';
 import { IPictureUploadSchema } from 'src/assets/interfaces/picture-upload-schema.interface';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
-import { CookieService } from 'ngx-cookie-service';
+import { UserService } from 'src/assets/services/user.service';
+import { take } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'sh-profile',
@@ -32,17 +32,19 @@ export class ProfileComponent implements OnInit {
   showImageUpload: boolean;
   isUserProfile = true;    // if user accesses someone else's profile, this is false;
   followStatus: String;
+  followUsers; showFollow: boolean;
   bg = ['danger', 'warning', 'success', 'theme', 'danger'];
   tempFavGamesArray = []; // used to show before user clicks 'show all' option
+  profileFlags = {loadingFollow: true, loadingCover: true, loadingGamingInfo: true};
+
   constructor( private _storageService : StorageService,
-    private http: HttpClient,
     private _apiService: APIservice,
     private _notifService: FloatNotificationService,
     private _navbarService: NavbarService,
     private _overlayService: OverlayService,
-    private _router: Router,
-    private _activeRoute: ActivatedRoute,
-    private _dom: DomSanitizer) {
+    private _userService: UserService,
+    private _activeRoute: ActivatedRoute) {
+
       this._activeRoute.params.subscribe( val => {
         if(this._activeRoute.snapshot.params.username)
         this.ngOnInit();
@@ -52,22 +54,25 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.user = {};
     let addusername;
+
     if(this._activeRoute.snapshot.params.username) {
       this.isUserProfile = false;
-      this.http.get(APIvars.APIdomain+'/'+APIvars.APIsignup+'/'+this._activeRoute.snapshot.params.username).subscribe( result => {
-        console.log("guest user", result);
+      this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.APIsignup+'/'+this._activeRoute.snapshot.params.username).subscribe( result => {
+        this._notifService.setTitle(result['user'].username || result['user'].fname + ' ' + result['user'].lname);
         if(!result || result['error']) {
           console.log('user not found should route');
-          this._router.navigate(['../not-found']);
+          this._apiService.router.navigate(['../not-found']);
           return;
         }
         
         this.user = result['user'];
         this.user['nowplaying'] = result['nowplaying'];
+        
         this.user['gamedata'] = result['gamedata'];
+        
         this.tempFavGamesArray = result['gamedata']? result['gamedata']['fav']: [];
-        console.log("logged in user ", this.user);
         this.getFollowData();
+        this.profileFlags.loadingGamingInfo = false;
       });
 
       // getting dp of the user
@@ -85,15 +90,10 @@ export class ProfileComponent implements OnInit {
       this.userdp = this._storageService.dpLink;
 
       if(!this._storageService.coverLink) {
-        this._apiService.getCover();
-
-        this._apiService.coverPictureSubject.subscribe( coverurl => {
-          this.usercover = coverurl.coverurl;
-          this._storageService.coverLink = coverurl.coverurl;
-        });
-
+        this.getCoverOfUser(this.user._id);
       } else {
         this.usercover = this._storageService.coverLink;
+        this.profileFlags.loadingCover = false;
       }
 
       this._navbarService.getDpSubject.next(true);
@@ -110,25 +110,27 @@ export class ProfileComponent implements OnInit {
       addusername = '';
       this.getGamedata();
     }
-
+    this._notifService.setTitle(this.user.username || this.user.fname+' '+this.user.lname);
+    
+    this.getCoverOfUser(this.user._id)
+    
   }
 
   getFollowStatus(id: String) {
-    this.http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOW_STATUS_OF+'/'+id).subscribe(result => {
+    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOW_STATUS_OF+'/'+id).subscribe(result => {
       this.followStatus = result['status'];
     });
   }
 
   getGamedata() {
     this.user['gamedata'] = null;
-    // this.user['gamedata'] = this._apiService.getGamedata().then(resolve => {
-      // this.tempFavGamesArray = resolve['result'] ? resolve['result']['fav'].slice(0, 5) : [];
-      // return resolve['result'];});
-    
     const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
-    this.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
+    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
       this.user['gamedata'] = result['result'];
-      this.tempFavGamesArray = result['result'] ? result['result']['fav'].slice(0, 5) : [];
+      this._storageService.setSessionData('gamedata', JSON.stringify(result['result']));
+      this.tempFavGamesArray = result['result']['fav'] ? result['result']['fav'].slice(0, 5) : [];
+
+      this.profileFlags.loadingGamingInfo = false;
     });
   }
 
@@ -136,7 +138,6 @@ export class ProfileComponent implements OnInit {
   setFollowStatus() {
     // const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
     this._apiService.addRemoveFollower(this.followStatus, this.user._id).then(resolve => {
-      console.log("resulrr   ", resolve);
       this.followStatus = resolve['status'] || '+Follow';
       this.user.followdata.followerCount = resolve['followerCount'];
     });
@@ -148,27 +149,56 @@ export class ProfileComponent implements OnInit {
   }
 
   getDpOfUser(id) {
-    this.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
-      let reader = new FileReader();
+    this._apiService.getImagePromise('dp', id).then( image => {
+      
+    if(image['type'] === 'application/json') {
+      this._storageService.setDp(null);
+      this.userdp = null;
+      return;
+    };
+        let reader = new FileReader();
       reader.addEventListener('load', () => {
-        this.userdp = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+        this.userdp = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+        if(this.isUserProfile) this._storageService.setDp(this.userdp);
       }, false);
+  
       if (image) {
-         reader.readAsDataURL(image as Blob);
+          reader.readAsDataURL(image);
       }
     });
+
+    // this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
+    //   if(image['type'] === 'application/json')  {
+    //     this.userdp = null;
+    //     return;
+    //   }
+
+    //   let reader = new FileReader();
+    //   reader.addEventListener('load', () => {
+    //     this.userdp = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+    //   }, false);
+    //   if (image) {
+    //      reader.readAsDataURL(image as Blob);
+    //   }
+    // });
   }
 
   getCoverOfUser(id) {
-    this.http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
-      if(image['size'] <= 44) {
-        console.log('image errr')
+    id = id ? id : this.user._id;  // for user accessing own profile or not
+    if(!id) return;
+    
+    this._apiService.getImagePromise('cover', id).then( image => {
+      this.profileFlags.loadingCover = false;
+      if(image['type'] === 'application/json')  {
         this.usercover = null;
+        this._storageService.setCover(null);
         return;
       }
+
       let reader = new FileReader();
       reader.addEventListener('load', () => {
-        this.usercover = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+        this.usercover = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+        if(this.isUserProfile) this._storageService.setCover(this.usercover);
       }, false);
       if (image) {
          reader.readAsDataURL(image as Blob);
@@ -176,11 +206,11 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  getFollowData() {
+  getFollowData(id?) {
     const param = this.isUserProfile ? '' : this._activeRoute.snapshot.params.username;
-    this.http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOWDATA+param).subscribe( followdata => {
+    this._apiService.getFollowDataById( id || this.user._id).then(followdata => {
+      console.log("followdata ", followdata);  
       this.user['followdata'] = followdata['data'];
-      console.log('after follow data ', this.user);
     });
   }
   
@@ -195,7 +225,7 @@ export class ProfileComponent implements OnInit {
       imageApi = APIvars.APIdomain+'/'+APIvars.SET_COVER;
     }
     let isOpenFlag = true;    // if false, the subject to keep open floating notice is not triggered
-    this.http.post(imageApi, fd, {reportProgress: true, observe: 'events'}).subscribe( result => {
+    this._apiService.http.post(imageApi, fd, {reportProgress: true, observe: 'events'}).subscribe( result => {
       if(isOpenFlag) {
         this._notifService.closeOn.next(true);
         isOpenFlag = false;
@@ -213,8 +243,8 @@ export class ProfileComponent implements OnInit {
       if((result as HttpResponse<any>).body?.message === 'passed') {
         this.disableImageUpload = false;
         setTimeout(() => {
-          this.uploadMode === 'dp' ? this._navbarService.getDpSubject.next(true) : this._apiService.getCover();
-          // this.uploadMode === 'dp' ? this.navbar.getDp() : this._apiService.getCover();
+          this.uploadMode === 'dp' ? this._navbarService.getDpSubject.next(true) : this.getCoverOfUser(this.user._id);
+          // this.uploadMode === 'dp' ? this.navbar.getDp() : this._apiService.getImage('cover');;
           this.setVisibilityImageOverlay(false);
         }, 1000);
       }
@@ -262,7 +292,7 @@ export class ProfileComponent implements OnInit {
       this._apiService.getDp();
       this._navbarService.getDpSubject.next(true);
     } else if(this.uploadMode === 'cover') {
-      this._apiService.getCover();
+      this.getCoverOfUser(this.user._id);
     }
     this.setVisibilityImageOverlay(false);
   }
@@ -285,7 +315,13 @@ export class ProfileComponent implements OnInit {
   }
 
   routeToEditProfile() {
-    this._router.navigateByUrl('/manage');
+    this._apiService.router.navigateByUrl('/manage');
+  }
+
+  routeToProfile(id) {
+    console.log("routing to profile user ", id);
+    this._apiService.router.navigateByUrl('/'+id);
+    this.ngOnInit();
   }
 
   gotoWebsite(url) {
@@ -296,8 +332,8 @@ export class ProfileComponent implements OnInit {
   nowPlayingFlags = {showDeleteNowPlaying: false, showAddToFavs: false};
   removeNowPlaying() {
     this.nowPlayingFlags.showDeleteNowPlaying = false;
-    this.http.delete(APIvars.APIdomain+'/'+APIvars.REMOVE_NOW_PLAYING).subscribe( result => {
-      if(result['message']=== 'passed') {
+    const conf: any = this._apiService.removeNowPlaying().then( result => {
+      if(result['message'] === 'passed') {
         this._apiService.getNowPlaying();
       }
     });
@@ -311,7 +347,6 @@ export class ProfileComponent implements OnInit {
     this.nowPlayingFlags.showDeleteNowPlaying = false;
   }
   showAllFavourites() {
-    console.log("ulalala mu me lo", this.user.gamedata.fav);
     this.tempFavGamesArray  = this.user.gamedata.fav;
   }
 
@@ -324,7 +359,7 @@ export class ProfileComponent implements OnInit {
     const favgame =  {label: nowplaying.game, value: setFav ? 'fav': ''};
     nowplaying.game ? favgame['username'] = nowplaying.username : '';
     if(nowplaying.game) {
-      this.http.patch(APIvars.APIdomain+'/'+ APIvars.SET_NEW_FAV, {newFavs: [favgame, favgame]}).subscribe( result => {
+      this._apiService.http.patch(APIvars.APIdomain+'/'+ APIvars.SET_NEW_FAV, {newFavs: [favgame, favgame]}).subscribe( result => {
         this.user['gamedata'] = null;
         if(result['message']=== 'passed') {
           this.getGamedata();
@@ -333,4 +368,90 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  initMinimessage() {
+    console.log(this.user);
+    const userdata = {
+      _id: this.user._id,
+      fname: this.user.fname,
+      lname: this.user.lname,
+      gamedata: { fav: {}, genres: {}},
+      dpLink: this.userdp,
+      location: 'some location',
+    }
+
+    userdata.gamedata.fav = this.getCommonFavs();
+    userdata.gamedata.genres = this.getCommonGenres();
+    console.log(userdata.gamedata.fav);
+
+    this._overlayService.configSubject.next({show: true, closeOnClick: false});
+    this._overlayService.showSubject.next(true);
+    this._userService.minimessageConfigSubject.next({show: true, userdata});
+
+    this._userService.minimessageFiredSubject.asObservable().pipe(take(1)).subscribe( messagedata => {
+      //getting previous convo id, if not, create new.
+      this._apiService.http.post(APIvars.APIdomain+'/'+APIvars.GET_CHATROOM_ID_BY_USERS, {users: [this.user._id, JSON.parse(this._storageService.getSessionData('user'))['_id']]}).toPromise().then(result => {
+        console.log("chat room id = ", result)
+        const resbody = result['id'] ? {_cid: result['id'], receiverid: this.user._id, text: messagedata.message} :
+        {receiverid: this.user._id, text: messagedata.message};
+        console.log(resbody);
+        this._apiService.http.post(APIvars.APIdomain+'/'+APIvars.SAVE_MESSAGE, resbody).subscribe(result => {
+          console.log("message saved? ", result);
+          // this._userService.minimessageConfigSubject.next({show: false, userdata: null});
+          this._overlayService.showSubject.next(false);
+        });
+      });
+    });
+  }
+
+  getCommonFavs() {
+    if(this.user['gamedata'].fav === [] || this.user['gamedata'].genres === []) return null;
+    
+    const currentUserFavs = JSON.parse(this._storageService.getSessionData('gamedata'))['fav'];
+
+    return this.user['gamedata']['fav'].filter(function(fav) { return currentUserFavs.indexOf(fav) == -1; });
+  }
+
+  getCommonGenres() {
+    if(this.user['gamedata'].fav === [] || this.user['gamedata'].genres === []) return null;
+    const currentUserGenres = JSON.parse(this._storageService.getSessionData('gamedata'))['genres'];
+
+    return this.user['gamedata']['genres'].filter(function(genre) { return currentUserGenres.indexOf(genre) == -1; });
+  }
+  selectedFollowType;
+  followDpLinks = [];
+
+  getFollow(type: string){
+    this.showFollow = true;
+    this.profileFlags.loadingFollow = true;
+    this.followUsers = null;
+    this.selectedFollowType = type;
+    this._overlayService.configSubject.next({transparent: false, closeOnClick: false});
+    this._overlayService.showSubject.next(true);
+    this._userService.getFollowData(type, this.user._id).then(result => {
+      console.log("followers ", result);
+      this.followUsers =  result['result'];
+      this.profileFlags.loadingFollow = false;
+      const l = this.followUsers.length;
+      for(let x=0; x<l; x++) {
+        this.getDpById(this.followUsers[x]._id, x);
+      }
+    });
+
+  }
+
+  getDpById(id, x) {
+    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
+      if(image['type'] === 'application/json')  {
+        this.followDpLinks[x] = null;
+        return;
+      }
+      let reader = new FileReader();
+      reader.addEventListener('load', () => {
+        this.followDpLinks[x] = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+      }, false);
+      if (image) {
+         reader.readAsDataURL(image as Blob);
+      }
+    });
+  }
 }

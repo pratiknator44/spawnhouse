@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import './assets/variables/variables.scss';
 @import './assets/variables/icons.scss';
+@import '~perfect-scrollbar/css/perfect-scrollbar.css';
 .cursor-pointer {
     cursor: pointer !important;
 }
@@ -59,6 +60,9 @@ body {
 .bg-lite {
     background-color: $litegrey !important;
 }
+.bg-theme-lite {
+    background-color: rgb(232, 241, 255) !important;
+}
 
 .border-none {
     border: none !important;
@@ -67,6 +71,10 @@ body {
 
 .border-grey {
     border: solid 1px #CCC;
+}
+
+.border-bottom-grey {
+    border-bottom: solid 1px #CCC;
 }
 
 .border-theme {
@@ -112,6 +120,9 @@ body {
 .circle {
     border-radius: 50%;
 }
+.corners-sharp {
+    border-radius: 0;
+}
 
  .animate-float {
     transition: width 20rem 3s !important;
@@ -140,6 +151,14 @@ body {
 
 .mt-nav {
     margin-top: 4.25rem !important;
+}
+
+.ml-auto {
+    margin-left: auto !important;
+}
+
+.mr-auto {
+    margin-right: auto !important;
 }
 
 .z-nav {
@@ -201,10 +220,16 @@ body {
     background-color: #CCC;
 }
 
-.hover-bg-red:hover {
-    background-color: red !important;
+.hover-bg:hover {
+    background-color: rgb(231, 231, 231) !important;
+}
+
+.hover-bg-lite:hover {
+    background-color: rgb(255, 255, 255) !important;
     color: white !important;
 }
+
+
 .hover-bg-theme:hover {
     background-color: $theme-color !important;
     color: white !important;
@@ -257,7 +282,27 @@ body {
 label {
     margin: 0 !important;
 }
-
+.btn {
+    border-radius: 0;
+}
 
 // emojione classes do not touch
 .emojione{font-size:inherit;height:3ex;width:3.1ex;min-height:20px;min-width:20px;display:inline-block;margin:-.2ex .15em .2ex;line-height:normal;vertical-align:middle}img.emojione{width:auto}
+
+.dp-big {
+    height: 4rem;
+    width: 4rem;
+}
+
+.dp-xl {
+    height: 7rem;
+    width: 7rem;
+}
+
+.text-small {
+    font-size: 0.75rem; 
+}
+
+.big-icon {
+    font-size: 4rem;
+}

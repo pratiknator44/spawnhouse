@@ -1,8 +1,15 @@
-<div class="postion-relative">
+<div class="postion-relative" *ngIf="type==1">
     <div class="text">L</div>
     <div class="ball-container postion-relative">
         <div class="ball position-absolute"></div>
         <div class="shadow position-absolute"></div>
     </div>
     <div class="text">ading</div>
+</div>
+
+<div class="position-relative" *ngIf="type==0">
+    <div class="ball-container-small d-inline-block postion-relative">
+        <div class="ball-small circle position-absolute"></div>
+        <div class="shadow-small position-absolute"></div>
+    </div>
 </div>

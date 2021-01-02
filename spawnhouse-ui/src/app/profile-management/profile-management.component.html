@@ -1,11 +1,28 @@
-<div class="profile-management mt-3">
+<div class="position-relative bg-lite">
+
+<div class="w-100 bg-theme" style="z-index: 0; height: 30vh;"></div>
+
+<div class="profile-management position-relative mt-3 z-nav bg-white" style="top: -10rem;">
+
+    <div class="m-3 mt-3">
+        <h2 class="text-secondary">About</h2>
+        <label>Your top 3 preferences when you play a co-op game</label>
+        <div class="player-type-choices text-center d-flex text-secondary mt-3" style="flex-wrap: wrap;">
+            <div class="player-type-choice-container text-center ml-auto mr-auto cursor-pointer" [ngClass]="{'text-theme': type?.checked}" (click)="selectType(i)" *ngFor="let type of playerTypes; let i = index">
+                <span class="big-icon cursor-pointer iconset icon-{{type.id | playertype : true}} d-block m-0 p-0"></span>
+                {{type.id | playertype | titlecase}}
+            </div>
+        </div>
+        <div class="w-75 d-inline-block"></div>
+        <div class="btn bg-theme text-white w-25" (click)="savePlayerType()" [ngClass]="{'bg-secondary': saveText.type === 'Saving...'}" style="margin-top: 2rem;">{{saveText.type}}</div>
+    </div>
+
 
     <div class="m-3">
         <div class="w-25">
-            <!-- <sh-timer-button></sh-timer-button> -->
         </div>
+        <hr>
         <form [formGroup]="gamedataForm" (ngSubmit)="submitGamedata()" action="" method="POST">
-            <h2 class="text-secondary">Videogame Preferences</h2>
             <label class="mt-1">Some of the best videogames you've played. Click on game name to remove it. Click on <span class="iconset icon-favorite_outline text-danger"></span> to set as favourite</label>
             <sh-chips [items]="gameSuggestions" [selected]="items" (queryChange)="queryChange($event)" (selectionChange)="newSelections($event)"></sh-chips>
 
@@ -28,10 +45,7 @@
 
     <!-- <hr> -->
     <br><br>
-    <sh-divider>
-
-    </sh-divider>
-
+<hr>
     <div class="m-3">
         <form [formGroup]="userinfoForm" (ngSubmit)="submitUserdata()" action="" method="POST">
             <h2 class="text-secondary">Personal</h2>
@@ -84,7 +98,7 @@
             <div class="row">
                 <div class="col-12">
                     <textarea cols="7" class="form form-control" formControlName="bio"></textarea>
-                    <label class="text-secondary float-right">{{  userinfoForm.get('bio').value.length+'/100' }}</label>
+                    <label class="text-secondary float-right">{{ userinfoForm.get('bio').value.length+'/100' }}</label>
                 </div>
             </div><div class="row mt-3">
                 <div class="col-12">Favourite Quote</div>
@@ -104,4 +118,5 @@
         </form>
 
     </div>
+</div>
 </div>
