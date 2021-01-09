@@ -10,9 +10,9 @@
         <div class="ml-2 text-left">
             <div class="h4 m-0">{{user?.fname + ' '+ user?.lname }}</div> 
             <div class="text-secondary d-flex">
-                <div *ngIf="user?.gamedata?.fav[0].label">
+                <div *ngIf="user?.gamedata?.fav[0]?.label">
                     Also plays
-                    <h6>{{user?.gamedata?.fav[0].label}}</h6>
+                    <h6>{{user?.gamedata?.fav[0]?.label}}</h6>
                 </div>
                 <div class="ml-3" *ngIf="user?.gamedata?.genres[0]">
                     Also Likes

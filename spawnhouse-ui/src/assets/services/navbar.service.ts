@@ -11,6 +11,8 @@ export class NavbarService {
     showOption = new Subject<string>();
     refreshUser = new Subject();    // update user fname in navbar
     refreshUnseenMessages = new Subject();
+    selectedConvo: any;        // present a conversation during message component loading
+    unseenMessagesRecord = [];
     constructor(
         private _http: HttpClient
     ) {}

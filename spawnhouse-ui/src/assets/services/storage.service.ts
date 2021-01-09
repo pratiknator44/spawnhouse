@@ -10,6 +10,7 @@ export class StorageService {
     coverLink: any;
     nowplaying: any;
     gameData: any;
+    otherUsers: any = [];
     constructor() {}
     setSessionData(key, value) {
         sessionStorage.setItem(key, value);
@@ -62,6 +63,34 @@ export class StorageService {
     reset() {
         localStorage.clear();
         sessionStorage.clear();
+        this.coverLink = this.dpLink = this.nowplaying = this.gameData = this.currentData = this.currentUser = null;
+    }
+
+    saveUserProperty(_id, property, value) {
+        const otherUser = JSON.parse(this.getSessionData(_id));
+        // console.log("other users = ", this.getSessionData(_id), "_id ", _id);
+        if(otherUser) {
+            otherUser[property] = value;
+            this.setSessionData(_id, JSON.stringify(otherUser));
+        }
+    }
+
+    saveFullUser(userob, checkIfExists?: boolean) {
+        if(checkIfExists) {
+            if(this.getSessionData(userob['_id']))  return;
+        }
+        console.log("writing user to session");
+        this.setSessionData(userob['_id'], JSON.stringify(userob));
+    }
+
+    getUserProperty(_id, property) {
+        const user = JSON.parse(this.getSessionData(_id));
+        // console.log("_id ", _id, "property asked ", property, " value ", user);
+        return JSON.parse(this.getSessionData(_id))[property];
+    }
+
+    userExistsInSession(_id) {
+        return JSON.parse(this.getSessionData(_id));
     }
 
 }

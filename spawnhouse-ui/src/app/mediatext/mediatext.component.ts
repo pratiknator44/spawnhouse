@@ -8,7 +8,8 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 export class MediatextComponent implements OnInit {
 
   @ViewChild('contentdiv') contentDiv: ElementRef;
-  text = `This will be converted to JoyPixels emojis! :-) :thumbsup: ❤️`;
+  text;
+  // = `This will be converted to JoyPixels emojis! :-) :thumbsup: ❤️`;
   constructor() { }
 
   ngOnInit(): void {

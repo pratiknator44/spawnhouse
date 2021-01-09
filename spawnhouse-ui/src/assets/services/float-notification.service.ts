@@ -47,7 +47,7 @@ export class FloatNotificationService {
     getLocationToast() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(location => {
-                console.log("location === === ", location);
+                console.log("new location: ", location);
                 const formattedLocation = [location['coords']['latitude'], location['coords']['longitude'] ];   
         
                 this._storageService.setSessionData('location', JSON.stringify(formattedLocation));
@@ -55,6 +55,7 @@ export class FloatNotificationService {
                 this._userService.saveLocation(formattedLocation);
                 
                 this.getLocationSubject.next(formattedLocation);
+                console.log("formatted location = ", formattedLocation);
                 this.configToast("Getting Location... Found you :D", "Dismiss");
                 setTimeout( () => {
                     this.showToastSubject.next(false);

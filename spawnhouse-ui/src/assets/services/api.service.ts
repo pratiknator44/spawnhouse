@@ -107,6 +107,13 @@ export class APIservice {
   }
 
   getImagePromise(type, id) {
+
+    // const tempCover = this._storageService.getUserProperty(id, type === 'cover'? 'coverLink' : type);
+    // console.log("get cover from memory ", tempCover);
+    // if(tempCover) {
+    //   return new Promise((tempCover) => tempCover);
+    // }
+
     if(type === 'dp')
       return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).toPromise();
     else if(type === 'cover') {
@@ -161,9 +168,9 @@ export class APIservice {
       
   getNowPlaying() {
     this._http.get(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING).subscribe( np => {
-      // console.log('***now playing', np);
-      this._storageService.nowplaying = np['np'][0];
-      this._storageService.currentUser['nowplaying'] = np['np'][0];
+      console.log('***now playing', np);
+      this._storageService.nowplaying = np['np'];
+      this._storageService.currentUser['nowplaying'] = np['np'];
     });
   }
 
@@ -199,8 +206,12 @@ export class APIservice {
     return this.http.post(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA, {playerType}).toPromise();
   }
   
-  getUsersAround(location, distance?: number) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_USERS_AROUND, {location, distance}).toPromise();
+  getUsersAround(location, distance?: number, page?: number) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_USERS_AROUND, {location, distance, page}).toPromise();
+  }
+
+  checkUsername(username: string) {
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.CHECK_USERNAME+'/'+username).toPromise();
   }
 
 }

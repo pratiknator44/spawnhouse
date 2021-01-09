@@ -157,3 +157,31 @@
         background-color: #CCC;
     }
 }
+
+.revolving-circles {
+        width: 1rem; height: 1rem;
+        left: 1rem; top: 0rem;
+
+        position: absolute;
+        background-color: white;
+        border-radius: 50%;
+        box-shadow: -1rem 0rem 1rem 1rem #fff;
+    }
+
+@keyframes rotate{
+    0%{
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+@keyframes bg-transition {
+    0% { background-color: #06F; }
+    20% { background-color: #266CD5; }
+    40% {background-color: #0052CC;}
+    60% {background-color: #172C4D;}
+    80% {background-color: #003D99;}
+    100% {background-color: #003D99;}
+}

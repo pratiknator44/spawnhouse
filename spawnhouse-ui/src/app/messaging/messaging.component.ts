@@ -16,14 +16,15 @@ import { APIvars } from 'src/assets/variables/api-vars.enum';
 export class MessagingComponent implements OnInit {
 
   chats = [];
-  dpLinks = [];
+  // dpLinks = [];
   selectedChat: string;
   conversation;
   user;
   otherUser;
   convoIndex = 0; // used to show dp of user on right
-  messageFlags = { convosLoading: false, msgLoading: false};
+  messageFlags = { convosLoading: true, msgLoading: false, userdataLoading: false};
   message: any;
+  unseenConvos = [];
   @ViewChild('messageArea') messageArea: ElementRef;
 
   constructor(private _notifService: FloatNotificationService,
@@ -37,11 +38,13 @@ export class MessagingComponent implements OnInit {
   ngOnInit(): void {
     this._notifService.setTitle('Messages');
     this.user = JSON.parse(this._storageService.getSessionData('user'));
-    this.briefmessages();
 
     this._socketService.listen('test event').subscribe( data => {
       console.log("data from server: ", data);
     });
+    // this.selectedChat = this._navbarService.selectedConvo || null;
+    this.unseenConvos = this._navbarService.unseenMessagesRecord;
+    this.briefmessages();
   }
 
   sendSocketMessage() {
@@ -64,7 +67,7 @@ export class MessagingComponent implements OnInit {
   groupMessages(messages) {
     // console.log("got messages", messages);
     const l = messages.length;
-    this.dpLinks = [];
+    // this.dpLinks = [];
     this.chats = []
 
     if( l === 0) return;
@@ -81,8 +84,10 @@ export class MessagingComponent implements OnInit {
       this.getUserImageById(messages[x]['senderid'], 'dp');
     }
     this.sortConvo();
-
-    this.selectedChat = this.chats[0].id || null;
+    console.log("sleected convo ", this._navbarService.selectedConvo, "chats ", this.chats);
+    this.selectedChat = this._navbarService.selectedConvo ||  this.chats[0].id || null;
+    if(this.selectedChat) this.convoIndex = this.chats.findIndex( convo => convo.id == this.selectedChat);
+    this._navbarService.selectedConvo = null;
     this.messageFlags.convosLoading = false;
     this.getMessagesFromId(this.selectedChat);
     // this.user._id = this.chats[0].userid;
@@ -97,13 +102,15 @@ export class MessagingComponent implements OnInit {
   getUserImageById(userid: string, type: string, index?: any) {
     if(!userid) return;
     const i = this.chats.findIndex( message => message.userid === userid);
-    this.dpLinks[i] = this._apiService.getUserImageById('dp', userid);
+    this.chats[i]['dpLink'] = this._apiService.getUserImageById('dp', userid);
+    // this.dpLinks[i] = this._apiService.getUserImageById('dp', userid);
   }
 
   // gets messages and sets all seen to true;
   getMessagesFromId(chatid) {
     this.conversation = [];
     this.messageFlags.msgLoading = true;
+    this.messageFlags.userdataLoading = true;
     this._apiService.getMessagesByChatid(chatid).toPromise().then( res => {
       this.conversation = res['result'];
       this.messageFlags.msgLoading = false
@@ -111,6 +118,8 @@ export class MessagingComponent implements OnInit {
         this.chats = [];
         return;
       }
+      console.log("conversation ", this.conversation);
+
       this.setOtherUserInfo();
       this.messageFlags.msgLoading = false;
       this.scrollDownMessages();
@@ -119,14 +128,19 @@ export class MessagingComponent implements OnInit {
   }
 
   setOtherUserInfo() {
+    this.messageFlags.userdataLoading = true;
     this.otherUser = this.chats[this.convoIndex];
-    this.otherUser['nowplaying'] = null;
+    this.messageFlags.userdataLoading = false;
+    this.otherUser['nowplaying'] = this.otherUser['gamedata'  ] = this.otherUser['playerType'] = null;
     this._http.get(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING+'/'+this.otherUser.userid).toPromise().then(gamedata => {
       this.otherUser['nowplaying'] = gamedata['result'];
-    });
-
-    this._http.get(APIvars.APIdomain+'/'+APIvars.GAMEDATA+'/'+this.otherUser.userid).toPromise().then( gamedata => {
-      this.otherUser['gamedata'] = gamedata['result'];
+      this._http.get(APIvars.APIdomain+'/'+APIvars.GAMEDATA+'/'+this.otherUser.userid).toPromise().then( gamedata => {
+        console.log("gamedata ", gamedata['result']);
+        this.otherUser['gamedata'] = gamedata['result'];
+        this.otherUser['playerType'] = gamedata['result']['playerType'];
+        
+        this.messageFlags.userdataLoading = false;
+      });
     });
   }
 
@@ -149,9 +163,9 @@ export class MessagingComponent implements OnInit {
         this.chats[this.convoIndex].text = this.message.textl
         this.chats[this.convoIndex].time = new Date().getTime();
         this.chats[this.convoIndex].seen = false;
-        const dpAddress = this.dpLinks[this.convoIndex];
-        this.dpLinks.splice(this.convoIndex,1); 
-        this.dpLinks.unshift(dpAddress);
+        // const dpAddress = this.dpLinks[this.convoIndex];
+        // this.dpLinks.splice(this.convoIndex,1); 
+        // this.dpLinks.unshift(dpAddress);
         this.convoIndex = 0;
         this.sortConvo();
 

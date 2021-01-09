@@ -51,7 +51,8 @@ export enum APIvars {
     DELETE_CONVO = 'messages/deleteconvo',
     GET_FOLLOWERS = 'follow/getfollowers',
     GET_FOLLOWING = 'follow/getfollowing',
-    GET_USERS_AROUND = "signup/getusersbydistance"
+    GET_USERS_AROUND = "signup/getusersbydistance",
+    CHECK_USERNAME = 'signup/usernameavailable'
 }
 
 export enum GlobalContantsEnum {

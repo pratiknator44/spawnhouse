@@ -1,13 +1,10 @@
 import { Component, OnInit, Output, EventEmitter, Input, ViewChild } from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
-import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { IPictureUploadSchema } from 'src/assets/interfaces/picture-upload-schema.interface';
 import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
-import { HttpClient } from '@angular/common/http';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SuggestionsComponent } from '../suggestions/suggestions.component';
@@ -46,7 +43,7 @@ export class NavbarComponent implements OnInit {
   navbarFlags = {showMessages: false, messagelistLoading: false, showNotification: false, notificationLoaded: false};
   messages: INavbarMessage[] | any= [];
   notifications: INotification[] = [];
-  dpLinks = []; // cuz sanetized links cant be binded to object properties of messages.dpLink
+  // dpLinks = []; // cuz sanetized links cant be binded to object properties of messages.dpLink
 
   consoles = [
     {icon: 'android', id: 'm'},
@@ -89,7 +86,7 @@ export class NavbarComponent implements OnInit {
       
     this._navbarService.refreshUnseenMessages.subscribe(res => {
       this.getUnseenMessageCount();
-    })
+    });
 
 
     this.selectedOption = this.options[0].name;
@@ -100,7 +97,7 @@ export class NavbarComponent implements OnInit {
     this._navbarService.getDpSubject.asObservable().subscribe( status => {
       if(status) this.getDp();
     });
-    this._overlayService.closeSubject.asObservable().toPromise().then( closeOptions => {
+    this._overlayService.closeSubject.asObservable().subscribe( closeOptions => {
       this.showUserOptions = false; this.showSuggestions = false; this.showUpdateOptions = false;
       this.navbarFlags.showMessages = false; this.navbarFlags.showNotification = false;
     });
@@ -207,13 +204,13 @@ export class NavbarComponent implements OnInit {
     this.showUserOptions ?
       this._overlayService.configSubject.next({transparent: true, closeOnClick: true })
       : 
-      this._overlayService.closeSubject.next();
+      this.closeOverlay();
   }
 
   updateOptions() {
     this.showUpdateOptions = !this.showUpdateOptions;
     if(!this.showUpdateOptions) {
-      this._overlayService.closeSubject.next();
+      this.closeOverlay();
     } else {
       this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
     }
@@ -280,6 +277,7 @@ export class NavbarComponent implements OnInit {
 
   closeOverlay() {
     this._overlayService.showSubject.next(false);
+    this._overlayService.closeSubject.next(true);
   }
 
   gameSuggestions = [];
@@ -303,6 +301,7 @@ export class NavbarComponent implements OnInit {
   }
 
   routeTo(place) {
+    this.closeOverlay();
     this._apiService.router.navigate(['./'+place]);
   }
 
@@ -311,7 +310,7 @@ export class NavbarComponent implements OnInit {
   }
 
   gotoProfile(suggestion){
-    this._overlayService.showSubject.next(false);
+    this.closeOverlay();
     this.showUserSuggestions = false;
     this.searchSuggestions = [];
     this._apiService.router.navigate(['/', suggestion._id]);
@@ -327,13 +326,13 @@ export class NavbarComponent implements OnInit {
 
   navOptionSelected(option) {
     // if(option === this.selectedOption.toLocaleLowerCase()) this.closeOverlay();
-    
+    this._overlayService.showSubject.next(true);
     switch (option) {
       case 'messages':
-        if(this.navbarFlags.showMessages) { this.navbarFlags.showMessages = false; return; }
+        if(this.navbarFlags.showMessages) { this.navbarFlags.showMessages = false; this.closeOverlay(); return; }
         this.navbarFlags.showMessages = true;
         this.navbarFlags.messagelistLoading = true;
-        this.messages = [];
+        // this.messages = [];
         this.briefmessages();
 
     }
@@ -359,29 +358,32 @@ export class NavbarComponent implements OnInit {
       return;
     }
     this.messages = []
-    this.dpLinks = [];
+    // this.dpLinks = [];
     // seen is already sorted
+
     for(let x=0; x<l; x++) {
       this.messages.push({
+        _id: messages[x].id,
         userid: messages[x]['senderid'],
         username: this.getUserdataById(messages[x]['senderid'], 'username fname lname').then(res => {return (res['data']['username'] || res['data']['fname']+' '+res['data']['lname']);}),
         text: messages[x]['text'],
         time: messages[x]['time'],
         seen: messages[x]['seen'],
-        lastSender: messages[x].lastSender
+        lastSender: messages[x].lastSender,
+        dp: null
       });
+      if(!messages[x]['seen'] && messages[x]['lastSender'] != this.user._id)  this._navbarService.unseenMessagesRecord.push(this.messages[x]._id);
       this.getUserImageById(messages[x]['senderid'], 'dp');
     }
 
     this.messages.sort((m1, m2) => {
       return m1.time > m2.time ? -1 : 1;
     });
-    console.log("messages ", this.messages);
     this.navbarFlags.messagelistLoading = false;
+    console.log(this._navbarService.unseenMessagesRecord);
   }
 
   async getUserdataById(userid: string, fields?: string, index?: any) {
-    console.log("user id ", userid);
     if(!userid) return;
     return await this._apiService.http.post(APIvars.APIdomain+"/"+APIvars.GET_USERDATA_BY_ID, {id: userid, fields}).toPromise();
   }
@@ -389,7 +391,7 @@ export class NavbarComponent implements OnInit {
     if(!userid) return;
     this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+userid, { responseType: 'blob' }).subscribe( image => {
       if(image['type'] === 'application/json')  {
-        this.dpLinks[index] = null;
+        // this.dpLinks[index] = null;
         return;
       }
 
@@ -397,8 +399,8 @@ export class NavbarComponent implements OnInit {
 
       reader.addEventListener('load', () => {
         const i = this.messages.findIndex( message => message.userid === userid);
-        this.messages[i].dp = '';
-        this.dpLinks[i] = this._apiService.dom.bypassSecurityTrustUrl(reader.result.toString());
+        this.messages[i].dp = this._apiService.dom.bypassSecurityTrustUrl(reader.result.toString());
+        // this.messages[i].dp = this.dpLinks[i];
       }, false);
       if (image) {
          reader.readAsDataURL(image as Blob);
@@ -406,8 +408,9 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  routeToMessaging() {
-    this._apiService.router.navigate(['./messaging']);
-    this._overlayService.showSubject.next(false);
+  routeToMessaging( convoID?) {
+    this.closeOverlay();
+    if(convoID) this._navbarService.selectedConvo = convoID;
+    // this._apiService.router.navigate(['./messaging']);
   }
 }

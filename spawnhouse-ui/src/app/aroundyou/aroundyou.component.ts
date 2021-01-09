@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
@@ -6,7 +6,7 @@ import { StorageService } from 'src/assets/services/storage.service';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
-  selector: 'app-aroundyou',
+  selector: 'sh-aroundyou',
   templateUrl: './aroundyou.component.html',
   styleUrls: ['./aroundyou.component.scss']
 })
@@ -16,30 +16,51 @@ export class AroundyouComponent implements OnInit {
   sessionLocation: any;
   dpLinks = []; // temp
   loadingUsers: boolean = true;
-
+  radius: number;
+  loadingText = 'Getting Suggestions...';
+  pageNo = 0;
   userSuggestions = []; // {_id: <userid>, username: <username>, name: <name>, isFollower: <true/false>};
+  @ViewChild('container') container: ElementRef;
+  @HostListener('window:scroll', ['$event'])
+  handleScroll(event) {
+    console.log(this.container.nativeElement.offsetHeight,' ',this.container.nativeElement.scrollTop, ' ',this.container.nativeElement.scrollHeight);
+  }
+
   constructor(
     private _storageService: StorageService,
     private _floatNotifService: FloatNotificationService,
     private _apiService: APIservice,
-    private _router: Router) { }
-
+    private _router: Router) {
+    }
   ngOnInit(): void {
 
     this.userSuggestions = [];
     this._floatNotifService.getLocationToast();
-    this.sessionLocation = this._storageService.getSessionData('location');
+    this.sessionLocation = JSON.parse(this._storageService.getSessionData('location'));
 
     if(this.sessionLocation) this.getUsers(this.sessionLocation);
-    this.getLocation();
+    else this.getLocation();
   }
 
-  getUsers(location) {
-    this._apiService.getUsersAround(location).then( result => {
-      this.userSuggestions = result['result'] || [];
-      const l = result['result'].length;
+  getUsers(location, refresh?: boolean) {
+    console.log("sending for page no ", this.pageNo);
+    this._apiService.getUsersAround(location, this.radius, this.pageNo).then( result => {
+      this.radius = result['radius'];
+
+      let startIndex = 0;
+      if(refresh) {
+        this.userSuggestions.push(...result['result']);
+        startIndex = result['result'].length;
+        startIndex = this.userSuggestions.length - startIndex;
+      }
+      else this.userSuggestions = result['result'] || [];
+
+      const l = this.userSuggestions.length;
       this.loadingUsers = false;
-      for(let x=0; x < l; x++) {
+      this.pageNo++;
+      console.log("start index = ", startIndex, "uptoLen", l);
+
+      for(let x=startIndex; x < l; x++) {
         this.getDpById(this.userSuggestions[x]._id, x);
       }
     });
@@ -79,14 +100,23 @@ export class AroundyouComponent implements OnInit {
   }
 
   getLocation() {
-    console.log("lets get location");
+    // console.log("updating location");
     this._floatNotifService.getLocationToast();
+    this.loadingUsers = true;
     this._floatNotifService.getLocationSubject.asObservable().subscribe(data => {
-      console.log("got data");
+      console.log("got data ", data);
       this.location = data;
-      this._storageService.setSessionData('location', data);
       this.getUsers(data);
-    })
+    });
+  }
+
+  globalStatusChanged(event) {
+    console.log("event ", event);
+    this.loadingUsers = true;
+    this.loadingText = 'Refreshing Suggestions...';
+    this.radius = event ? 1200 : null;
+    this.pageNo = 0;
+    this.getUsers(this.location || this.sessionLocation);
   }
 
 }

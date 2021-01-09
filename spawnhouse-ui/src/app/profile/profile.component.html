@@ -47,7 +47,6 @@
         <div class="follow-list border-none text-black m-3">
             <h3 class="text-secondary text-center">{{user?.fname+ ' '+user?.lname}}</h3>
             <hr>
-
             <div class="text-center text-secondary text-bold font-italic" *ngIf="profileFlags.loadingGamingInfo">
                 <loader2 [type]="0"></loader2>
                 <br>
@@ -75,9 +74,9 @@
                 <label class="text-theme text-bold hover-underline cursor-pointer m-0"><span class="iconset icon-game-controller mr-1 h5"></span>{{user?.nowplaying?.game}}</label>
                 <span *ngIf="user?.nowplaying?.username">&nbsp; as </span>
                 <span class="text-secondary m-0" *ngIf="user?.nowplaying?.username">{{ user?.nowplaying?.username }}</span> <span *ngIf="user?.nowplaying?.console">  on </span>
-                <div class="badge text-white ml-1" [ngClass]="{'badge-success': user?.nowplaying?.console.startsWith('x'),
-                'badge-primary':user?.nowplaying?.console.startsWith('pc'),
-                'bg-theme':user?.nowplaying?.console.startsWith('ps'),
+                <div class="badge text-white ml-1" [ngClass]="{'badge-success': user?.nowplaying?.console?.startsWith('x'),
+                'badge-primary':user?.nowplaying?.console?.startsWith('pc'),
+                'bg-theme':user?.nowplaying?.console?.startsWith('ps'),
                 'bg-off-black': user?.nowplaying?.console === 'mac' || user?.nowplaying?.console === 'ios',
                 'bg-secondary': user?.nowplaying?.console === 'wii'}">
                     <span class="iconset icon-{{user?.nowplaying?.console | consoleicon }}"></span>
@@ -166,7 +165,7 @@
 <!-- confirm to remove now playing -->
 
 <div class="bg-white position-fixed z-nav edit-game-container w-25" *ngIf="nowPlayingFlags.showAddToFavs">
-    <h4 class="p-2 bg-theme text-white"> <span class="iconset icon-bin mr-1"></span>Remove Playing Data <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); nowPlayingFlags.showAddToFavs = false"></span></h4>
+    <h4 class="p-2 bg-white border-bottom-thin"> <span class="iconset icon-bin mr-1"></span>Remove Playing Data <span class="iconset icon-cross float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); nowPlayingFlags.showAddToFavs = false"></span></h4>
     <div class="m-3 text-center">Would you like to add <div class="h6">{{user?.nowplaying?.game}}</div> in your favourite games?</div>
         <div class="mt-2">
             <div class="btn btn-default w-50" (click)="removeNowPlaying(); addFavgame(user?.nowplaying, false)">No, just remove</div>

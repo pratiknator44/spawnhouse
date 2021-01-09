@@ -60,11 +60,10 @@ export class LoginComponent implements OnInit {
     });
 
     this.signupForm = new FormGroup({
-      fname: new FormControl('', Validators.required),
+      fname: new FormControl('', [Validators.required]),
       lname: new FormControl(''),
       email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', Validators.required),
-      gender: new FormControl(''),
+      password: new FormControl('', [Validators.required, Validators.min(6), Validators.max(25)]),
       tnc: new FormControl(''),
       signedVia: new FormControl('')
     });
@@ -107,7 +106,7 @@ export class LoginComponent implements OnInit {
   onSignIn(gUser) {
     let user = gUser.getBasicProfile();
     gapi.auth2.getAuthInstance().signOut().then(function () {
-      console.log('Google sign out success');
+      // console.log('Google sign out success');
     });
 
     // let logginUser = {'fname': user.getGivenName(), 'lname': user.getFamilyName(), 'email': user.getEmail(), 'gender': '', 'type': 'Google'};
@@ -148,7 +147,10 @@ export class LoginComponent implements OnInit {
   }
 
   attemptSignUp() {
-    console.log(this.signupForm.value);
+    console.log("sign up in progress");
+    if(this.signupForm.valid && this.signupForm.get('tnc').value)
+    console.log("form valid");
+
     this._http.post(APIvars.APIdomain+'/'+APIvars.APIsignup, this.signupForm.value).subscribe( data => {
       console.log('data ', data);
       if(data['message'] === 'passed') {

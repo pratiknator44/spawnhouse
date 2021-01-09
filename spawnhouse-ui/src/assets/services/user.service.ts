@@ -14,9 +14,10 @@ export class UserService {
     minimessageFiredSubject = new Subject<any>();
 
     bg = ['primary', 'warning', 'success', 'theme', 'danger'];    
-    constructor(private _http: HttpClient, private _storageService: StorageService, private _cookieService: CookieService, private _router: Router) {
-    
-    }
+    constructor(private _http: HttpClient,
+      private _storageService: StorageService,
+      private _cookieService: CookieService,
+      private _router: Router) {}
 
     saveLocation(location) {
       this._http.post(APIvars.APIdomain+'/'+APIvars.SET_LOCATION,{location: location}).subscribe( result => {

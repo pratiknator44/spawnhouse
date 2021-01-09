@@ -67,7 +67,7 @@ export class ProfileComponent implements OnInit {
         
         this.user = result['user'];
         this.user['nowplaying'] = result['nowplaying'];
-        
+        console.log("user now playing ", this.user['nowplaying']);  
         this.user['gamedata'] = result['gamedata'];
         
         this.tempFavGamesArray = result['gamedata']? result['gamedata']['fav']: [];
@@ -79,6 +79,7 @@ export class ProfileComponent implements OnInit {
       this.getDpOfUser(this._activeRoute.snapshot.params.username);
       this.getCoverOfUser(this._activeRoute.snapshot.params.username);
       this.getFollowStatus(this._activeRoute.snapshot.params.username);
+      this.getGamedata()
       addusername = this._activeRoute.snapshot.params.username;
 
     } else {
@@ -159,6 +160,7 @@ export class ProfileComponent implements OnInit {
         let reader = new FileReader();
       reader.addEventListener('load', () => {
         this.userdp = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+        console.log(this.userdp);
         if(this.isUserProfile) this._storageService.setDp(this.userdp);
       }, false);
   
@@ -308,10 +310,6 @@ export class ProfileComponent implements OnInit {
   openGamingInfo() {
     this._navbarService.showOption.next('gamebroadcast');
     this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
-  }
-  
-  updateNowPlaying() {
-
   }
 
   routeToEditProfile() {

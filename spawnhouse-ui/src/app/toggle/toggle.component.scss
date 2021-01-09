@@ -1,0 +1,36 @@
+.container {
+    height: 1rem;
+    width: 1.5rem;
+}
+
+.container > div {
+    height: 1.5rem;
+    width: 1.5rem;
+    top: -0.25rem;
+}
+
+.position-off {
+    right: -0.25rem;
+}
+
+.position-on {
+    left: -0.25rem;
+}
+
+@keyframes animateLeft {
+    0%{
+        right: -0.25rem;
+    }
+    100% {
+        left: -0.25rem;
+    }
+}
+
+.animate-on {
+    animation: animateLeft 1s forwards linear;
+}
+
+
+.animate-off {
+    animation: animateLeft 1s forwards reverse linear;
+}

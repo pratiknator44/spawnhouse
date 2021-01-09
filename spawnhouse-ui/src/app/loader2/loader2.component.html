@@ -1,3 +1,11 @@
+
+<div class="position-relative" *ngIf="type==0">
+    <div class="ball-container-small d-inline-block postion-relative">
+        <div class="ball-small circle position-absolute"></div>
+        <div class="shadow-small position-absolute"></div>
+    </div>
+</div>
+
 <div class="postion-relative" *ngIf="type==1">
     <div class="text">L</div>
     <div class="ball-container postion-relative">
@@ -7,9 +15,19 @@
     <div class="text">ading</div>
 </div>
 
-<div class="position-relative" *ngIf="type==0">
-    <div class="ball-container-small d-inline-block postion-relative">
-        <div class="ball-small circle position-absolute"></div>
-        <div class="shadow-small position-absolute"></div>
+
+<div  *ngIf="type==2" class="border-none bg-secondary position-relative circle ml-auto mr-auto circle overflow-hidden"
+style="height: 2rem; width: 2rem;
+">
+    <div class="w-100 h-100 position-absolute" style="left:0; top:0; animation: rotate 0.5s linear infinite;">
+        <div class="revolving-circles circle bg-white position-absolute">
+        </div>
     </div>
+</div>
+
+<div class="ml-auto mr-auto bg-none" *ngIf="type==3" style="height: 3rem; width: 3rem;">
+    <div class="h-100 w-100 circle" style="border-top: solid 0.1rem crimson; animation: rotate 1s infinte linear;"></div>
+    <div class="h-75 w-75 circle" style="border-right: 1rem; border-color: #06F; animation: rotate 0.5s infinte linear;"></div>
+    <div class="h-50 w-50 circle" style="border-top: 1rem; border-color: green; animation: rotate 0.75s infinte linear;"></div>
+
 </div>

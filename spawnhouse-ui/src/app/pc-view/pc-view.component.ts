@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FloatNotificationSchema } from 'src/assets/interfaces/float-notification-config.interface';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
@@ -11,7 +11,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
   templateUrl: './pc-view.component.html',
   styleUrls: ['./pc-view.component.scss']
 })
-export class PcViewComponent {
+export class PcViewComponent implements AfterViewInit, AfterContentInit {
   
   title = 'spawnhouse-ui';
   isNotifVisible: boolean;
@@ -20,14 +20,19 @@ export class PcViewComponent {
   showOverlay: boolean;
   isLoggedIn: boolean;
   minimessage; // {show: false, userdata: {}};
-
+  showLoginStrip: boolean;
   @ViewChild('navbar') navbar: NavbarComponent;
+
   constructor(private _floatNoteService: FloatNotificationService,
     private _overlayService: OverlayService,
     private _navbarService: NavbarService,
     private _userService: UserService)
   {}
-
+  
+  // make this true for all routes except login
+  ngAfterContentInit() {
+    if(window.location.href.split("/").splice(-1).pop().toLowerCase() === 'login')  this.showLoginStrip = false;
+  }
   ngAfterViewInit() {
     // this.floatNotifConfig = {text: '', icon: ''};
     this._floatNoteService.closeOn.asObservable().subscribe( close => {

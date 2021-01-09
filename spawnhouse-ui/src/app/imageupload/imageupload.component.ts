@@ -64,7 +64,7 @@ export class ImageuploadComponent implements OnInit {
     const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], {type: 'image/jpg'});
     this.temp = new File([blob], new Date().getTime()+'.jpg');
-    console.log('new dp = ', this.temp);
+    // console.log('new dp = ', this.temp);
     fd.append('newdp', this.temp);
 
     this.newsubmit.emit(fd);
@@ -80,7 +80,7 @@ export class ImageuploadComponent implements OnInit {
     }
 
     this.http.delete(url).subscribe(confirm => {
-      console.log(this.mode+' removed '+confirm);
+      // console.log(this.mode+' removed '+confirm);
       this.onImageRemove.emit();
     });
   }

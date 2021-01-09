@@ -6,14 +6,18 @@
         </div>
     </div>
 
-    <div class="text-center" *ngIf="loadingUsers">
+    <h5 class="text-center" *ngIf="!sessionLocation && !location">Seems your location is either disabled or blocked by user.
+        <h5 class="text-theme hover-underline cursor-pointer" (click)="getLocation()">Enable location</h5></h5>
+
+    <sh-toggle [status]="false" [labelLeft]="'Show far side'" class="m-2" (statusChange)="globalStatusChanged($event)"></sh-toggle>
+    <div class="text-center" *ngIf="loadingUsers && (sessionLocation || location)">
         <loader2 [type]="0"></loader2><br>
-        Getting Suggestions...
+        {{loadingText}}
     </div>
 
-    <h5 class="text-center text-theme hover-underline cursor-pointer" (click)="getLocation()" *ngIf="!location">Enable <span class="iconset icon-bin"></span>&nbsp;Location</h5>
+    <!-- <h5 class="text-center text-theme hover-underline cursor-pointer" (click)="getLocation()" *ngIf="!location">Enable <span class="iconset icon-bin"></span>&nbsp;Location</h5> -->
     <h6 *ngIf="sessionLocation && !location">Using your last location</h6>
-    <div class="user-suggestions m-3">
+    <div class="user-suggestions m-3" #container>
         <div class="user-card rounded bg-white text-center m-3 position-relative"*ngFor="let user of userSuggestions; let i = index">
             <span class="text-grey position-absolute m-1 cursor-pointer z-nav" style="top:0; right:0;font-size: 1rem;" (click)="removeByIndex(i)">x</span>
             <!-- <div class="image-area text-center"></div> -->
@@ -21,14 +25,15 @@
                 <div class="col-4">
                     <div class="bg-secondary text-white text-center mt-2 circle default-img cursor-pointer" (click)="routeToProfile(user._id)">
                         <img [src]="dpLinks[i]" class="h-100 w-100 circle" *ngIf="dpLinks[i]" />
-                        <div class="h-100 iconset icon-user" style="font-size: 3rem;"></div>
+                        <div class="h-100 iconset icon-user" style="font-size: 3rem;" *ngIf="!dpLinks[i]"></div>
                     </div>        
                 </div>
 
                 <div class="col-5">
                     <h4 class="hover-underline cursor-pointer text-left m-0" (click)="routeToProfile(user._id)">{{user?.username || user?.fname }}</h4>
                     <h6 class="text-secondary m-0">{{user.fname+' '+user.lname}}</h6>
-                    <span class="text-secondary">{{ user?.basis }} Playing Global Offensive </span>
+                    <div class="text-secondary m-0 font-italic">within {{radius}}km</div>
+                    <!-- <span class="text-secondary">{{ user?.basis }} Playing Global Offensive </span> -->
 
                     <div class="d-inline-block">
                         <div class="d-flex" style="font-size: 1.5rem;">
@@ -49,5 +54,8 @@
             </div>
         </div>
     </div>
+
+    <div class="btn btn-primary" (click)="getUsers(location || sessionLocation, true)">load more</div>
+
 </div>
 <!-- <h3 class="text-secondary">Your global location: {{location?.lat+' , '+location?.long}}</h3> -->

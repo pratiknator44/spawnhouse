@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 import { APIservice } from 'src/assets/services/api.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
 import { StorageService } from 'src/assets/services/storage.service';
@@ -19,6 +20,7 @@ export class ProfileManagementComponent implements OnInit {
   gamedataForm: FormGroup;
   userinfoForm: FormGroup;
   saveText = {videogame: 'Save', personal: 'Save', type: 'Save'};
+  mgtFlags = {loadingData: true};
   genres = [
     {id: 'action', genre: 'Action', example: 'PUBG, Call of Duty, Counter-Strike', checked: ''},
     {id: 'actionadv', genre: 'Action Adventure', example: 'GTA, Legend Of Zelda, Metal Gear, Assassins\' Creed', checked: ''},
@@ -65,38 +67,41 @@ export class ProfileManagementComponent implements OnInit {
       bio: new FormControl(this.user.bio || ''),
       quote: new FormControl(this.user.quote || '')
     });
-
-    // videogame settings
-
-    this._http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
-      if(result['result']) {
-        console.log("main result ==== ", result);
-        let l = result['result']['genres'].length || 0;
-        let gl = this.genres.length;
-        for(let x=0; x<l; x++) {
-          for(let y=0; y<gl; y++) {
-            if(result['result']['genres'][x] === this.genres[y].id) {
-              this.genres[y].checked = 'a';
-            }
-          }
-        }
-        this.items = result['result']['fav'];
-        this.gamedataForm.patchValue({
-          genres: result['result']['genres']
-        });
-
-        if(result['result']['playerType']) {
-          l = result['result']['playerType'].length;  
-          for(let x=0; x<l; x++) {
-            for(let y=0; y<7; y++) {
-              console.log(this.playerTypes[y].id+" "+result['result']['playerType'][x]);
-              this.playerTypes[y].id === result['result']['playerType'][x] ? this.playerTypes[y].checked = true : false;
-            }
-          }
-        }
-      }
-    });  
+    this.getUserSettings();
   }
+
+  getUserSettings() {
+      // videogame settings
+      this.mgtFlags.loadingData = true;
+      this._http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
+        if(result['result']) {
+          let l = result['result']['genres'].length || 0;
+          let gl = this.genres.length;
+          for(let x=0; x<l; x++) {
+            for(let y=0; y<gl; y++) {
+              if(result['result']['genres'][x] === this.genres[y].id) {
+                this.genres[y].checked = 'a';
+              }
+            }
+          }
+          this.items = result['result']['fav'];
+          this.gamedataForm.patchValue({
+            genres: result['result']['genres']
+          });
+  
+          if(result['result']['playerType']) {
+            l = result['result']['playerType'].length;  
+            for(let x=0; x<l; x++) {
+              for(let y=0; y<7; y++) {
+                this.playerTypes[y].id === result['result']['playerType'][x] ? this.playerTypes[y].checked = true : false;
+              }
+            }
+          }
+        }
+        this.mgtFlags.loadingData = false;
+      });  
+  }
+
 
   newSelections(items) {
     this.gamedataForm.patchValue({
@@ -107,8 +112,11 @@ export class ProfileManagementComponent implements OnInit {
   queryChange(word) {
     // this.items = [];
     if(word.length > 2) {
-      this._http.get(APIvars.APIdomain+'/'+APIvars.GET_GAMEDATA+'/'+word).subscribe( data => {
+      this._http.get(APIvars.APIdomain+'/'+APIvars.GET_GAMEDATA+'/'+word).pipe(debounceTime(1000)).subscribe( data => {
         this.gameSuggestions = data['gamedata'];
+        this.gamedataForm.patchValue({
+          favs: this.gameSuggestions
+        });
     });
     }
   }
@@ -142,7 +150,7 @@ export class ProfileManagementComponent implements OnInit {
   submitUserdata() {
     this.saveText.personal = 'Saving...';
     this._http.patch(APIvars.APIdomain+'/'+APIvars.SET_USERDATA, this.userinfoForm.value).subscribe(result => {
-      console.log('result ======== ', result);
+      // console.log('result ======== ', result);
       if(result['message'] === 'passed') {
         this.saveText.personal = 'Saved!'
 
@@ -173,6 +181,12 @@ export class ProfileManagementComponent implements OnInit {
     this._apiService.updatePlayerType(selected).then(result => {
       console.log("saving done");
       this.saveText.type = 'Saved!';
+    });
+  }
+
+  checkUsername() {
+    this._apiService.checkUsername(this.userinfoForm.get('username').value).then(result => {
+      console.log("username check response ", result);
     });
   }
 

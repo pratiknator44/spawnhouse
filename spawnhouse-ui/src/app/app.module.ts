@@ -26,6 +26,7 @@ import { AroundYouModule } from './modules/aroundyou.module';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastComponent } from './toast/toast.component';
 import { UserService } from 'src/assets/services/user.service';
+import { DialogComponent } from './dialog/dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { UserService } from 'src/assets/services/user.service';
     RecepientComponent,
     SuggestionsComponent,
     ToastComponent,
+    DialogComponent,
   ],
   imports: [
     BrowserModule,

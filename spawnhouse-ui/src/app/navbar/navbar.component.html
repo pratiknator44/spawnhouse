@@ -1,5 +1,4 @@
 <nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex">
-  
   <div class="w-100 d-flex" style="height: auto; flex-wrap: wrap;">
     <div class="w-10 text-white navbar-item text-center bg-theme">
       <div class="cursor-pointer iconset icon-size icon-sh font-lg">
@@ -35,10 +34,11 @@
       <sh-suggestions [placeholder]="'Search by name, username, or email'" [icon]="'search'" [template]="searchSuggestionTemplate" (inputChanged)="searchThis($event)" [showSuggestions]="showUserSuggestions"></sh-suggestions>
       <ng-template #searchSuggestionTemplate>
         <!-- search template -->
-        <div class="position-relative" style="height: 3.5rem;" *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
+        <div class="position-relative border-grey" style="height: 3.5rem;" *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
           <div class="position-absolute search-icon-container">
             <div style="animation: rotate-left 1s infinite linear;">
-              <loader [type]="2"></loader>
+              <!-- <loader2 [type]=""></loader2> -->
+              <span class="iconset icon-search"></span>
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@
         </div>
 
         <!-- not found template -->
-        <div class="class text-center text-secondary cursor-pointer" *ngIf="noUserFound">No users found, try adding '@' before search word  </div>
+        <div class="class text-center text-secondary cursor-pointer" *ngIf="noUserFound">No users found</div>
         <div class="class text-center hover-underline text-primary cursor-pointer" *ngIf="searchSuggestions.length > 5">See All</div>
       </ng-template>
     </div>
@@ -83,15 +83,14 @@
     
       <div class="message-container bg-white position-absolute mt-3 std-box-shadow rounded" *ngIf="navbarFlags.showMessages">
         <div class="text-center font-italic text-secondary" *ngIf="navbarFlags.messagelistLoading===null">No messages yet</div>
-        <div class="m-3" *ngIf="navbarFlags.messagelistLoading"><loader2 [type]="0"></loader2><br>
-          <div class="text-secondary font-italic cursor-pointer text-center h6 mt-1">Loading</div>
+        <div class="m-3" *ngIf="navbarFlags.messagelistLoading"><loader2 [type]="2"></loader2><br>
         </div>
         <div>
         </div>
-        <div class="user-message-row hover-bg-grey cursor-pointer d-flex mt-1" [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}" *ngFor="let msg of messages; let i = index">
+        <div class="user-message-row hover-bg-grey cursor-pointer d-flex mt-1" [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}" *ngFor="let msg of messages; let i = index" (click)="routeToMessaging(msg._id)">
           <div class="h-100 m-3 position-relative">
-            <img class="circle dp-big" [src]="dpLinks[i]" *ngIf="dpLinks[i]" />
-            <div class="dp-big circle" style="transform: rotate(-45deg);" *ngIf="!dpLinks[i]">
+            <img class="circle dp-big" [src]="msg.dp" *ngIf="msg.dp" />
+            <div class="dp-big circle" style="transform: rotate(-45deg);" *ngIf="!msg.dp">
               <div class="cursor-pointer text-center iconset icon-player text-theme" style="font-size: 3rem; margin-top:-1rem; margin-left: -1rem;"></div>       
             </div>
             
@@ -105,7 +104,7 @@
             <div class="text-secondary font-italic">{{msg.time | ago }}</div>
           </div>
       </div>
-        <div class="text-theme hover-underline cursor-pointer text-center mt-3" *ngIf="!navbarFlags.messagelistLoading"(click)="routeToMessaging()">Show All</div>
+        <div class="text-theme hover-underline cursor-pointer text-center mt-3" *ngIf="!navbarFlags.messagelistLoading || true"(click)="routeToMessaging()">Show All</div>
       </div>
 
     </div>
@@ -138,7 +137,7 @@
 </nav>
 
 <div class="bg-white position-fixed z-nav edit-game-container rounded" *ngIf="showGameBroadcast">
-  <h4 class="p-2 bg-theme text-white">Tell people what you are playing <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); showGameBroadcast = false"></span></h4>
+  <h5 class="p-2 bg-theme text-white">Tell people what you are playing <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); showGameBroadcast = false"></span></h5>
   <form [formGroup]="nowplayingForm" (ngSubmit)="saveNowPlaying()" action="" method="POST">
     <div class="m-3">
       <div class="row">
@@ -158,7 +157,7 @@
             <div class="position-relative" style="height: 3.5rem;" *ngIf="false">
               <div class="position-absolute search-icon-container">
                 <div class="" style="animation: rotate-left 1s infinite linear;">
-                  <loader [type]="2"></loader>
+                  <loader2 [type]="2"></loader2>
                 </div>
               </div>
             </div>
