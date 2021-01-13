@@ -71,14 +71,14 @@
       </div>
         <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div>
 
-        <div class="message-container bg-white position-absolute mt-3 rounded" *ngIf="navbarFlags.showNotification">
+        <div class="message-container bg-white position-absolute mt-3 rounded std-box-shadow" *ngIf="navbarFlags.showNotification">
 
           <div class="bg-lite text-bold" style="height: 3rem;">
-            <label style="line-height: 3;">Notifications <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span></label>
+            <label style="line-height: 3;">Notifications<span class="badge badge-pill badge-danger">{{alerts.notifications}}</span></label>
           </div>
 
           <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No new notifications</div>
-          <sh-notifications [notifications]="notifications" (close)="navbarFlags.showNotification = false;"></sh-notifications>
+          <sh-notifications [notifications]="notifications" (close)="navbarFlags.showNotification = false"></sh-notifications>
           <div class="bg-lite text-bold cursor-pointer text-center mt-3" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;" (click)="routeToMessaging()">show more</div>
         </div>
         

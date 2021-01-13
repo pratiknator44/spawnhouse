@@ -28,6 +28,8 @@ import { ToastComponent } from './toast/toast.component';
 import { UserService } from 'src/assets/services/user.service';
 import { DialogComponent } from './dialog/dialog.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,7 @@ import { NotificationsComponent } from './notifications/notifications.component'
     // RecaptchaFormsModule, //this is the module for form incase form validation
     AroundYouModule,
     SharedModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   exports: [
   ],

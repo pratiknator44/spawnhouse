@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
-import { APIvars } from 'dist/spawnhouse-ui/assets/variables/api-vars.enum';
+;
 import { APIservice } from 'src/assets/services/api.service';
+import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
   selector: 'sh-notifications',

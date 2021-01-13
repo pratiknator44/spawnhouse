@@ -338,7 +338,6 @@ export class NavbarComponent implements OnInit {
 
   navOptionSelected(option) {
     // if(option === this.selectedOption.toLocaleLowerCase()) this.closeOverlay();
-    this.falseAllFlags();
     this._overlayService.showSubject.next(true);
     switch (option) {
       case 'messages':

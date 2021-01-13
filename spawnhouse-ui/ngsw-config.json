@@ -1,0 +1,47 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": ["http://localhost:3000/resources/coverufuser/*"]
+      }
+    }, {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "responses",
+      "urls": [
+        "http://localhost:3000/resources/getfollowdata",
+        "http://localhost:3000/resources/dpofuser/*",
+        "http://localhost:3000/signup",
+        "http://localhost:3000/gamedata/*",
+        "http://localhost:3000/*"],
+      "cacheConfig": {
+        "maxSize": 1000,
+        "maxAge": "24h",
+        "timeout": "4s",
+        "strategy": "performance"
+      }
+    }
+  ]
+}
