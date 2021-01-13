@@ -48,7 +48,7 @@ export class StreamLinkPipe implements PipeTransform {
 
     transform(link: string, onlyVendor?: boolean) {
         let returnValue;
-        if(link.includes('yout')) {
+        if(link.includes('youtu')) {
             returnValue = 'youtube text-danger';
         }
         else if (link.includes('twitch')) {

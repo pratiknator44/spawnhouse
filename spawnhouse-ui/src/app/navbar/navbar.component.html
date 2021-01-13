@@ -63,18 +63,30 @@
     </div>
 
 
-    <div class="navbar-item text-black text-center" title="Notifications"
-    (click)="selectedOption = 'Notification'">
-      <div class="cursor-pointer" [ngClass]="{'color-theme': selectedOption==='Notification'}">
+    <div class="navbar-item text-black text-center position-relative" title="Notifications"
+    (click)="navOptionSelected('notifications')">
+      <div class="cursor-pointer" [ngClass]="{'color-theme': navbarFlags.showNotification}">
         <span class="iconset icon-size icon-bell"></span>
         <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
       </div>
         <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div>
+
+        <div class="message-container bg-white position-absolute mt-3 rounded" *ngIf="navbarFlags.showNotification">
+
+          <div class="bg-lite text-bold" style="height: 3rem;">
+            <label style="line-height: 3;">Notifications <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span></label>
+          </div>
+
+          <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No new notifications</div>
+          <sh-notifications [notifications]="notifications" (close)="navbarFlags.showNotification = false;"></sh-notifications>
+          <div class="bg-lite text-bold cursor-pointer text-center mt-3" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;" (click)="routeToMessaging()">show more</div>
+        </div>
+        
     </div>
 
     <div class="navbar-item text-black text-center position-relative" title="Messages"
-    (click)="selectedOption = 'Messages'; navOptionSelected('messages')">
-      <div class="cursor-pointer" [ngClass]="{'color-theme': selectedOption==='Messages'}">
+    (click)="navOptionSelected('messages');">
+      <div class="cursor-pointer" [ngClass]="{'color-theme': navbarFlags.showMessages}">
         <span class="iconset icon-size icon-bubbles3"></span>
         <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.messages !== 0">{{alerts.messages | async}}</span>
       </div>
@@ -82,29 +94,39 @@
 
     
       <div class="message-container bg-white position-absolute mt-3 std-box-shadow rounded" *ngIf="navbarFlags.showMessages">
-        <div class="text-center font-italic text-secondary" *ngIf="navbarFlags.messagelistLoading===null">No messages yet</div>
-        <div class="m-3" *ngIf="navbarFlags.messagelistLoading"><loader2 [type]="2"></loader2><br>
+        <div class="bg-lite text-bold" style="height: 3rem;">
+          <label style="line-height: 3;">Messages <span class="badge badge-pill badge-danger">{{alerts.messages | async}}</span></label>
+        </div>
+
+        <div class="text-center font-italic text-secondary" *ngIf="navbarFlags.messagelistLoading===null ">No messages yet</div>
+        <div class="position-relative w-100" *ngIf="navbarFlags.messagelistLoading"><loader2 [type]="3"></loader2><br>
         </div>
         <div>
         </div>
-        <div class="user-message-row hover-bg-grey cursor-pointer d-flex mt-1" [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}" *ngFor="let msg of messages; let i = index" (click)="routeToMessaging(msg._id)">
-          <div class="h-100 m-3 position-relative">
-            <img class="circle dp-big" [src]="msg.dp" *ngIf="msg.dp" />
-            <div class="dp-big circle" style="transform: rotate(-45deg);" *ngIf="!msg.dp">
-              <div class="cursor-pointer text-center iconset icon-player text-theme" style="font-size: 3rem; margin-top:-1rem; margin-left: -1rem;"></div>       
+        <div class="user-message-row hover-bg-grey cursor-pointer mt-1" [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}" *ngFor="let msg of messages; let i = index" (click)="routeToMessaging(msg._id)">
+
+          <div class="row m-1 text-left">
+            <div class="col-3 text-center">
+              <img class="circle dp-big" [src]="msg.dp" *ngIf="msg.dp" />
+              <div class="dp-big circle" style="transform: rotate(-45deg);" *ngIf="!msg.dp">
+                <div class="cursor-pointer text-center iconset icon-player text-theme" style="font-size: 3rem; margin-top:-1rem; margin-left: -1rem;"></div>       
+              </div>
+              <h3 class="badge badge-pill badge-danger position-absolute" style="bottom: calc(100% - 4rem); left: 75%;">{{msg.totalunseen}}</h3>
             </div>
-            
-            <h3 class="badge badge-danger position-absolute" style="bottom: calc(100% - 4rem); left: 75%;">{{msg.totalunseen}}</h3>
-          </div>
-          <div class="m-2 text-left">
-            <div class="text-theme mt-3">{{msg.username | async}}</div>
-            <div class="text-secondary mr-2" style="text-overflow: ellipsis; overflow: hidden; width: 11rem; white-space: nowrap;">
-              {{ msg.text }}
+
+            <div class="col-9 border-bottom-thin">
+                <span class="text-theme hover-underline">
+                    {{msg?.username | async}} <span class="badge badge-secondary float-right mt-1">{{msg.time | ago }}</span>
+
+                </span>
+                <div class="text-secondary mr-2" style="text-overflow: ellipsis; overflow: hidden; width: 11rem; white-space: nowrap;">
+                  {{ msg.text }}
+                </div>
             </div>
-            <div class="text-secondary font-italic">{{msg.time | ago }}</div>
           </div>
       </div>
-        <div class="text-theme hover-underline cursor-pointer text-center mt-3" *ngIf="!navbarFlags.messagelistLoading || true"(click)="routeToMessaging()">Show All</div>
+
+      <div class="bg-lite text-bold cursor-pointer text-center mt-3" *ngIf="!navbarFlags.messagelistLoading || true"(click)="routeToMessaging()">show more</div>
       </div>
 
     </div>
@@ -215,7 +237,7 @@
           <input type="text" class="form form-control" formControlName="roomid" placeholder="Room ID / 10.10.652.36" />
         </div>
         <div class="col-6 text-secondary">
-          <input type="password" class="form form-control" formControlName="password" placeholder="Room/server password" />
+          <input type="password" class="form form-control" formControlName="password" placeholder="Room/server password (optional)" />
           <input type="checkbox" id="keepassprivate" formControlName="privatepassword" /> &nbsp;<label for="keepassprivate" class="m-0">Keep my password private</label><br>
           <label class="text-small">(you will receive request for password if someone asks)</label>
         </div>

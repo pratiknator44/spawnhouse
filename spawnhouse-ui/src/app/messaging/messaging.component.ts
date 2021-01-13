@@ -150,6 +150,7 @@ export class MessagingComponent implements OnInit {
   }
 
   sendMessage() {
+    if(this.messageFlags.msgLoading) return;
     if(this.message && this.message.trim() !== '') {
       // this._socketService.sensdMessage('test',{_cid: this.selectedChat, sender: this.user._id, text: this.message});
       this._http.post(APIvars.APIdomain+'/'+APIvars.SAVE_MESSAGE, {_cid: this.selectedChat, sender: this.user._id, text: this.message}).toPromise().then( response => {        
@@ -169,7 +170,7 @@ export class MessagingComponent implements OnInit {
         this.convoIndex = 0;
         this.sortConvo();
 
-        this.message = null;
+        this.message = '';
         this.scrollDownMessages();
       });
     }

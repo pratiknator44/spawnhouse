@@ -27,6 +27,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { ToastComponent } from './toast/toast.component';
 import { UserService } from 'src/assets/services/user.service';
 import { DialogComponent } from './dialog/dialog.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { DialogComponent } from './dialog/dialog.component';
     SuggestionsComponent,
     ToastComponent,
     DialogComponent,
+    NotificationsComponent,
   ],
   imports: [
     BrowserModule,

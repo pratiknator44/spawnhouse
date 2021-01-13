@@ -11,7 +11,7 @@ import { SuggestionsComponent } from '../suggestions/suggestions.component';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { GameGenrePipe } from 'src/assets/pipes/gamegenre.pipe';
 import { UserService } from 'src/assets/services/user.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounce, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { INavbarMessage, INotification } from 'src/assets/interfaces/MsgNotif.interface';
 
 @Component({
@@ -42,7 +42,7 @@ export class NavbarComponent implements OnInit {
   selectedConsole: string;
   navbarFlags = {showMessages: false, messagelistLoading: false, showNotification: false, notificationLoaded: false};
   messages: INavbarMessage[] | any= [];
-  notifications: INotification[] = [];
+  notifications = [];  //INotification[] = [];
   // dpLinks = []; // cuz sanetized links cant be binded to object properties of messages.dpLink
 
   consoles = [
@@ -61,7 +61,7 @@ export class NavbarComponent implements OnInit {
     {icon: 'appleinc', id: 'ios' },
     {icon: '', id: 'ot'},
   ];
-  alerts = {notifications: 0, messages: null};
+  alerts = {notifications: null, messages: null};
   nowplayingForm: FormGroup;
   @Input() imageUploadMode: string;
   @Output() onPicUpdate = new EventEmitter(); 
@@ -80,7 +80,7 @@ export class NavbarComponent implements OnInit {
       { name: 'Home', icon: 'home', alert: 0},
       { name: 'Friends', icon: 'users', alert: 2 },
       { name: 'Streams', icon: 'display', alert: 0, showSubmenu: false, submenu: { options: ['Story', 'Status', 'Now Playingaaaaa'], triggerFunction: this.update(event) }},
-      { name: 'Notifcations', icon: 'bell', alert: 99 },
+      { name: 'Notifications', icon: 'bell', alert: 1 },
       { name: 'Messages', icon: 'bubbles', alert: 0 }];
      // { name: 'Settings & Privacy', icon: 'cog', alert: 0 }];
       
@@ -98,8 +98,7 @@ export class NavbarComponent implements OnInit {
       if(status) this.getDp();
     });
     this._overlayService.closeSubject.asObservable().subscribe( closeOptions => {
-      this.showUserOptions = false; this.showSuggestions = false; this.showUpdateOptions = false;
-      this.navbarFlags.showMessages = false; this.navbarFlags.showNotification = false;
+      this.falseAllFlags();
     });
 
     this._navbarService.showOption.asObservable().subscribe( option => {
@@ -115,12 +114,25 @@ export class NavbarComponent implements OnInit {
     }, 3000);
 
     this.getUnseenMessageCount();
+    this._apiService.getNewNotificationCount().then(result => {
+      // console.log("new notifications : ", result['count']);
+      this.alerts.notifications = result['count'];
+    });
+    this._apiService.getNotifications().then( result => {
+      console.log("detailed notification ", result);
+      this.notifications = result['result'];
+      const l = this.notifications.length;
+      for(let x = 0; x < l; x++) {
+        this.getUserImageById(this.notifications[x].userid, 'dp', x, 'notification');
+        this._apiService.getUserdataById(this.notifications[x].userid, 'fname username'+(this.notifications['type'] == 2 ? ' nowplaying' : '')).then( userdata => {
+          Object.assign(this.notifications[x], userdata['data']); // concat object properties
+        });
+      }
 
+    });
   }
 
-  update(event) {
-    // console.log('event = ', event);
-  }
+  update(event) { }
 
   searchThis(event) {
     this.showUserSuggestions = true;
@@ -288,7 +300,7 @@ export class NavbarComponent implements OnInit {
       return;
     }
 
-    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_GAMEDATA+'/'+searchword).subscribe(res => {
+    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_GAMEDATA+'/'+searchword).pipe(debounceTime(1000)).subscribe(res => {
       this.gameSuggestions = res['gamedata'];
       this.searchingGame = false;
     });
@@ -326,6 +338,7 @@ export class NavbarComponent implements OnInit {
 
   navOptionSelected(option) {
     // if(option === this.selectedOption.toLocaleLowerCase()) this.closeOverlay();
+    this.falseAllFlags();
     this._overlayService.showSubject.next(true);
     switch (option) {
       case 'messages':
@@ -334,7 +347,11 @@ export class NavbarComponent implements OnInit {
         this.navbarFlags.messagelistLoading = true;
         // this.messages = [];
         this.briefmessages();
-
+        break;
+      case 'notifications':
+        this.navbarFlags.showNotification = !this.navbarFlags.showNotification;
+        if(this.navbarFlags.showNotification) this._overlayService.showSubject.next();
+        else this.falseAllFlags();
     }
     this._overlayService.configSubject.next({closeOnClick: true, transparent: true});
     this._overlayService.showSubject.next(true);
@@ -387,7 +404,7 @@ export class NavbarComponent implements OnInit {
     if(!userid) return;
     return await this._apiService.http.post(APIvars.APIdomain+"/"+APIvars.GET_USERDATA_BY_ID, {id: userid, fields}).toPromise();
   }
-  getUserImageById(userid: string, type: string, index?: any) {
+  getUserImageById(userid: string, type: string, index?: any, assignVar?: any) {
     if(!userid) return;
     this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+userid, { responseType: 'blob' }).subscribe( image => {
       if(image['type'] === 'application/json')  {
@@ -398,9 +415,12 @@ export class NavbarComponent implements OnInit {
       let reader = new FileReader();
 
       reader.addEventListener('load', () => {
+        if(assignVar === 'notification') {
+          this.notifications[index]['dp'] = this._apiService.dom.bypassSecurityTrustUrl(reader.result.toString());
+          return;;
+        }
         const i = this.messages.findIndex( message => message.userid === userid);
         this.messages[i].dp = this._apiService.dom.bypassSecurityTrustUrl(reader.result.toString());
-        // this.messages[i].dp = this.dpLinks[i];
       }, false);
       if (image) {
          reader.readAsDataURL(image as Blob);
@@ -409,8 +429,13 @@ export class NavbarComponent implements OnInit {
   }
 
   routeToMessaging( convoID?) {
-    this.closeOverlay();
+    // this.closeOverlay();
     if(convoID) this._navbarService.selectedConvo = convoID;
-    // this._apiService.router.navigate(['./messaging']);
+    this._apiService.router.navigate(['./messaging']);
+  }
+
+  falseAllFlags() {
+    this.showUserOptions = false; this.showSuggestions = false; this.showUpdateOptions = false;
+      this.navbarFlags.showMessages = false; this.navbarFlags.showNotification = false;
   }
 }

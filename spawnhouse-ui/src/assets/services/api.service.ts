@@ -168,7 +168,7 @@ export class APIservice {
       
   getNowPlaying() {
     this._http.get(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING).subscribe( np => {
-      console.log('***now playing', np);
+      // console.log('***now playing', np);
       this._storageService.nowplaying = np['np'];
       this._storageService.currentUser['nowplaying'] = np['np'];
     });
@@ -214,4 +214,15 @@ export class APIservice {
     return this.http.get(APIvars.APIdomain+'/'+APIvars.CHECK_USERNAME+'/'+username).toPromise();
   }
 
+  getNotifications() {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.NOTIFICATIONS).toPromise();
+  }
+
+  getNewNotificationCount() {
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.NOTIFICATIONS+ '/'+APIvars.NEW_NOTIFICATION_COUNT).toPromise();
+  }
+
+  getUserdataById(id, fields?) {
+    return this.http.post(APIvars.APIdomain+"/"+APIvars.GET_USERDATA_BY_ID, {id, fields: fields? fields : null}).toPromise();
+  }
 }

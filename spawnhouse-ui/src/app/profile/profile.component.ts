@@ -87,7 +87,7 @@ export class ProfileComponent implements OnInit {
       this.isUserProfile = true;
       this.user = this._storageService.currentUser;
       this.getFollowData();
-      console.log(this.user);
+      // console.log(this.user);
       this.userdp = this._storageService.dpLink;
 
       if(!this._storageService.coverLink) {
@@ -128,10 +128,11 @@ export class ProfileComponent implements OnInit {
     const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
     this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
       this.user['gamedata'] = result['result'];
-      this._storageService.setSessionData('gamedata', JSON.stringify(result['result']));
-      this.tempFavGamesArray = result['result']['fav'] ? result['result']['fav'].slice(0, 5) : [];
-
       this.profileFlags.loadingGamingInfo = false;
+
+      if(!result['result']) return;
+      this._storageService.setSessionData('gamedata', JSON.stringify(result['result']));
+      this.tempFavGamesArray = 'fav' in result['result'] ? result['result']['fav'].slice(0, 5) : [];
     });
   }
 

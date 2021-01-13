@@ -118,7 +118,7 @@ nav {
 .message-container::before {
     content: '';
     position: absolute;
-    background-color: white;
+    background-color: $litegrey;
     width: 1rem; 
     height: 1rem;
     top: -0.5rem;

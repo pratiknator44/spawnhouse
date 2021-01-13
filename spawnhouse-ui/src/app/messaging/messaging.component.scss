@@ -1,9 +1,14 @@
 .message-area {
-    height: auto;
+    overflow: auto; height: calc(100vh - 10rem); border-top-right-radius: 3rem;
+}
+
+.box-shadow-local {
+    box-shadow: -0.125rem 0.125rem 0.125rem 0 gray !important;
 }
 
 .send-message-area {
     bottom: 0;
+    height: 7rem;
 }
 
 .send-message-area > input {
@@ -19,10 +24,14 @@
 }
 
 .other-user-bubble {
-    background-color: rgb(192, 253, 192);
+    // background: linear-gradient(90deg,#06F, rgb(139, 1, 194));
     height: auto;
     max-width: 50%;
     width: fit-content;
+    color: white;
+}
+.bg-other-user {
+    background: linear-gradient(90deg,#06F, rgb(139, 1, 194));
 }
 
 .other-user-bubble > div {
@@ -52,4 +61,18 @@
 
 .bg-gray-gradient {
     background: linear-gradient(rgb(245, 245, 245), white);
+}
+
+.bg-blue-purple {
+    background: linear-gradient(#06F, rgb(139, 1, 194));
+}
+
+.send-button {
+    height: 5rem;
+    width: 5rem;
+}
+
+.typing-area {
+    height: 4rem;
+    border-radius: 3rem;
 }

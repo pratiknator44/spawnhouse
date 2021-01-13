@@ -52,7 +52,9 @@ export enum APIvars {
     GET_FOLLOWERS = 'follow/getfollowers',
     GET_FOLLOWING = 'follow/getfollowing',
     GET_USERS_AROUND = "signup/getusersbydistance",
-    CHECK_USERNAME = 'signup/usernameavailable'
+    CHECK_USERNAME = 'signup/usernameavailable',
+    NOTIFICATIONS = 'notifications',
+    NEW_NOTIFICATION_COUNT = 'newnotificationcount'
 }
 
 export enum GlobalContantsEnum {
