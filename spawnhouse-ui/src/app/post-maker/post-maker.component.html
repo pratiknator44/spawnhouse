@@ -1,0 +1,92 @@
+<div class="container bg-white">
+    <div class="textarea-area">
+        <h3>Home</h3>
+        <div [ngClass]="{'d-none': pmFlags.uploadingStatus}">
+        
+            <div class="d-flex border-top" [ngClass]="{'d-none': !pmFlags.doneCropping}" >
+                <div class="dp-big circle overflow-hidden mt-3" style="height: 5rem; width: 5rem;">
+                    <img [src]="userdp | async" class="h-100 w-100" />
+                </div>
+                <div class="mt-3" [ngClass]="{'d-none': pmFlags.uploadingStatus}" style="width: calc(100% - 5rem);">
+                    <div contenteditable="true" spellcheck="false" placeholder="Write something..." class="border-none outline-none bg-white h-100" (keydown)="lookForFeature($event)" style="min-height: 3rem; z-index: -1;" #postarea>
+                    </div>
+
+                    <div class="border-grey position-absolute bg-white mt-2">
+                        <div *ngIf="mentionSuggestions.length === 0 && pmFlags.mentionmode">
+                            <div class="text-center font-italic">Type a name to search...</div>
+                            <loader2 [type]="3"></loader2>
+                        </div>
+                        <div class="row hover-bg-grey cursor-pointer" (click)="selectedUser(user)" *ngFor="let user of mentionSuggestions; let i = index">
+                            <div class="col-4">
+                                <img class="dp circle m-2" [src]="user?.dp | async" *ngIf="user?.dp | async" />
+                                <div class="dp circle m-2" *ngIf="!(user?.dp | async)" class="bg-theme"></div>
+                            </div>
+                            <div class="col-8">
+                                <h6 class="text-theme">{{user?.username}}</h6>
+                                <span class="text-secondary font-italic">{{user?.fname + ' ' + user?.lname}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+            </div>
+
+            <div [ngClass]="{'d-none': !pmFlags.doneCropping}" style="max-height: 7rem; max-width: 5rem" class="text-secondary ml-3">
+                <div class="d-inline-block position-relative hover-remove d-none" (click)="removeImage()" style="margin-left: 4rem;">
+                    <div class="hover-remove-text position-absolute cursor-pointer d-none">
+                        <div class="iconset icon-bin text-white text-center" style="margin-top: 23%;"></div>
+                    </div>
+                    <img [src]="croppedImage" style="max-height: 5rem;" #finalimage />
+                </div>
+            </div>
+        
+
+            <sh-chips *ngIf="pmFlags.tagStatus" [items]="chipsSuggestion"
+            [max]="0" [selected]="" (queryChange)="searchUsersToTag($event)" (selectionChange)="newSelections($event)"
+            [config]="{showFav: false, showCross: true, placeholder: 'tag additional users'}"></sh-chips>
+
+
+            <div class="tagged-users" *ngIf="taggedUsers.length > 0">
+                Tagged:
+                <div class="badge badge-primary m-1" *ngFor="let user of taggedUsers">
+                    {{user.label}}
+                </div>
+                <!-- <span *ngIf="!pmFlags.showAllTaggedUsers && taggedUsers.length > 2" class="badge badge-default" (click)="templateVars.lengthOfTaggedUsersArray">show all</span> -->
+            </div>
+            <div class="btn btn-default text-secondary m-0" placeholder="Tag Users" (click)="pmFlags.tagStatus = !pmFlags.tagStatus"><span class="iconset icon-user-plus h4"></span> {{pmFlags.tagStatus ? 'Done Tagging' : ''}} </div>
+            
+            <!-- image cropper options -- hidden -->
+            <input type="file" class="d-none" #imagePostUpload (change)="fileChangeEvent($event)" [disabled]="pmFlags.fileOpenDisabled" />
+            <div class="btn btn-default text-secondary m-0" *ngIf="!pmFlags.statusHasImage" placeholder="Add an image" (click)="pmFlags.imageStatus = !pmFlags.imageStatus; imagePostUpload.click();">
+                <span class="iconset icon-image h4"></span> 
+            </div>
+            <span class="bg-danger text-white" *ngIf="pmFlags.invalidFileSelect">Invalid file: please select an image</span>
+
+            <!-- image cropper options end-->
+            <div class="row h-50" *ngIf="imageFile" [ngClass]="{'d-none': pmFlags.doneCropping}">
+                <div class="col-8" style="max-height: 20rem;">
+                    <image-cropper class="border-grey"
+                        [imageChangedEvent]="imageChangedEvent"
+                        [maintainAspectRatio]="false"
+                        [resizeToHeight]="1080"
+                        [resizeToWidth]="1080"
+                        [format]="['jpg']"
+                        (imageCropped)="imageCropped($event)"
+                        (imageLoaded)="imageLoaded()"
+                        (loadImageFailed)="loadImageFailed()">
+                    </image-cropper>
+                </div>
+                <div class="col-4">
+                    <div class="btn bg-theme text-white" (click)="croppingDone();">Done Cropping</div>
+                </div>
+            </div>
+
+            <div class="btn bg-theme text-white float-right w-25" (click)="savePost();">Post</div>
+        </div>
+
+        <div *ngIf="pmFlags.uploadingStatus">
+            <span class="text-secondary ml-3">Updating...</span>
+            <sh-progress [progress]="uploadProgress"></sh-progress>
+        </div>
+
+    </div>
+</div>        

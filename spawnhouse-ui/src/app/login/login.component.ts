@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
   loginFlags = {showOTPEntry: false, otpresent: false, confirmingOTP: false, gettingOTP: false, otpErrorText: null, showForgotPassword: false, submittingPasswordRecovery: false, recoveryLinkSent: false, wrongCreds: false};
   recoverPassword = {user: null, recaptchaKey: null, assocEmail: null};
   otp: String;
+  error;
   constructor(private _metaService: Meta,
     private _renderer: Renderer2,
     ngZone: NgZone,
@@ -60,7 +61,8 @@ export class LoginComponent implements OnInit {
     });
 
     this.signupForm = new FormGroup({
-      fname: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required, Validators.pattern(/^[a-z0-9_.]{3,20}$/)]),
+      fname: new FormControl(''),
       lname: new FormControl(''),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.min(6), Validators.max(25)]),
@@ -111,28 +113,43 @@ export class LoginComponent implements OnInit {
 
     // let logginUser = {'fname': user.getGivenName(), 'lname': user.getFamilyName(), 'email': user.getEmail(), 'gender': '', 'type': 'Google'};
     this.signupForm.patchValue({
+      // username: user.getEmail().split('@')[0],
       fname:  user.getGivenName(),
       lname: user.getFamilyName(),
       email: user.getEmail(),
-      pass: user.getEmail(),    // email assigned to password
+      password: user.getEmail(),    // email assigned to password
       gender: '',
       tnc: true,
       signedVia: 'Google'
     });
+    console.log("form valid? ", this.signupForm.valid, this.signupForm.value);
+    if(!this.signupForm.valid)  return;
 
-    this._http.post(APIvars.APIdomain+'/'+APIvars.APIsignup, this.signupForm.value).subscribe( data => {
+    // check for username and email if they exist
+
+    this._http.post(APIvars.APIdomain+'/'+APIvars.CHECK_IF_TAKEN, {email: this.signupForm.get('email').value, username: this.signupForm.get('username').value}).toPromise().then(result => {
+      console.log("rrsult ", result);
+      if(result['message'] === 'failed') {
+        this.error = result['error'];
+        return;
+      } else 
+      this._http.post(APIvars.APIdomain+'/'+APIvars.APIsignup, this.signupForm.value).toPromise().then( data => {
         this.onLoginSuccess(data);
       });
+    });
   }
 
   setupOTP(resend?) {
     if(this.loginFlags.gettingOTP) return;
     this.loginError = '';
     this.loginFlags.gettingOTP = true;
-    if(this.signupForm.get('fname').value.trim() !== '' && this.signupForm.get('lname').value.trim() !== ''){
-      this.signupForm.patchValue({
-        signedVia: 'mail'
-      });
+    this._http.post(APIvars.APIdomain+'/'+APIvars.CHECK_IF_TAKEN, {email: this.signupForm.get('email').value, username: this.signupForm.get('username').value}).toPromise().then(result => {
+      if(result['message'] === 'failed') {
+        this.error = result['error'];
+        this.loginFlags.gettingOTP = false;
+        return;
+      }
+      this.signupForm.patchValue({signedVia: 'mail'});
       this._http.get(APIvars.APIdomain+'/'+APIvars.APIemailOTP+'/'+(resend ? '-' : '')+this.signupForm.get('email').value).subscribe( confirmation => {
         if(confirmation['message'] === 'passed') {
           this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
@@ -143,13 +160,11 @@ export class LoginComponent implements OnInit {
           this.loginFlags.gettingOTP = false;
         }
       });
-    }
+    });
   }
 
   attemptSignUp() {
-    console.log("sign up in progress");
     if(this.signupForm.valid && this.signupForm.get('tnc').value)
-    console.log("form valid");
 
     this._http.post(APIvars.APIdomain+'/'+APIvars.APIsignup, this.signupForm.value).subscribe( data => {
       console.log('data ', data);

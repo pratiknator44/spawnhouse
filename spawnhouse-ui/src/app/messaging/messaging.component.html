@@ -6,8 +6,6 @@
     <loader2 [type]="2"></loader2>
 </div>
 
-<!-- <button class="btn btn-primary" (click)="sendSocketMessage()">Send Socket MEssage</button> -->
-
 <div class="w-100 row m-0" style="overflow: hidden !important; height: 93.5vh;" *ngIf="chats.length > 0">
     <div class="col-3 p-1"  [perfectScrollbar]="{suppressScrollX: true}" style="overflow: auto; background-color: rgb(250,250,250);">
 
@@ -24,7 +22,7 @@
         <div class="font-italic text-secondary text-center " *ngIf="chats.length===0">
             no conversations
         </div>
-            <div class="message-user m-2 std-box-shadow cursor-pointer" style="border-radius: 0.75rem;" [perfectScrollbar]="{suppressScrollX: true}" [ngClass]="{'bg-blue-purple text-white std-box-shadow position-relative': selectedChat === chat.id, 'bg-white hover-bg box-shadow-local': selectedChat !== chat.id}" *ngFor="let chat of chats; let i = index" (click)="selectedChat = chat.id; getMessagesFromId(chat.id); convoIndex = i;">
+            <div class="message-user m-2 std-box-shadow cursor-pointer" style="border-radius: 0.75rem;" [perfectScrollbar]="{suppressScrollX: true}" [ngClass]="{'bg-blue-purple text-white std-box-shadow position-relative': selectedChat === chat.id, 'bg-white hover-bg box-shadow-local': selectedChat !== chat.id}" *ngFor="let chat of chats; let i = index" (click)="getMessagesFromId(chat.id); convoIndex = i;">
                 <div class="row">
                     <div class="col-4">
                         <img class="circle m-2 h-100" [src]="chat?.dpLink | async" style="max-height: 4rem;" *ngIf="chat?.dpLink | async" />

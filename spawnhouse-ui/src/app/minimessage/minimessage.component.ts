@@ -20,6 +20,7 @@ export class MinimessageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.user['dpLink'] = 
   }
 
   closeOverlay() {

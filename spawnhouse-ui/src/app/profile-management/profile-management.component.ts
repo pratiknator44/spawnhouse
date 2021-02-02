@@ -20,7 +20,7 @@ export class ProfileManagementComponent implements OnInit {
   gamedataForm: FormGroup;
   userinfoForm: FormGroup;
   saveText = {videogame: 'Save', personal: 'Save', type: 'Save'};
-  mgtFlags = {loadingData: true};
+  mgtFlags = {loadingData: true, usernameExists: false, checkingUsername: false};
   genres = [
     {id: 'action', genre: 'Action', example: 'PUBG, Call of Duty, Counter-Strike', checked: ''},
     {id: 'actionadv', genre: 'Action Adventure', example: 'GTA, Legend Of Zelda, Metal Gear, Assassins\' Creed', checked: ''},
@@ -61,9 +61,7 @@ export class ProfileManagementComponent implements OnInit {
       fname: new FormControl(this.user.fname, [Validators.required, Validators.pattern(/^[a-zA-Z]+ [a-zA-Z]+$/)]),
       lname: new FormControl(this.user.lname, [Validators.required, Validators.pattern(/^[a-zA-Z]+ [a-zA-Z]+$/)]),
       username: new FormControl(this.user.username || ''),
-      email: new FormControl(this.user.email, Validators.email),
       website: new FormControl(this.user.website || ''),
-      phone: new FormControl(this.user.phone || ''),
       bio: new FormControl(this.user.bio || ''),
       quote: new FormControl(this.user.quote || '')
     });
@@ -185,9 +183,12 @@ export class ProfileManagementComponent implements OnInit {
   }
 
   checkUsername() {
-    this._apiService.checkUsername(this.userinfoForm.get('username').value).then(result => {
-      console.log("username check response ", result);
-    });
+    if(this.userinfoForm.get('username').value.trim() === "") return;
+    this.mgtFlags.checkingUsername = true;
+    this._apiService.exists("username", this.userinfoForm.get('username').value.trim()).then(result => {
+      this.mgtFlags.usernameExists = result['status'];
+      this.mgtFlags.checkingUsername = false;
+    })
   }
 
 }

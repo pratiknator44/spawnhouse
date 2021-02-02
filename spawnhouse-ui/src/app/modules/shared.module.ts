@@ -14,6 +14,8 @@ import { PipesModule } from './pipes.module';
 // import { NgxJoypixelsModule } from 'ngx-joypixels';
 import { PerfectScrollbarConfigInterface, PerfectScrollbarModule, PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { ToggleComponent } from '../toggle/toggle.component';
+import { PostMakerComponent } from '../post-maker/post-maker.component';
+import { ProgressComponent } from '../progress/progress.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true,
@@ -27,11 +29,12 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         Loader2Component,
         TextboxComponent,
         ChipsComponent,
-        // ImageuploadComponent,
         DividerComponent,
         MinimessageComponent,
         MediatextComponent,
-        ToggleComponent
+        ToggleComponent,
+        PostMakerComponent,
+        ProgressComponent
     ],
     imports: [
         PipesModule.forRoot(),
@@ -39,7 +42,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         FormsModule,
         ReactiveFormsModule,
         ImageCropperModule,
-        // NgxJoypixelsModule,
         PerfectScrollbarModule
     ],
     providers: [
@@ -61,7 +63,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MediatextComponent,
         Loader2Component,
         PerfectScrollbarModule,
-        ToggleComponent
+        ToggleComponent,
+        PostMakerComponent,
+        ProgressComponent
     ]
 })
 

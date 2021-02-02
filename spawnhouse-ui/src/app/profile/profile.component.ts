@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
 import { FormGroup } from '@angular/forms';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
@@ -11,6 +11,7 @@ import { OverlayService } from 'src/assets/services/overlay.service';
 import { UserService } from 'src/assets/services/user.service';
 import { take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
+import { SocketService } from 'src/assets/services/socket.service';
 
 @Component({
   selector: 'sh-profile',
@@ -43,7 +44,8 @@ export class ProfileComponent implements OnInit {
     private _navbarService: NavbarService,
     private _overlayService: OverlayService,
     private _userService: UserService,
-    private _activeRoute: ActivatedRoute) {
+    private _activeRoute: ActivatedRoute,
+    private _socketService: SocketService) {
 
       this._activeRoute.params.subscribe( val => {
         if(this._activeRoute.snapshot.params.username)
@@ -54,8 +56,13 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.user = {};
     let addusername;
-
+    console.log("current user ", this._storageService.currentUser);
     if(this._activeRoute.snapshot.params.username) {
+
+    if(this._activeRoute.snapshot.params.username === this._storageService.currentUser._id || this._activeRoute.snapshot.params.username !== this._storageService.currentUser.username) {
+      this._apiService.router.navigateByUrl('/profile'); return;
+    }
+
       this.isUserProfile = false;
       this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.APIsignup+'/'+this._activeRoute.snapshot.params.username).subscribe( result => {
         this._notifService.setTitle(result['user'].username || result['user'].fname + ' ' + result['user'].lname);
@@ -67,12 +74,19 @@ export class ProfileComponent implements OnInit {
         
         this.user = result['user'];
         this.user['nowplaying'] = result['nowplaying'];
-        console.log("user now playing ", this.user['nowplaying']);  
+        // console.log("user now playing ", this.user['nowplaying']);
         this.user['gamedata'] = result['gamedata'];
         
         this.tempFavGamesArray = result['gamedata']? result['gamedata']['fav']: [];
         this.getFollowData();
         this.profileFlags.loadingGamingInfo = false;
+
+        console.log("sending getonline status...");
+        this._socketService.getData("online-status").subscribe( data => {
+          console.log("online status ", data);
+          this.onlineStatus = data.status ? 1 : 2;
+        });
+        this._socketService.pushData('get-online-status', {userid: this._storageService.currentUser._id, targetid: this.user._id});
       });
 
       // getting dp of the user
@@ -97,12 +111,12 @@ export class ProfileComponent implements OnInit {
         this.profileFlags.loadingCover = false;
       }
 
-      this._navbarService.getDpSubject.next(true);
+      // this._navbarService.getDpSubject.next(true);
       this.onlineStatus = 1;
-      this._apiService.dpSubject.subscribe(dpUrl => {
-        this.userdp = dpUrl.dpUrl;
-      });
-
+      // this._apiService.dpSubject.subscribe(dpUrl => {
+      //   this.userdp = dpUrl.dpUrl;
+      // });
+      this.getDpOfUser(this.user._id);
       this._navbarService.dpUpdated.asObservable().subscribe( updatedDp => {
         this.updatePic(updatedDp);
       });
@@ -126,7 +140,7 @@ export class ProfileComponent implements OnInit {
   getGamedata() {
     this.user['gamedata'] = null;
     const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
-    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
+    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).toPromise().then( result => {
       this.user['gamedata'] = result['result'];
       this.profileFlags.loadingGamingInfo = false;
 
@@ -138,37 +152,38 @@ export class ProfileComponent implements OnInit {
 
   // add or remove
   setFollowStatus() {
-    // const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
     this._apiService.addRemoveFollower(this.followStatus, this.user._id).then(resolve => {
+      console.log("resolve == ", resolve);
       this.followStatus = resolve['status'] || '+Follow';
+      if(this.followStatus === 'Unfollow'){
+        this._socketService.pushData('new-notification', {type: 'started following', sentBy: this._storageService.currentUser._id, targetid: this.user._id});
+      };
+
       this.user.followdata.followerCount = resolve['followerCount'];
     });
-
-    // this.http.get(APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+this.user._id).subscribe(result => {
-    //   this.followStatus = result['status'];
-    //   this.user.followdata.followerCount = result['followerCount'];
-    // });
   }
 
   getDpOfUser(id) {
-    this._apiService.getImagePromise('dp', id).then( image => {
+    // this._apiService.getImagePromise('dp', id).then( image => {
       
-    if(image['type'] === 'application/json') {
-      this._storageService.setDp(null);
-      this.userdp = null;
-      return;
-    };
-        let reader = new FileReader();
-      reader.addEventListener('load', () => {
-        this.userdp = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-        console.log(this.userdp);
-        if(this.isUserProfile) this._storageService.setDp(this.userdp);
-      }, false);
+    // if(image['type'] === 'application/json') {
+    //   this._storageService.setDp(null);
+    //   this.userdp = null;
+    //   return;
+    // };
+    //     let reader = new FileReader();
+    //   reader.addEventListener('load', () => {
+    //     this.userdp = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+    //     console.log(this.userdp);
+    //     if(this.isUserProfile) this._storageService.setDp(this.userdp);
+    //   }, false);
   
-      if (image) {
-          reader.readAsDataURL(image);
-      }
-    });
+    //   if (image) {
+    //       reader.readAsDataURL(image);
+    //   }
+    // });
+
+    this.userdp = this._apiService.getUserImageById('dp', id);
 
     // this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
     //   if(image['type'] === 'application/json')  {
@@ -257,7 +272,10 @@ export class ProfileComponent implements OnInit {
 
   updatePic(event) {
     if(event.type === 'dp') {
-      this.userdp = event.src;
+      this.userdp = new Promise((resolve, reject) => {
+        // event.src
+        setTimeout(() => resolve(event.src), 0);
+      });
       this.setVisibilityImageOverlay(false);
     }
   }
@@ -319,6 +337,7 @@ export class ProfileComponent implements OnInit {
 
   routeToProfile(id) {
     console.log("routing to profile user ", id);
+    if(id === this._storageService.currentUser._id) id = 'profile';
     this._apiService.router.navigateByUrl('/'+id);
     this.ngOnInit();
   }
@@ -387,6 +406,7 @@ export class ProfileComponent implements OnInit {
     this._userService.minimessageConfigSubject.next({show: true, userdata});
 
     this._userService.minimessageFiredSubject.asObservable().pipe(take(1)).subscribe( messagedata => {
+      
       //getting previous convo id, if not, create new.
       this._apiService.http.post(APIvars.APIdomain+'/'+APIvars.GET_CHATROOM_ID_BY_USERS, {users: [this.user._id, JSON.parse(this._storageService.getSessionData('user'))['_id']]}).toPromise().then(result => {
         console.log("chat room id = ", result)
@@ -397,6 +417,7 @@ export class ProfileComponent implements OnInit {
           console.log("message saved? ", result);
           // this._userService.minimessageConfigSubject.next({show: false, userdata: null});
           this._overlayService.showSubject.next(false);
+          this._socketService.pushData('new-message', {otheruserid: this.user._id});
         });
       });
     });
@@ -432,7 +453,8 @@ export class ProfileComponent implements OnInit {
       this.profileFlags.loadingFollow = false;
       const l = this.followUsers.length;
       for(let x=0; x<l; x++) {
-        this.getDpById(this.followUsers[x]._id, x);
+        // this.getDpById(this.followUsers[x]._id, x);
+        this.followDpLinks[x] = this._apiService.getUserImageById('dp', this.followUsers[x]._id);
       }
     });
 

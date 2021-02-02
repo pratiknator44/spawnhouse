@@ -46,7 +46,7 @@
         <!-- data template -->
         <div class="hover-bg-grey std-box-shadow" *ngFor="let suggestion of searchSuggestions" (click)="gotoProfile(suggestion)">
           <div class="d-flex">
-            <img class="m-1 circle" [src]="suggestion?.dpaddress" style="width: 2.5rem; height: 2.5rem;" *ngIf="suggestion?.dp" /> <div class="bg-secondary m-1 circle text-white" style="width: 2.5rem; height: 2.5rem;" *ngIf="!suggestion?.dp">
+            <img class="m-1 circle" [src]="suggestion?.dpaddress | async" style="width: 2.5rem; height: 2.5rem;" *ngIf="suggestion?.dp" /> <div class="bg-secondary m-1 circle text-white" style="width: 2.5rem; height: 2.5rem;" *ngIf="!suggestion?.dp">
               <span class="iconset icon-player h3 ml-1"></span>
               </div>
               <div style="width: calc(100% - 3rem);">
@@ -74,11 +74,19 @@
         <div class="message-container bg-white position-absolute mt-3 rounded std-box-shadow" *ngIf="navbarFlags.showNotification">
 
           <div class="bg-lite text-bold" style="height: 3rem;">
-            <label style="line-height: 3;">Notifications<span class="badge badge-pill badge-danger">{{alerts.notifications}}</span></label>
+            <label style="line-height: 3;">Notifications
+              <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span>
+            </label>
+            <div class="btn btn-default h-100 float-right border-gray" (click)="markAllNotificationsRead()"  title="Mark all as read" style="border-left: solid 1px #CCC; border-radius: 0;">
+              <span class="iconset icon-eye h4"></span>
+            </div>
           </div>
 
           <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No new notifications</div>
-          <sh-notifications [notifications]="notifications" (close)="navbarFlags.showNotification = false"></sh-notifications>
+          <div class="position-relative w-100" *ngIf="navbarFlags.notificationsLoading"><loader2 [type]="3"></loader2></div>
+          <sh-notifications [notifications]="notifications"
+          (close)="closeNotificationOverlay($event)"
+          (notificationClicked)="markAsRead($event)"></sh-notifications>
           <div class="bg-lite text-bold cursor-pointer text-center mt-3" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;" (click)="routeToMessaging()">show more</div>
         </div>
         
@@ -88,14 +96,14 @@
     (click)="navOptionSelected('messages');">
       <div class="cursor-pointer" [ngClass]="{'color-theme': navbarFlags.showMessages}">
         <span class="iconset icon-size icon-bubbles3"></span>
-        <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.messages !== 0">{{alerts.messages | async}}</span>
+        <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.messages !== 0">{{alerts.messages}}</span>
       </div>
         <div class="text-center m-0 font-0-5-rem cursor-pointer">Messages</div>
 
     
       <div class="message-container bg-white position-absolute mt-3 std-box-shadow rounded" *ngIf="navbarFlags.showMessages">
         <div class="bg-lite text-bold" style="height: 3rem;">
-          <label style="line-height: 3;">Messages <span class="badge badge-pill badge-danger">{{alerts.messages | async}}</span></label>
+          <label style="line-height: 3;">Messages <span class="badge badge-pill badge-danger">{{alerts.messages}}</span></label>
         </div>
 
         <div class="text-center font-italic text-secondary" *ngIf="navbarFlags.messagelistLoading===null ">No messages yet</div>
@@ -107,8 +115,8 @@
 
           <div class="row m-1 text-left">
             <div class="col-3 text-center">
-              <img class="circle dp-big" [src]="msg.dp" *ngIf="msg.dp" />
-              <div class="dp-big circle" style="transform: rotate(-45deg);" *ngIf="!msg.dp">
+              <img class="circle dp-big" [src]="msg.dp | async" *ngIf="msg.dp | async" />
+              <div class="dp-big circle" style="transform: rotate(-45deg);" *ngIf="!(msg.dp | async)">
                 <div class="cursor-pointer text-center iconset icon-player text-theme" style="font-size: 3rem; margin-top:-1rem; margin-left: -1rem;"></div>       
               </div>
               <h3 class="badge badge-pill badge-danger position-absolute" style="bottom: calc(100% - 4rem); left: 75%;">{{msg.totalunseen}}</h3>

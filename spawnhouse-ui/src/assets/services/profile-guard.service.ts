@@ -1,11 +1,14 @@
 import { Injectable } from "@angular/core";
 import { CanActivate, Router } from '@angular/router';
 import { NavbarService } from './navbar.service';
+import { SocketService } from "./socket.service";
 import { StorageService } from './storage.service';
 @Injectable()
 export class ProfileGuardService implements CanActivate {
 
-    constructor(private _router: Router, private _storageService: StorageService, private _navService: NavbarService) {}
+    constructor(private _router: Router,
+        private _storageService: StorageService,
+        private _navService: NavbarService) {}
 
     canActivate(): boolean {
         if(sessionStorage.getItem('sh_auth_token')){

@@ -10,8 +10,10 @@ export class ChipsComponent implements OnInit {
   @Input() items: {label: any, value: any, extra?: any}[];
   @Input() max: number;
   @Input() selected: {label: any, value: any, extra?: any}[] = [];
+  @Input() config: {showFav: boolean, showCross: boolean, placeholder: String | Number};
   @Output() selectionChange = new EventEmitter<{label: any, value: any, extra?: any}[]>();
   @Output() queryChange = new EventEmitter<string>();
+  @Output() emitCrossClick = new EventEmitter<Number>();
   
   searchword: string = '';
   isLimitReached: boolean;
@@ -67,6 +69,11 @@ export class ChipsComponent implements OnInit {
       this.selected[i].value = 'fav';
     }
     this.selectionChange.emit(this.selected);
+  }
+
+  crossClicked(index) {
+    this.emitCrossClick.emit(index);
+    this.selected.splice(index, 1);
   }
 
 }

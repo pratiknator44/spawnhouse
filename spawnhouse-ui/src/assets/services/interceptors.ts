@@ -15,7 +15,10 @@ import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-    constructor(private _userService: UserService, private _floatNotifService: FloatNotificationService, private _cookieService: CookieService) {}
+    constructor(private _userService: UserService,
+      private _floatNotifService: FloatNotificationService,
+      private _cookieService: CookieService,
+      private _router: Router) {}
     
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
       request = request.clone({
@@ -35,6 +38,9 @@ export class TokenInterceptor implements HttpInterceptor {
               this._floatNotifService.showToastSubject.next(false)) 
             this._userService.relogin();
           }
+          // else if(err.status === 404) {
+          //   this._router.navigate(['/not-found']);
+          // }
           return;
         }
       }));

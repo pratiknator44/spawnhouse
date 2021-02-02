@@ -26,7 +26,12 @@
         <hr>
         <form [formGroup]="gamedataForm" (ngSubmit)="submitGamedata()" action="" method="POST">
             <label class="mt-1">Some of the best videogames you've played. Click on game name to remove it. Click on <span class="iconset icon-favorite_outline text-danger"></span> to set as favourite</label>
-            <sh-chips [items]="gameSuggestions" [selected]="items" (queryChange)="queryChange($event)" (selectionChange)="newSelections($event)"></sh-chips>
+            <sh-chips [items]="gameSuggestions"
+            [selected]="items"
+            (queryChange)="queryChange($event)"
+            (selectionChange)="newSelections($event)"
+            [config]="{showFav: true, showCross: false, placeholder: 'Type a game name'}"
+            ></sh-chips>
 
             <div class="hover-underline text-primary cursor-pointer mt-3">What are you playing today?</div>
             <div class="row mt-2">
@@ -73,20 +78,16 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-6"><input type="text" class="form form-control" formControlName="username" /></div>
-                <div class="col-4"><label class=" btn text-primary cursor-pointer hover-underline" (click)="checkUsername()">Check</label></div>
+                <div class="col-6">
+                    <input type="text" class="form form-control" formControlName="username" (focusout)="checkUsername()" />
+                </div>
+                <div class="col-4">
+                    <label class="btn text-primary cursor-pointer hover-underline" *ngIf="mgtFlags.checkingUsername" (click)="checkUsername()">checking...</label>
+                    <span class="text-danger" *ngIf="mgtFlags.usernameExists && !mgtFlags.checkingUsername">is taken, try another {{mgtFlags.usernameExists}}</span>
+                    <span class="text-success" *ngIf="!mgtFlags.usernameExists && !mgtFlags.checkingUsername">available</span>
+                </div>
             </div>
 
-            <div class="row">
-                <div class="col-6"> Email <label class="text-danger">*</label></div>
-                <div class="col-6">Phone</div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <input type="email" formControlName="email" class="form form-control" />
-                </div>
-                <div class="col-6"><input type="number" formControlName="phone" class="form form-control" maxlength="10" /></div>
-            </div>
             <div class="row mt-3">
                 <div class="col-12">Website</div>
             </div>

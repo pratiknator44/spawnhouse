@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import './assets/variables/variables.scss';
 @import './assets/variables/icons.scss';
+@import './assets/variables/icons2.scss';
 @import '~perfect-scrollbar/css/perfect-scrollbar.css';
 .cursor-pointer {
     cursor: pointer !important;
@@ -94,6 +95,11 @@
     font-family: sh-icons !important;
     src: url('/../spawnhouse-ui/src/assets/fonts/icomoon.woff');
     // format:('opentype');
+}
+
+.iconset2 {
+    font-family: sh-icons2 !important;
+    src: url('/../spawnhouse-ui/src/assets/fonts/icomoon2.woff');
 }
 
 .text-ellipsis {
@@ -223,7 +229,7 @@
 
 .hover-bg-lite:hover {
     background-color: rgb(255, 255, 255) !important;
-    color: white !important;
+    // color: white !important;
 }
 
 
@@ -310,4 +316,8 @@ label {
 
 .border-top-thin {
     border-bottom: solid 1px #CCC;
+}
+
+.resize-none {
+    resize: none !important;
 }

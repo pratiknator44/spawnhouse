@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
-import { SocketService } from 'src/assets/services/socker.service';
+import { SocketService } from 'src/assets/services/socket.service';
 import { StorageService } from 'src/assets/services/storage.service';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 
@@ -39,27 +39,40 @@ export class MessagingComponent implements OnInit {
     this._notifService.setTitle('Messages');
     this.user = JSON.parse(this._storageService.getSessionData('user'));
 
-    this._socketService.listen('test event').subscribe( data => {
-      console.log("data from server: ", data);
+    this._socketService.getData('new-message').subscribe( data => {
+      console.log("message = ", data);
+      this.addToConversation(data);
     });
-    // this.selectedChat = this._navbarService.selectedConvo || null;
+
     this.unseenConvos = this._navbarService.unseenMessagesRecord;
     this.briefmessages();
   }
 
-  sendSocketMessage() {
-    this._socketService.emit('test event', {message: "hello server"})
+  addToConversation(messageOb) {
+    if(this.selectedChat == messageOb._cid) {
+
+      const msg = {
+        text: messageOb.text,
+        sender: messageOb.sender,
+        time: messageOb.time,
+        seen: false
+      };
+      this.conversation.push(messageOb);
+    }
   }
+
+  sendSocketMessage() {}
 
 
   getAllMessages() {
-    // this._apiService.getAllMessages();
+    
   }
 
   briefmessages() {
     this.messageFlags.convosLoading = true;
     return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_BRIEF_MESSAGES).toPromise().then(result => {
       this.messageFlags.convosLoading = false;
+      console.log("brief messages = ", result);
       this.groupMessages(result['result']);
     });
   }
@@ -80,12 +93,15 @@ export class MessagingComponent implements OnInit {
         text: messages[x]['text'],
         time: messages[x]['time'],
         seen: messages[x]['seen'],
+        otherUser: messages[x]['senderid'],
+        dpLink: this._apiService.getUserImageById('dp', messages[x]['senderid'])
       });
-      this.getUserImageById(messages[x]['senderid'], 'dp');
+      // this.getUserImageById(messages[x]['senderid'], 'dp');
     }
     this.sortConvo();
-    console.log("sleected convo ", this._navbarService.selectedConvo, "chats ", this.chats);
-    this.selectedChat = this._navbarService.selectedConvo ||  this.chats[0].id || null;
+    // this.selectedChat = this._navbarService.selectedConvo ||  this.chats[0].id || null;
+    this.getMessagesFromId(this._navbarService.selectedConvo ||  this.chats[0].id || null);
+
     if(this.selectedChat) this.convoIndex = this.chats.findIndex( convo => convo.id == this.selectedChat);
     this._navbarService.selectedConvo = null;
     this.messageFlags.convosLoading = false;
@@ -94,20 +110,20 @@ export class MessagingComponent implements OnInit {
   }
 
   async getUserdataById(userid: string, fields?: string, index?: any) {
-    console.log("user id ", userid);
     if(!userid) return;
     return await this._http.post(APIvars.APIdomain+"/"+APIvars.GET_USERDATA_BY_ID, {id: userid, fields}).toPromise();
   }
 
-  getUserImageById(userid: string, type: string, index?: any) {
-    if(!userid) return;
-    const i = this.chats.findIndex( message => message.userid === userid);
-    this.chats[i]['dpLink'] = this._apiService.getUserImageById('dp', userid);
-    // this.dpLinks[i] = this._apiService.getUserImageById('dp', userid);
-  }
+  // getUserImageById(userid: string, type: string, index?: any) {
+  //   if(!userid) return;
+  //   const i = this.chats.findIndex( message => message.userid === userid);
+  //   this.chats[i]['dpLink'] = this._apiService.getUserImageById('dp', userid);
+  // }
 
   // gets messages and sets all seen to true;
   getMessagesFromId(chatid) {
+    if(this.selectedChat === chatid)  return;
+    this.selectedChat = chatid
     this.conversation = [];
     this.messageFlags.msgLoading = true;
     this.messageFlags.userdataLoading = true;
@@ -118,8 +134,6 @@ export class MessagingComponent implements OnInit {
         this.chats = [];
         return;
       }
-      console.log("conversation ", this.conversation);
-
       this.setOtherUserInfo();
       this.messageFlags.msgLoading = false;
       this.scrollDownMessages();
@@ -137,7 +151,7 @@ export class MessagingComponent implements OnInit {
       this._http.get(APIvars.APIdomain+'/'+APIvars.GAMEDATA+'/'+this.otherUser.userid).toPromise().then( gamedata => {
         console.log("gamedata ", gamedata['result']);
         this.otherUser['gamedata'] = gamedata['result'];
-        this.otherUser['playerType'] = gamedata['result']['playerType'];
+        this.otherUser['playerType'] = gamedata['result'] ? gamedata['result']['playerType'] : null;
         
         this.messageFlags.userdataLoading = false;
       });
@@ -152,8 +166,10 @@ export class MessagingComponent implements OnInit {
   sendMessage() {
     if(this.messageFlags.msgLoading) return;
     if(this.message && this.message.trim() !== '') {
-      // this._socketService.sensdMessage('test',{_cid: this.selectedChat, sender: this.user._id, text: this.message});
-      this._http.post(APIvars.APIdomain+'/'+APIvars.SAVE_MESSAGE, {_cid: this.selectedChat, sender: this.user._id, text: this.message}).toPromise().then( response => {        
+      const sendObject = {_cid: this.selectedChat, sender: this.user._id, text: this.message, time: new Date().getTime(), otheruserid: this.chats[this.convoIndex].otherUser};
+      this._socketService.pushData("new-message", sendObject);
+
+      this._http.post(APIvars.APIdomain+'/'+APIvars.SAVE_MESSAGE, sendObject).toPromise().then( response => {        
         this.conversation.push({
           sender: this.user._id,
           text: this.message,

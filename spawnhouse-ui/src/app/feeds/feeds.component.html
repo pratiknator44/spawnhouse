@@ -1,0 +1,34 @@
+<div *ngFor="let post of posts; let i = index" class="mt-2 bg-white rounded">
+    <div class="user-info pt-3 pl-3 pr-3">
+        <div class="d-inline-block dp circle bg-danger">
+            <img [src]="post?.dp | async" class="circle h-100 w-100" />
+        </div>
+        <div class="info ml-3 d-inline-block">
+            <h5 class="text-theme font-bold mt-2 cursor-pointer" (click)="routeToProfile(post.userid)">{{ post?.username}}
+                <span class="text-secondary mt-2" style="font-size: 0.75rem;">{{ post?.time | ago }}</span>
+            </h5>
+        </div>
+        <div class="float-right mt-2 text-secondary position-relative" *ngIf="post.userid === user._id" (click)="optionsMenuId === post._id ? optionsMenuId = null : optionsMenuId = post._id">
+            <span class="iconset2 icon-horizontal-dots cursor-pointer"></span>
+
+            <div class="bg-white border-grey position-absolute text-secondary cursor-pointer" *ngIf="optionsMenuId === post._id" style="width: 6rem; height: auto; right: 0;">
+                <div class="row" (click)="postAction('delete', post._id)">
+                    <div class="col-12 hover-bg-grey">
+                        <span class="iconset icon-cross ml-1 text-small text-danger"></span>&nbsp; Delete
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pt-3 pl-3 pr-3">
+        <div [innerHTML]="post?.desc"></div>
+        <div class="row text-center text-secondary mt-3" style="z-index: -1;">
+            <div class="col-4 hover-bg-lite cursor-pointer" (click)="like(post._id, i)">
+                <span class="iconset2 h3 d-inline-block text-danger" [ngClass]="{'icon-heart': post?.likedByUser, 'icon-heart-o': !post?.likedByUser}"></span>{{post.likes}}
+            </div>
+            <div class="col-4 hover-bg-lite cursor-pointer"><span class="iconset2 icon-chat_bubble_outline h3"></span>{{post.comments}}</div>
+            <div class="col-4 hover-bg-lite cursor-pointer"><span class="iconset2 icon-share-square-o h3"></span></div>
+
+        </div>
+    </div>
+</div>

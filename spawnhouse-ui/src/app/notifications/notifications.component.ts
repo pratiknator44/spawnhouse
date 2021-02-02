@@ -12,7 +12,9 @@ import { APIvars } from 'src/assets/variables/api-vars.enum';
 export class NotificationsComponent implements AfterViewInit, OnChanges {
 
   @Input() notifications;
-  @Output() close = new EventEmitter;
+  @Output() close = new EventEmitter();
+  @Output() notificationClicked = new EventEmitter();
+  // @Output() refresh = new EventEmitter();
   constructor( private _apiService: APIservice,
     private _router: Router ) { }
 
@@ -27,12 +29,12 @@ export class NotificationsComponent implements AfterViewInit, OnChanges {
 
   getUserdata() {
     const l = this.notifications.length;
-    console.log("notifs len = ", this.notifications.length);
+    // console.log("notifs len = ", this.notifications.length);
     for(let x = 0; x < l; x++) {
       this.getUserImageById(this.notifications[x].userid, x);
-      this._apiService.getUserdataById(this.notifications[x].userid, 'fname username'+(this.notifications[x]['type'] == 3 ? ' nowplaying' : '')).then( userdata => {
-        Object.assign(this.notifications[x], userdata['data']); // concat object properties
-      });
+      // this._apiService.getUserdataById(this.notifications[x].userid, 'fname username'+(this.notifications[x]['type'] == 3 ? ' nowplaying' : '')).then( userdata => {
+      //   Object.assign(this.notifications[x], userdata['data']); // concat object properties
+      // });
     }
   }
 
@@ -55,11 +57,23 @@ export class NotificationsComponent implements AfterViewInit, OnChanges {
     });
   }
 
-  onNotificationClick(notificationType, userid) {
-    if(notificationType == 2) {
-      this.close.emit();
-      this._router.navigate(['/'+userid]);
+  onNotificationClick(i) {
+
+    // if notification is not seen, make it seen if the user clicks
+    if(!this.notifications[i].seen) this.markAsRead(i);
+
+    if(this.notifications[i].type == 2) {
+      this._router.navigate(['/'+this.notifications[i].userid]);
     }
+  }
+
+  markAsRead(i) {
+    this.notificationClicked.emit(i);
+    // this._apiService.markNotificationRead(this.notifications[i]._id).then(res => {
+    //   console.log("notification read success = ", res['message']);
+    //   this.close.emit('count');   // 'count' or 'list'; 
+    //   this.notifications[i].seen = true;
+    // });
   }
 
 }

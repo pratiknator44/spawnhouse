@@ -3,8 +3,8 @@
     <h4 class="p-2 bg-theme text-white">Send a message <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay();"></span></h4>
 
     <div class="user-info d-flex text-center" *ngIf="user || true">
-        <img class="circle border-grey" [src]="user?.dpLink" *ngIf="user?.dpLink" style="height: 5rem; width: 5rem;" />
-        <div class="dp-big circle m-2" *ngIf="!user?.dpLink">
+        <img class="circle border-grey" [src]="user?.dpLink | async" *ngIf="user?.dpLink | async" style="height: 5rem; width: 5rem;" />
+        <div class="dp-big circle m-2" *ngIf="!(user?.dpLink | async)">
             <div class="cursor-pointer text-center iconset icon-player text-theme" style="font-size: 3rem; margin-top:-1rem; margin-left: -1rem; transform: rotate(-45deg);"></div>       
         </div>
         <div class="ml-2 text-left">

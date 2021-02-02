@@ -411,20 +411,27 @@
 
             <!-- sign up-->
             <h3 class="text-secondary mt-5">Sign Up, it's FREE</h3>
-            <div class="row mt-3">
-                <div class="col-6">
-                    <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
-                </div>
-                <div class="col-6"><button class="btn btn-primary col-12" (click)="fbLogin()">Facebook</button></div>
-            </div>
-
-
 			<form [formGroup]="signupForm" (ngSubmit)="setupOTP(); loginFlags.otpresent = false;">
 				<div class="row mt-3">
-					<h5 class="col-12 text-secondary">or provide the following details</h5>
+					<h5 class="col-12 text-secondary">Select your unique co-op name</h5>
+					<div class="col-12">
+						<input type="text" class="form form-control" placeholder="mysterio06, mortal_enemy, 000beathbox" formControlName="username" />
+						<p class="text-danger">*Needed: Select a unique alias name</p>
+					</div>
+				</div>
+
+				<div class="row text-secondary">
+					<div class="col-12"><span class="text-secondary h6 ml-auto mr-auto">and Signup via:</span>
+						<div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
+						<div class="badge badge-danger">{{error}}</div>
+					</div>
+					<div class="col-12">or provide the following details</div>
+				</div>
+				
+				<div class="row mt-3">
 					<div class="col-6">
 						<input type="text" class="form form-control" placeholder="First Name or X Æ A-12" formControlName="fname" />
-						<p class="text-danger">First name is needed</p>
+						<!-- <p class="text-danger">First name is needed</p> -->
 					</div>
 					<div class="col-6">
 						<input type="text" class="form form-control" placeholder="Last Name" formControlName="lname" />
@@ -439,17 +446,6 @@
 						<input type="text" class="form form-control" placeholder="New Password" formControlName="password" />
 					</div>
 				</div>
-				<!-- <div class="row">
-					<div class="col-4 mt-2">
-						<select type="text" class="form form-control" formControlName="gender" >
-							<option value="">Gender</option>
-							<option value="2">Female</option>
-							<option value="1">Male</option>
-							<option value="3">Other</option>
-						</select>
-					</div>
-				</div> -->
-
 				<div class="row text-danger" *ngIf="loginError!== ''">
 					<div class="col-12">{{loginError | json}}</div>
 				</div>

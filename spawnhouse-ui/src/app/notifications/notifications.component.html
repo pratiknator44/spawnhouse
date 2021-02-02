@@ -1,7 +1,8 @@
-<div *ngFor="let notification of notifications" class="hover-bg-grey cursor-pointer" (click)="onNotificationClick(notification?.type, notification.userid)">
+<div *ngFor="let notification of notifications; let i = index" class="hover-bg-grey cursor-pointer" (click)="onNotificationClick(i)" [ngClass]="{'bg-theme-lite': !notification?.seen}">
     <div class="row m-1">
       <div class="col-3 text-center">
-        <img [src]="notification.dp" class="dp-big circle" />
+        <img [src]="notification.dp" *ngIf="notification.dp" class="dp-big circle" />
+        <div class="dp-big circle bg-theme" *ngIf="!notification?.dp"><h1 class="iconset icon-user text-white"></h1></div>
       </div>
       <div class="col-9 text-left border-bottom-thin">
         <div>
@@ -11,13 +12,15 @@
             <!-- sent a notification {{notification?.time | ago}} -->
             <!-- templates as per the type of notification -->
             <span class="text-secondary" *ngIf="notification?.type == 2"> started following you</span>
-            <span class="text-secondary" *ngIf="notification?.type == 3">is {{notification?.nowplaying?.stream ? 'streaming' : 'playing'}}
-                <span class="text-theme">{{ notification?.nowplaying?.game}}</span> <span *ngIf="notification?.nowplaying?.username">&nbsp;as <span class="text-theme">{{ notification?.nowplaying?.username }}</span></span>
-                <span *ngIf="notification?.nowplaying?.roomid">&nbsp; in a perosnal room</span>
+            <span class="text-secondary" *ngIf="notification?.type == 3">is {{notification?.extra?.stream ? 'streaming' : 'playing'}}
+                <span class="text-theme">{{ notification?.extra?.game}}</span> <span *ngIf="notification?.extra?.username">&nbsp;as <span class="text-theme">{{ notification?.extra?.username }}</span></span>
+                <span *ngIf="notification?.extra?.roomid">&nbsp; in a perosnal room</span>
             </span>
             <span class="badge badge-secondary float-right">{{ notification?.time | ago }}</span>
-            <div class="actions hover-underline" *ngIf="notification?.nowplaying?.stream">
-              <span class="badge bg-grey badge-pill"><span class="iconset icon-{{notification?.nowplaying?.stream | streamlink}}"></span>&nbsp; {{ notification?.nowplaying?.stream | streamlink: true | titlecase }}</span>
+            <div class="actions hover-underline" *ngIf="notification?.extra?.stream" title="Watch Stream">
+              <a class="text-black" target="__blank" [href]="notification?.extra?.stream">
+                <span class="badge bg-grey badge-pill"><span class="iconset icon-{{notification?.extra?.stream | streamlink}}"></span>&nbsp; {{ notification?.extra?.stream | streamlink: true | titlecase }}</span>
+              </a>
               <!-- <span class="badge border-grey badge-pill">Get room ID</span> -->
             </div>
         </div>

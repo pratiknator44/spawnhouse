@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { APIvars } from '../variables/api-vars.enum';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { IUser } from '../interfaces/user.interface';
 import { StorageService } from './storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,7 +20,7 @@ export class APIservice {
   coverPictureObservable;
   user: IUser;
   http; router; dom; activatedRoute;
-
+  refreshPosts = new Subject<any>();
   constructor(
     private _http: HttpClient,
     private _router: Router,
@@ -41,31 +41,7 @@ export class APIservice {
       return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER,  { responseType: 'blob' });
     }
   }
-  
-  // getCover() {      // get cover picture
-  //   this.getPhotos('cover').subscribe( image => {
-
-  //     if(image.size < 30) {
-  //       this.coverPictureSubject.next( {coverurl: null});
-  //       this.coverPictureObservable = this.coverPictureSubject.asObservable();
-  //       return;
-  //     }
-  //     // convert raw image to Blob object
-  //     let reader = new FileReader();
-  //     reader.addEventListener('load', () => {
-  //       this.coverUrl = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-  //       // this.onPicUpdate.emit({type: 'dp', src: this.dp});
-  //       // console.log("dp emitted");
-  //       this.coverPictureSubject.next({ coverurl: this.coverUrl});
-  //       this.coverPictureObservable = this.coverPictureSubject.asObservable();
-  //     }, false);
-  
-  //     if (image) {
-  //        reader.readAsDataURL(image);
-  //     }
-  //   });
-  // }
-
+ 
   async getCover() {
     const image =  await this._http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER,  { responseType: 'blob' }).toPromise();
     if(image['type'] === 'application/json')
@@ -77,20 +53,35 @@ export class APIservice {
 
   async getUserImageById(type: string, id: string) {
     let image = null;
-    console.log("getting ", type, 'for id ', id);
-    if(type === 'dp')
+    // console.log("getting ", type, 'for id ', id);
+    if(type === 'dp'){
+      if(this._storageService.getSessionData(id)) {
+
+        // console.log("dp already present for user", id);
+        return new Promise((resolve, reject) => {
+          setTimeout( () => {
+            const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData(id));
+            resolve(safeLink);
+          },0);
+        });
+      }
       image = await this._http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).toPromise();
+    }
     else if(type === 'cover') {
       console.log("Calling url ", APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id);
       image = await this._http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id,  { responseType: 'blob' }).toPromise();
     }
     else return null;
 
-    console.log("image =  ",type, image);
+    // console.log("image =  ",type, image);
     if(image['type'] === 'application/json') return null;
     
     const readerResult: any = await this.readAsDataURL(image);
-    return this._dom.bypassSecurityTrustResourceUrl(readerResult);
+    
+    const domParsed = this._dom.bypassSecurityTrustResourceUrl(readerResult);
+    // save dp for future references:
+    this._storageService.setSessionData(id, readerResult);
+    return domParsed;
   }
 
 
@@ -108,12 +99,6 @@ export class APIservice {
 
   getImagePromise(type, id) {
 
-    // const tempCover = this._storageService.getUserProperty(id, type === 'cover'? 'coverLink' : type);
-    // console.log("get cover from memory ", tempCover);
-    // if(tempCover) {
-    //   return new Promise((tempCover) => tempCover);
-    // }
-
     if(type === 'dp')
       return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).toPromise();
     else if(type === 'cover') {
@@ -126,7 +111,7 @@ export class APIservice {
     return await
     reader.addEventListener('load', () => {
       // this.coverUrl = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-      console.log("image loaded ", this.coverUrl);
+      // console.log("image loaded ", this.coverUrl);
       // this.onPicUpdate.emit({type: 'dp', src: this.dp});
       // console.log("dp emitted");
       return this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
@@ -139,7 +124,6 @@ export class APIservice {
     }
   }
 
-  
 
   getDp() {
     this.getPhotos('dp').subscribe( image => {
@@ -175,17 +159,13 @@ export class APIservice {
   }
 
   async getGamedata() {
-    return await this._http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).toPromise()
+    return await this._http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).toPromise();
     // .then(resolve => {return resolve['result']});
   }
 
   async addRemoveFollower(currentFollowStatus, userid) {
     const operation = currentFollowStatus === 'Follow' ? 'add' : 'sub';
-    console.log("seinding to ... ", APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+userid);
     return this._http.get(APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+userid).toPromise();
-    // subscribe(result => {
-      // this.followStatus = result['status'];
-      // this.user.followdata.followerCount = result['followerCount'];  
   }  
 
   getMessagesByChatid(chatid) {
@@ -211,7 +191,7 @@ export class APIservice {
   }
 
   checkUsername(username: string) {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.CHECK_USERNAME+'/'+username).toPromise();
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.GET_USERDATA+'/'+username).toPromise();
   }
 
   getNotifications() {
@@ -224,5 +204,42 @@ export class APIservice {
 
   getUserdataById(id, fields?) {
     return this.http.post(APIvars.APIdomain+"/"+APIvars.GET_USERDATA_BY_ID, {id, fields: fields? fields : null}).toPromise();
+  }
+
+  exists(field, value) {
+    return this.http.post(APIvars.APIdomain+"/"+APIvars.EXISTS, {field, value}).toPromise();
+  }
+
+  markNotificationRead(id) {
+    // const query = typeof id === 'string' ? [id] : id;  
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.SET_NOTIFICATION_SEEN, {notifid: typeof id === 'string' ? [id] : id}).toPromise();
+  }
+
+  markAllNotificationsRead() {
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.READ_ALL_NOTIFICATIONS).toPromise();
+  }
+
+  getUserByMention(searchword) {
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER_FOR_MENTION+'/'+searchword).toPromise();
+  }
+
+  savePost(post) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.ADD_POST, {post}).toPromise();
+  }
+
+  getPosts(pageNo?) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_POSTS, {pageNo}).toPromise();
+  }
+
+  deletePostById(id) {
+    return this.http.delete(APIvars.APIdomain+'/'+APIvars.DELETE_POST_BY_ID+'/'+id).toPromise();
+  }
+
+  addRemoveLike(postid) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.ADD_REMOVE_LIKE, {postid}).toPromise();
+  }
+
+  setPostImage(encodedImageForm) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.SET_POST_IMAGE, encodedImageForm, {reportProgress: true, observe: 'events'});
   }
 }

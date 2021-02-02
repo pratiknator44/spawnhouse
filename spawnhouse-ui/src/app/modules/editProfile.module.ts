@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from "@angular/core";
 import { ProfileManagementComponent } from '../profile-management/profile-management.component';
 import { SharedModule } from './shared.module';

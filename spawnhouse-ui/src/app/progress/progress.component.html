@@ -1,0 +1,5 @@
+<div class="container">
+    <div class="progress h-100 text-center text-white" [ngStyle]="{'width': progress+'%'}">
+        <h6 class="text-center ml-auto mr-auto" style="line-height: 2;" *ngIf="text || text?.trim() !== ''">{{ text }}</h6>
+    </div>
+</div>

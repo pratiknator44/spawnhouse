@@ -61,26 +61,12 @@ export class AroundyouComponent implements OnInit {
       console.log("start index = ", startIndex, "uptoLen", l);
 
       for(let x=startIndex; x < l; x++) {
-        this.getDpById(this.userSuggestions[x]._id, x);
+        // this.getDpById(this.userSuggestions[x]._id, x);
+        this.dpLinks[x] = this._apiService.getUserImageById('dp', this.userSuggestions[x]._id);
       }
     });
   }
 
-  getDpById(id, x) {
-    this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
-      if(image['type'] === 'application/json')  {
-        this.dpLinks[x] = null;
-        return;
-      }
-      let reader = new FileReader();
-      reader.addEventListener('load', () => {
-        this.dpLinks[x] = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-      }, false);
-      if (image) {
-         reader.readAsDataURL(image as Blob);
-      }
-    });
-  }
   
   removeByIndex(i: number) {
     this.userSuggestions.splice(i,1);

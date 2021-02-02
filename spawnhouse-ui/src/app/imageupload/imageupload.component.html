@@ -1,34 +1,34 @@
 <div class="position-absolute bg-white upload-div-size w-50" style="transform: translate(50%);">
     <h4 class="p-2 bg-theme text-white">New {{ mode === 'dp' ? 'Profile' : 'Cover'}} Picture <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="hideUI()"></span></h4>
-        <div class="row">
-            <div class="col-12">    
-                <input type="file" class="d-none" #newdpOrCover (change)="fileChangeEvent($event)" [disabled]=isDisabled />
-                <button class="btn bg-theme text-white cursor-pointer mb-3 border-radius-none" [ngClass]="{'btn-secondary': isDisabled}" (click)="newdpOrCover.click()">Browse an image</button>
-                <span (click)="removeImage()" class="text-danger float-right border-none hover-underline cursor-pointer mr-3" [ngClass]="{'text-secondary': isDisabled}" ><span class="text-danger iconset icon-bin"></span> {{ mode === 'dp' ? 'Profile': 'Cover' }} Picture</span>
-                <div *ngIf="!temp" class="text-center" style="height: 15rem; color: #CCC"><span class="iconset icon-image" style="font-size: 10rem; "></span><br>Browse and select an image</div>
-                <div style="max-width: 30rem; transform: translate(25%, 0);">
-                        <!-- {{imageSchema | json}} -->
-                    <image-cropper *ngIf="temp" class="m-3"
-                        [imageChangedEvent]="imageChangedEvent"
-                        [maintainAspectRatio]="imageSchema.maintainAspectRatio"
-                        [aspectRatio]="imageSchema.aspectRatio"
-                        [resizeToWidth]="imageSchema.resizeToWidth"
-                        [format]="imageSchema.format"
-                        (imageCropped)="imageCropped($event)"
-                        (imageLoaded)="imageLoaded()"
-                        (cropperReady)="cropperReady()"
-                        (loadImageFailed)="loadImageFailed()"
-                    ></image-cropper>
+    <div class="row" style="max-height: 75vh;" [perfectScrollbar]="{suppressScrollX: true}" >
+        <div class="col-12">    
+            <input type="file" class="d-none" #newdpOrCover (change)="fileChangeEvent($event)" [disabled]=isDisabled />
+            <button class="btn bg-theme text-white cursor-pointer mb-3 border-radius-none" [ngClass]="{'btn-secondary': isDisabled}" (click)="newdpOrCover.click()">Browse an image</button>
+            <span (click)="removeImage()" class="text-danger float-right border-none hover-underline cursor-pointer mr-3" [ngClass]="{'text-secondary': isDisabled}" ><span class="text-danger iconset icon-bin"></span> {{ mode === 'dp' ? 'Profile': 'Cover' }} Picture</span>
+            <div *ngIf="!temp" class="text-center" style="height: auto; color: #CCC"><span class="iconset icon-image" style="font-size: 10rem; "></span><br>Browse and select an image</div>
+            <div style="max-width: 30rem; transform: translate(25%, 0);">
+                    <!-- {{imageSchema | json}} -->
+                <image-cropper *ngIf="temp" class="m-3"
+                    [imageChangedEvent]="imageChangedEvent"
+                    [maintainAspectRatio]="imageSchema.maintainAspectRatio"
+                    [aspectRatio]="imageSchema.aspectRatio"
+                    [resizeToWidth]="imageSchema.resizeToWidth"
+                    [format]="imageSchema.format"
+                    (imageCropped)="imageCropped($event)"
+                    (imageLoaded)="imageLoaded()"
+                    (cropperReady)="cropperReady()"
+                    (loadImageFailed)="loadImageFailed()"
+                ></image-cropper>
 
-                    <label class="text-danger" *ngIf="loadingFailed">Please select only a jpg</label>
-                    <img [src]="croppedImage" #finalimage class="d-none" />
-                </div>
+                <label class="text-danger" *ngIf="loadingFailed">Please select only a jpg</label>
+                <img [src]="croppedImage" class="d-none" />
             </div>
         </div>
-        <!-- <div style="transform: translate(25%, 0);">
-            <span class="iconset icon-home cursor-pointer"></span> <input type="text" class="text-secondary ml-3 border-none border-bottom" placeholder="Type a Location">
-        </div> -->        
+    </div>
+    <!-- <div style="transform: translate(25%, 0);">
+        <span class="iconset icon-home cursor-pointer"></span> <input type="text" class="text-secondary ml-3 border-none border-bottom" placeholder="Type a Location">
+    </div> -->        
 
-        <button (click)="updateNewDpCover()" [disabled]="isDisabled || !temp" style="line-height: 1.5; width: 5rem; height: 2.5rem;" class="bg-theme text-white float-right border-none" [ngClass]="{'btn-secondary': isDisabled || !temp}">Update</button>
-        <button (click)="hideUI()" [disabled]="isDisabled" class="btn btn-default float-right" [ngClass]="{'text-secondary': isDisabled}" >Cancel</button>
+    <button (click)="updateNewDpCover()" [disabled]="isDisabled || !temp" style="line-height: 1.5; width: 5rem; height: 2.5rem;" class="bg-theme text-white float-right border-none" [ngClass]="{'btn-secondary': isDisabled || !temp}">Update</button>
+    <button (click)="hideUI()" [disabled]="isDisabled" class="btn btn-default float-right" [ngClass]="{'text-secondary': isDisabled}" >Cancel</button>
 </div>

@@ -1,6 +1,7 @@
 export enum APIvars {
     APIdomain = 'http://localhost:3000',
     APIlogin = 'login',
+    CHECK_IF_TAKEN = 'signup/checkiftaken',
     APIemailOTP = 'signup/emailverification',
     APIsignup = 'signup',
     APIgoogleSignup = 'https://apis.google.com/js/platform.js',
@@ -20,6 +21,7 @@ export enum APIvars {
     SET_COVER = 'resources/setcover',
     REMOVE_COVER = 'resources/cover',
     SEARCH_USER = 'search/user',
+    SEARCH_USER_FOR_MENTION = 'search/mention',
     NOW_PLAYING = 'nowplaying',
     REMOVE_NOW_PLAYING = 'nowplaying/remove',
     GET_GAMELIST = 'nowplaying/gamelist',
@@ -54,7 +56,15 @@ export enum APIvars {
     GET_USERS_AROUND = "signup/getusersbydistance",
     CHECK_USERNAME = 'signup/usernameavailable',
     NOTIFICATIONS = 'notifications',
-    NEW_NOTIFICATION_COUNT = 'newnotificationcount'
+    NEW_NOTIFICATION_COUNT = 'newnotificationcount',
+    EXISTS = 'signup/exists',
+    SET_NOTIFICATION_SEEN = 'notifications/notificationseen',
+    READ_ALL_NOTIFICATIONS = 'notifications/readall',
+    ADD_POST = 'post',
+    GET_POSTS = 'post/getposts',
+    DELETE_POST_BY_ID = 'post',
+    ADD_REMOVE_LIKE = 'post/like',
+    SET_POST_IMAGE = 'post/setpostimage'
 }
 
 export enum GlobalContantsEnum {

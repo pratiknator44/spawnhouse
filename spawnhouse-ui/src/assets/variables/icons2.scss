@@ -1,0 +1,45 @@
+@font-face {
+    font-family: 'sh-icons2';
+    src: url('src/assets/fonts/icomoon2.woff');
+    format:('opentype');
+}
+
+.icon-chat_bubble_outline:before {
+    content: "\e900";
+}
+.icon-chat_bubble:before {
+    content: "\e901";
+}
+.icon-share-square-o:before {
+    content: "\e90b";
+}
+.icon-share-alt:before {
+    content: "\e90c";
+}
+.icon-star-o:before {
+    content: "\e902";
+}
+.icon-star:before {
+    content: "\e903";
+}
+.icon-thumbs-down:before {
+    content: "\e904";
+}
+.icon-thumbs-o-down:before {
+    content: "\e905";
+}
+.icon-thumbs-o-up:before {
+    content: "\e906";
+}
+.icon-thumbs-up:before {
+    content: "\e907";
+}
+.icon-heart-o:before {
+    content: "\e908";
+}
+.icon-heart:before {
+    content: "\e909";
+}
+.icon-horizontal-dots:before {
+    content: "\e90a";
+}
