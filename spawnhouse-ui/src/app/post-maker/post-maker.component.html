@@ -5,7 +5,10 @@
         
             <div class="d-flex border-top" [ngClass]="{'d-none': !pmFlags.doneCropping}" >
                 <div class="dp-big circle overflow-hidden mt-3" style="height: 5rem; width: 5rem;">
-                    <img [src]="userdp | async" class="h-100 w-100" />
+                    <img [src]="userdp | async" class="h-100 w-100" *ngIf="userdp | async" />
+                    <div class="h-100 w-100 bg-theme text-center" *ngIf="!(userdp | async)">
+                        <span class="iconset icon-player text-white text-center h1 d-inline-block mt-2" *ngIf="!(userdp | async)"></span>
+                    </div>
                 </div>
                 <div class="mt-3" [ngClass]="{'d-none': pmFlags.uploadingStatus}" style="width: calc(100% - 5rem);">
                     <div contenteditable="true" spellcheck="false" placeholder="Write something..." class="border-none outline-none bg-white h-100" (keydown)="lookForFeature($event)" style="min-height: 3rem; z-index: -1;" #postarea>
@@ -67,8 +70,8 @@
                     <image-cropper class="border-grey"
                         [imageChangedEvent]="imageChangedEvent"
                         [maintainAspectRatio]="false"
-                        [resizeToHeight]="1080"
-                        [resizeToWidth]="1080"
+                        [resizeToHeight]="750"
+                        [resizeToWidth]="750"
                         [format]="['jpg']"
                         (imageCropped)="imageCropped($event)"
                         (imageLoaded)="imageLoaded()"

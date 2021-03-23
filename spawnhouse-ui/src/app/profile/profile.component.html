@@ -2,24 +2,24 @@
     <div class="cover-picture position-relative overflow-hidden">
         <div class="position-absolute float-right text-white m-2 cursor-pointer edit-cover-photo" (click)="setupImageUpload(false)" *ngIf="isUserProfile"><span class="iconset icon-edit-pencil"></span></div>
         
-        <div class="w-100 bg-theme text-center" *ngIf="!usercover">
+        <div class="w-100 bg-secondary text-center h-100" *ngIf="!usercover">
             <div *ngIf="profileFlags.loadingCover" class="bg-white">
                 <loader2 [type]="1"></loader2>
             </div>
 
             <div style="transform: rotate(-30deg);" *ngIf="!profileFlags.loadingCover">
-                <span class="iconset icon-game-controller" style="color:#06C; font-size: 10rem; top: -2rem;"></span>
+                <span class="iconset icon-game-controller" style="color:#CCC; font-size: 10rem; top: -2rem;"></span>
             </div>
         </div>
         
-        <img [src]="usercover" *ngIf="usercover" />
+        <img [src]="usercover" class="w-100" *ngIf="usercover" />
         <!-- {{ userdp |async }} -->
         <div class="user-dp-info position-absolute cursor-pointer d-flex">
-            <div class="dp-size overflow-hidden">
-                <span class="position-absolute iconset icon-player overflow-hidden text-white" style="font-size: 10rem; transform: translate(-5%, -25%);" *ngIf="!(userdp | async)"></span>
-                <img class="position-absolute dp-image" [src]="userdp | async" *ngIf="userdp | async" />
+            <div class="dp-size circle overflow-hidden">
+                <span class="position-absolute iconset2 icon-jolly-roger overflow-hidden text-lite" style="font-size: 10rem; left:0%; transform: translate(-5%, -32%);" *ngIf="!(userdp | async)"></span>
+                <img class="h-100 w-100" [src]="userdp | async" *ngIf="userdp | async" />
                 <div class="dp-edit text-white text-center overflow-hidden" *ngIf="isUserProfile" (click)="setupImageUpload(true)">
-                    <h6 style="transform:translate(0%, 200%);">Edit</h6>
+                    <h6 style="transform:translate(0%, 200%);"><span class="iconset icon-edit-pencil"></span></h6>
                 </div>
             </div>
             <div class="user-name text-bold">
@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <div class="position-absolute message-add-container">
+        <div class="position-absolute message-add-container medq-d-none">
             <!-- <div class="btn bg-white d-inline m-1 border-grey"><span class="iconset icon-bubbles"></span> Message</div>
             <div class="btn bg-white d-inline m-1 border-grey"><span class="iconset icon-user-plus"></span>Follow</div> -->
             
@@ -36,16 +36,34 @@
 
             <div class="btn cursor-pointer d-inline m-1 border-grey float-right mt-3" [ngClass]="{'btn-danger': followStatus === 'Unfollow', 'bg-white': followStatus !== 'Unfollow'}" *ngIf="!isUserProfile" (click)="setFollowStatus()"><span class="iconset" [ngClass]="{'icon-user-plus': followStatus==='+Follow', 'icon-user-minus': followStatus==='Unfollow'}"></span> {{ followStatus }}</div>
             
-            <div class="btn btn-default cursor-pointer bg-white d-inline m-1 border-grey float-right mt-3"  *ngIf="isUserProfile" (click)="routeToEditProfile()"><span class="iconset icon-edit-pencil"></span> Update Profile</div>            
+            <div class="btn btn-default cursor-pointer bg-white d-inline m-1 border-grey float-right mt-3"  *ngIf="isUserProfile" (click)="routeToEditProfile()"><span class="iconset icon-edit-pencil"></span> <span class="medq-d-none">&nbsp; Update Profile & Preferences</span></div>            
         </div>
     </div>
 </div>
 
 
-<div class="feeds d-flex mt-3">
-    <div class="side-info bg-white" style="width: 30%;">
+<div class="mt-3 flex-container">
+    <div class="side-info bg-white flex-4">
         <div class="follow-list border-none text-black m-3">
-            <h3 class="text-secondary text-center">{{user?.fname+ ' '+user?.lname}}</h3>
+            <h3 class="text-secondary text-center">{{user?.fname+ ' '+user?.lname}}
+
+                <div class="h6 medq-d-block">
+                    <div class="badge badge-default cursor-pointer bg-white d-inline" (click)="initMinimessage()" *ngIf="!isUserProfile"><span class="iconset icon-bubbles3"></span> Message</div>
+        
+                    <div class="badge cursor-pointer" [ngClass]="{'btn-danger': followStatus === 'Unfollow', 'bg-white': followStatus !== 'Unfollow'}" *ngIf="!isUserProfile" (click)="setFollowStatus()"><span class="iconset" [ngClass]="{'icon-user-plus': followStatus==='+Follow', 'icon-user-minus': followStatus==='Unfollow'}"></span> {{ followStatus }}</div>
+                    
+                    <div class="badge badge-default cursor-pointer bg-white"  *ngIf="isUserProfile" (click)="routeToEditProfile()"><span class="iconset icon-edit-pencil"></span> <span class="medq-d-none">&nbsp; Update Profile</span></div>            
+                </div>
+
+
+
+            </h3>
+
+            <h4 class="medq-d-block">
+                <div class="text-secondary text-center mt-1 cursor-pointer cursor-pointer">
+                    <h4 class="hover-underline w-50 float-right" (click)="getFollow('Followers');">{{user?.followdata?.followerCount}} Followers </h4> <h4 class="hover-underline" (click)="getFollow('Following');">{{user?.followdata?.followingCount}} Following</h4>
+                </div>
+            </h4>
             <hr>
             <div class="text-center text-secondary text-bold font-italic" *ngIf="profileFlags.loadingGamingInfo">
                 <loader2 [type]="0"></loader2>
@@ -53,68 +71,34 @@
                 Loading Gamedata
             </div>
 
-            <div class="text-secondary font-italic" *ngIf="!user.nowplaying && isUserProfile && !profileFlags.loadingGamingInfo">You can update and tell friends what you are playing today by clicking <span class="text-theme font-bold cursor-pointer" (click)="openGamingInfo()">here</span></div>
+            <div class="rounded border-grey text-center" *ngIf="!user.nowplaying && isUserProfile && !profileFlags.loadingGamingInfo" (click)="openGamingInfo()">
+                <div class="p-1 hover-bg cursor-pointer"><span class="iconset2 icon-add h1 text-theme"></span> <span class="position-relative ml-2" style="top: -0.65rem;">Now Playing</span></div>
+            </div>
+            <!-- <div class="text-secondary font-italic" *ngIf="!user.nowplaying && isUserProfile && !profileFlags.loadingGamingInfo">You can update and tell friends what you are playing today by clicking <span class="text-theme font-bold cursor-pointer" (click)="openGamingInfo()">here</span></div> -->
 
+            
             <div *ngIf="user?.nowplaying">
-                <div>
-                    <div style="font-size: 1.5rem;" class="d-inline-block"><span class="iconset icon-game-controller text-secondary mr-1"></span></div>
-                    <h4 class="text-secondary d-inline-block">PLAYING</h4>
-                    
-                    <label class="float-right">
-                        <span class="d-inline-block iconset icon-bin text-danger cursor-pointer ml-3" *ngIf="isUserProfile"  title="Remove, not playing this anymore" (click)="showAddToFavWarning()">
-                        </span>     
-                    </label>
-
-                    <label class="text-secondary cursor-pointer float-right mr" (click)="openGamingInfo()" *ngIf="isUserProfile">
-                        <span class="icon-plus iconset"></span>
-                    </label>
-                    
-                    <label class="text-secondary font-italic ml-2">{{ user?.nowplaying?.time | ago }}</label>
-                </div>
-                <label class="text-theme text-bold hover-underline cursor-pointer m-0"><span class="iconset icon-game-controller mr-1 h5"></span>{{user?.nowplaying?.game}}</label>
-                <span *ngIf="user?.nowplaying?.username">&nbsp; as </span>
-                <span class="text-secondary m-0" *ngIf="user?.nowplaying?.username">{{ user?.nowplaying?.username }}</span> <span *ngIf="user?.nowplaying?.console">  on </span>
-                <div class="badge text-white ml-1" [ngClass]="{'badge-success': user?.nowplaying?.console?.startsWith('x'),
-                'badge-primary':user?.nowplaying?.console?.startsWith('pc'),
-                'bg-theme':user?.nowplaying?.console?.startsWith('ps'),
-                'bg-off-black': user?.nowplaying?.console === 'mac' || user?.nowplaying?.console === 'ios',
-                'bg-secondary': user?.nowplaying?.console === 'wii'}">
-                    <span class="iconset icon-{{user?.nowplaying?.console | consoleicon }}"></span>
-                    {{user?.nowplaying?.console | gameGenre: true}}
-                </div>
-
-                <div class="text-secondary mt-2" *ngIf="user?.nowplaying?.stream"> <span class="iconset icon-{{ user?.nowplaying?.stream | streamlink }} mr-2 text-black"></span> <a class="text-theme" target="__blank" [href]="user?.nowplaying?.stream">Watch on {{ user?.nowplaying?.stream | streamlink: true | titlecase }} </a> </div>
-                <label class="text-secondary m-0" *ngIf="user?.nowplaying?.desc">{{ user?.nowplaying?.desc}}</label>
-                <div *ngIf="user?.nowplaying?.roomid">
-                    <span *ngIf="user?.nowplaying?.roomid">Room ID: </span><label class="text-secondary"> {{ user?.nowplaying?.roomid }}</label>
-                <div *ngIf="user?.nowplaying?.password">
-                    Password:
-                    <label class="font-italic" *ngIf="!user?.nowplaying?.password && user?.nowplaying?.roomid">open to all</label> <a class="text-theme cursor-pointer" *ngIf="user?.nowplaying?.exposepassword">
-                        <span class="iconset icon-lock text-warning"></span>request password</a>
-                    <label *ngIf="!user?.nowplaying?.exposepassword">{{ user?.nowplaying?.password }}</label>
-                    </div>
-                </div>
-
-                <!-- <div>
-                    <span class="overflow-hidden" style="height: 1.5rem;" [ngClass]="{'animate-width': nowPlayingFlags.showDeleteNowPlaying}" *ngIf="nowPlayingFlags.showDeleteNowPlaying">
-                        <span>Sure? <span class="badge badge-danger cursor-pointer" (click)="showAddToFavWarning()">Yes</span><span class="text-danger badge cursor-pointer" (click)="nowPlayingFlags.showDeleteNowPlaying = false">No</span></span>
-                    </span>
-                    <span class="d-inline-block iconset icon-bin text-danger cursor-pointer" *ngIf="isUserProfile"  title="Remove, not playing this anymore" (click)="nowPlayingFlags.showDeleteNowPlaying = true">
-                    </span>                    
-                </div> -->
-
-                <!-- <hr *ngIf="user?.nowplaying"> -->
+                <sh-now-playing
+                [npdata]="user?.nowplaying"
+                [userid]="user._id"
+                (onRemove)="showAddToFavWarning()"
+                (onNew)="openGamingInfo()"></sh-now-playing>
             </div>
+            <!-- <div class="text-secondary font-italic" *ngIf="(user?.gamedata || (user?.gamedata?.fav?.length === 0 && user?.gamedata?.genres?.length === 0)) && isUserProfile">
+ -->
 
-            <div class="text-secondary font-italic" *ngIf="!user?.gamedata  && isUserProfile">Tell people what games you love to play, genres and setup your alias name by clicking on <span class="font-bold text-black">Update Profile</span> button or <span class="text-theme font-bold cursor-pointer" (click)="routeToEditProfile()">here</span>
+            <div class="rounded border-grey text-center mt-1" *ngIf="(!user?.gamedata || (user?.gamedata?.fav?.length === 0 && user?.gamedata?.genres?.length === 0)) && isUserProfile"  (click)="routeToEditProfile()">
+                <div class="p-2 hover-bg cursor-pointer"><span class="iconset2 icon-heart-o h2 text-theme"></span> <span class="position-relative ml-2"style="top: -0.55rem;">My Preferences</span></div>
             </div>
+<!-- 
+                Tell people what games you love to play, genres and setup your alias name by clicking on <span class="font-bold text-black">Update Profile</span> button or <span class="text-theme font-bold cursor-pointer" (click)="routeToEditProfile()">here</span>
+            </div> -->
             <div class="d-flex" style="font-size: 3rem;" *ngIf="user?.gamedata?.playerType">
                 <div class="ml-auto text-center mr-auto iconset icon-{{type | playertype: true}} text-{{type | playertype : false : true}}" *ngFor="let type of user?.gamedata?.playerType" title="{{type | playertype : false : false : true}}">
                     <h6 style="line-height: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">{{ type | playertype | titlecase }}</h6>
                 </div>
             </div>
             
-
             <div class="mt-3" *ngIf="user?.gamedata">
                 <div *ngIf="user?.gamedata?.fav?.length > 0">
                     <div>
@@ -150,22 +134,25 @@
         <hr *ngIf="user?.gamedata">
     </div>
 
-    <div style="width: 70%;" class="bg-white ml-1">
-        <div class="text-secondary text-center mt-1cursor-pointer cursor-pointer">
+    <div class="bg-white ml-1 flex-8">
+        <div class="text-secondary text-center mt-1cursor-pointer cursor-pointer medq-d-none">
             <h1 class="hover-underline w-50 float-right" (click)="getFollow('Followers');">{{user?.followdata?.followerCount}} Followers </h1> <h1 class="hover-underline" (click)="getFollow('Following');">{{user?.followdata?.followingCount}} Following</h1>
         </div>
         <hr>
-        <sh-textbox></sh-textbox>
+        <!-- <div class="ml-2 mr-2 bg-theme-lite" *ngIf="profileFlags.showFeeds || true">
+            <sh-feeds [user]="user" [userSpecific]="true"></sh-feeds>
+        </div> -->
+        <sh-np-feeds [userlist]="[user._id]" *ngIf="user._id"></sh-np-feeds>
 </div>
 
-<div class="position-fixed w-100 mt-belownav h-75" style="z-index: 2; top:0;" *ngIf="showImageUpload">
+<div class="position-fixed w-100 mt-belownav h-75" style="z-index: 2; top:0; left: 50%; transform: translate(-50%);" *ngIf="showImageUpload">
     <sh-imageupload [imageSchema]="imageSchema" [isDisabled]="disableImageUpload" [mode]="uploadMode" (close)="setVisibilityImageOverlay(false)" (onImageRemove)="refreshImage()" (newsubmit)="submitNewImage($event)"></sh-imageupload>
 </div>
 
 <!-- confirm to remove now playing -->
 
 <div class="bg-white position-fixed z-nav edit-game-container w-25" *ngIf="nowPlayingFlags.showAddToFavs">
-    <h4 class="p-2 bg-white border-bottom-thin"> <span class="iconset icon-bin mr-1"></span>Remove Playing Data <span class="iconset icon-cross float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); nowPlayingFlags.showAddToFavs = false"></span></h4>
+    <h4 class="p-2 bg-theme text-white border-bottom-thin"> <span class="iconset icon-bin mr-1"></span>Remove Playing Data <span class="iconset2 icon-cross float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); nowPlayingFlags.showAddToFavs = false"></span></h4>
     <div class="m-3 text-center">Would you like to add <div class="h6">{{user?.nowplaying?.game}}</div> in your favourite games?</div>
         <div class="mt-2">
             <div class="btn btn-default w-50" (click)="removeNowPlaying(); addFavgame(user?.nowplaying, false)">No, just remove</div>
@@ -175,8 +162,8 @@
     </div>    
 </div>
 
-<div class="bg-white z-nav position-fixed w-25 std-box-shadow"  style="top: 10%; margin-left: 37.5%;" *ngIf="showFollow">
-    <h4 class="p-2 bg-theme text-white" *ngIf="!profileFlags.loadingFollow"> <span class="iconset icon-users mr-1"></span>{{selectedFollowType}}<span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); showFollow = false"></span></h4>
+<div class="bg-white z-nav position-fixed w-25 std-box-shadow ml-auto mr-auto"  style="top: 10%; left: 50%; transform: translate(-50%); min-width: 500px;" *ngIf="showFollow">
+    <h4 class="p-2 bg-theme text-white" *ngIf="!profileFlags.loadingFollow"> <span class="iconset icon-users mr-1"></span>{{selectedFollowType}}<span class="iconset2 icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); showFollow = false"></span></h4>
     
     <h1 class="text-secondary h2 ml-3" *ngIf="!profileFlags.loadingFollow">{{followUsers?.length+' '+selectedFollowType}}</h1>
     <div class="position-relative" style="max-height: 60vh; overflow: auto;" [perfectScrollbar]="{suppressScrollX: true}">
@@ -185,18 +172,21 @@
         getting intel</div>
         <div class="" style="height: 13vh;" *ngFor="let user of followUsers; let i = index">
             <div class="row m-2 mb-0 mt-0">
-                <div class="col-6">
+                <div class="col-4">
                     <div class="dp-big circle">
                         <span class="iconset icon-player text-black ml-2" style="font-size: 2.5rem" *ngIf="!(followDpLinks[i] | async)" ></span>
                         <img [src]="followDpLinks[i] | async" class="w-100 h-100 circle" *ngIf="followDpLinks[i] | async" /></div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <div class="text-theme hover-underline cursor-pointer" (click)="routeToProfile(user._id); closeOverlay(); showFollow=false;">{{user.fname+ ' '+ user.lname}}</div>
                     <span class="text-secondary">{{user.username ? '@'+user.username : '' }}</span>
                 </div>
-                <!-- <div class="col-4">
-                    <div class="text-theme cursor-pointer" style="width: 3rem; height: 3rem; font-size: 1.75rem;"><span class="iconset icon-bubbles3"></span></div>
-                </div> -->
+                <div class="col-4" *ngIf="selectedFollowType === 'Following' && isUserProfile">
+                    <div class="btn btn-danger cursor-pointer" (click)="addRemoveFollower('following', user._id, i)"><span class="iconset icon-user-minus"></span> &nbsp; Unfollow</div>
+                </div>
+                <div class="col-4" *ngIf="selectedFollowType === 'Followers' && isUserProfile">
+                    <div class="btn btn-light cursor-pointer" (click)="removeFollowing(user._id, i)"><span class="iconset icon-user-minus"></span> &nbsp; Remove</div>
+                </div>
             </div>
         </div>
     </div>

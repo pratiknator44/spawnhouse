@@ -1,4 +1,4 @@
-<div class="btn btn-{{type}} w-100 toast-container text-center" *ngIf="showToast">
+<div class="btn btn-{{type}} w-100 toast-container text-center z-nav" *ngIf="showToast">
     {{text?.text}}
     <div class="btn btn-success" *ngIf="text?.okay" (click)="okayClicked()">{{text?.okay}}</div>
     <div class="btn btn-default text-white text-bold ml-2" *ngIf="text?.dismiss" (click)="dismissClicked()">{{text?.dismiss}}</div>

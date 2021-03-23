@@ -9,6 +9,7 @@ export enum APIvars {
     APIrecaptchaKey = '6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU',
     APIallowAll = '*',
     APIattemptLogin = 'login/attempt',
+    APIattemptLogin2 = 'login/attempt2',
     GOOGLE_PROVIDER = '206033993886-qqam7i8l0egv1t8iih63hnqiut8c932e.apps.googleusercontent.com',
     FACEBOOK_APP_ID = '',
     GET_HASHTAGS  = 'mentions',
@@ -64,9 +65,33 @@ export enum APIvars {
     GET_POSTS = 'post/getposts',
     DELETE_POST_BY_ID = 'post',
     ADD_REMOVE_LIKE = 'post/like',
-    SET_POST_IMAGE = 'post/setpostimage'
+    SET_POST_IMAGE = 'post/setpostimage',
+    GET_POST_MEDIA_BY_ID = 'post/getpostmedia',
+    DELETE_DP_OR_COVER = 'resources/deleteuserimage',
+    GET_SUGGESTED_USERS = 'search/suggestedusers',
+    GET_NP_OF_FOLLOWERS = 'nowplaying/nplistoffollowers',
+    REMOVE_FOLLOWER = 'follow/removefollower',
+    LIKE_NP = 'nowplaying/likenp',
+    DELETE_NP_POST = 'nowplaying/deletenppost',
+    GET_WHO_LIKED = 'nowplaying/wholiked',
+    ADD_PLAYS = 'nowplaying/addplays',
+    NP_POST_WITH_DETAILS = 'nowplaying/postwithdetails',
+    ADD_COMMENT = 'nowplaying/addcomment',
+    GET_COMMENTS_ON_NP = 'nowplaying/commentsonnppost'
 }
 
 export enum GlobalContantsEnum {
     RECAPTCHA_SITE_KEY = '6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU'
+}
+
+export enum SocketEventsEnum {
+    NEW_NOTIFICATION = 'new-notification',
+    NEW_MESSAGE = 'new-message',
+    REQUEST_NP_PASSWORD = 'request-np-pwd',
+    RESPONSE_NP_PASSWORD = 'response-np-password',
+    OPEN_SERVER = ':o:',
+}
+
+export enum ErrorMessagesEnum {
+    NP_REQUEST_LIMIT_REACHED = 'Max served request limit reached, you\'re in buffer :('
 }

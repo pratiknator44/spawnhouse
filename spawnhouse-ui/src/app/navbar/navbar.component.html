@@ -1,36 +1,77 @@
-<nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex">
+<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="text-theme">
+    <h4 class="iconset icon-sh text-center p-0"></h4>
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" (click)="routeTo('/profile')">{{user?.username}} <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" (click)="routeTo('/home')">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="messaging">Link</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav> -->
+
+<nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex sh-nav">
   <div class="w-100 d-flex" style="height: auto; flex-wrap: wrap;">
-    <div class="w-10 text-white navbar-item text-center bg-theme">
-      <div class="cursor-pointer iconset icon-size icon-sh font-lg">
+    <div class="w-10 text-white navbar-item text-center bg-theme mob-d-none">
+      <div class="cursor-pointer iconset2 icon-size icon-jolly-roger font-lg">
       </div>
       <div class="text-center m-0 font-0-5-rem cursor-pointer">Spawnhouse</div>
     </div>
 
-    <div class="navbar-item text-black overflow-none" title="{{user.fname}}" (click)="routeTo('profile')" (click)="selectedOption = user.fname">
+    <div class="navbar-item navbar-item-responsive text-black overflow-none" title="{{user.username}}" (click)="routeTo('profile')" (click)="selectedOption = user.username">
       <div class="text-center overflow-hidden" style="height: 100%;">
-        <div class="cursor-pointer text-center iconset icon-size icon-player text-theme" *ngIf="!dp"></div>       
-        <img [src]="dp" *ngIf="dp" class="cursor-pointer dp circle" [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
-        <div class="text-center m-0 font-0-5-rem cursor-pointer" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div>
+        <div class="cursor-pointer text-center iconset icon-size icon-player text-theme"  [ngClass]="{'text-black': selectedOption!==user.username}"  *ngIf="!dp"></div>       
+        <img [src]="dp" *ngIf="dp" class="cursor-pointer dp circle" [ngClass]="{'filter-greyscale': selectedOption!==user.username}" />
+        <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label" [ngClass]="{'text-theme': selectedOption===user.username}">{{ user?.username }}</div>
       </div>
       
     </div>
 
-    <div class="navbar-item text-black" title="Home" (click)="selectedOption = 'Home'; routeTo('/home')">
+    <div class="navbar-item navbar-item-responsive text-black" title="Home" (click)="selectedOption = 'Home'; routeTo('/home')">
       <div class="cursor-pointer text-center iconset icon-size icon-home" [ngClass]="{'color-theme': selectedOption==='Home'}">
       </div>
-      <div class="text-center m-0 font-0-5-rem cursor-pointer">Home</div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Home</div>
     </div>
 
-    <div class="navbar-item text-black" title="FolAroundyoulowers"
+    <div class="navbar-item navbar-item-responsive text-black" title="Gamers around your location"
     (click)="selectedOption = 'Aroundyou'; routeTo('/aroundyou')">
       <div class="cursor-pointer text-center iconset icon-size icon-compass2" [ngClass]="{'color-theme': selectedOption==='Aroundyou'}">
       </div>  
-      <div class="text-center m-0 font-0-5-rem cursor-pointer">Around You</div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Around You</div>
     </div>
 
 
       <!-- search bar and suggestions-->
-    <div class="mt-1 mob-search-flex">
+    <div class="mt-1 mob-search-flex ml-1">
       <sh-suggestions [placeholder]="'Search by name, username, or email'" [icon]="'search'" [template]="searchSuggestionTemplate" (inputChanged)="searchThis($event)" [showSuggestions]="showUserSuggestions"></sh-suggestions>
       <ng-template #searchSuggestionTemplate>
         <!-- search template -->
@@ -63,7 +104,7 @@
     </div>
 
 
-    <div class="navbar-item text-black text-center position-relative" title="Notifications"
+    <div class="navbar-item navbar-item-responsive text-black text-center position-relative" title="Notifications"
     (click)="navOptionSelected('notifications')">
       <div class="cursor-pointer" [ngClass]="{'color-theme': navbarFlags.showNotification}">
         <span class="iconset icon-size icon-bell"></span>
@@ -71,7 +112,7 @@
       </div>
         <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div>
 
-        <div class="message-container bg-white position-absolute mt-3 rounded std-box-shadow" *ngIf="navbarFlags.showNotification">
+        <div class="notifications-container bg-white position-absolute mt-3 rounded std-box-shadow" *ngIf="navbarFlags.showNotification">
 
           <div class="bg-lite text-bold" style="height: 3rem;">
             <label style="line-height: 3;">Notifications
@@ -82,12 +123,16 @@
             </div>
           </div>
 
-          <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No new notifications</div>
-          <div class="position-relative w-100" *ngIf="navbarFlags.notificationsLoading"><loader2 [type]="3"></loader2></div>
-          <sh-notifications [notifications]="notifications"
-          (close)="closeNotificationOverlay($event)"
-          (notificationClicked)="markAsRead($event)"></sh-notifications>
-          <div class="bg-lite text-bold cursor-pointer text-center mt-3" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;" (click)="routeToMessaging()">show more</div>
+          <loader2 [type]="3" *ngIf="navbarFlags.notificationsLoading"></loader2>
+          <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No Notifications</div>
+          
+          <div class="position-relative" [perfectScrollbar]="{suppressScrollX: true}" style="height: 20rem;" (scroll)="notifScroll($event)">
+            <sh-notifications [notifications]="notifications"
+              (close)="closeNotificationOverlay($event)"
+              (notificationClicked)="markAsRead($event)">
+            </sh-notifications>
+          </div>
+          <div class="bg-lite" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px; height: 1rem;"></div>
         </div>
         
     </div>
@@ -116,8 +161,8 @@
           <div class="row m-1 text-left">
             <div class="col-3 text-center">
               <img class="circle dp-big" [src]="msg.dp | async" *ngIf="msg.dp | async" />
-              <div class="dp-big circle" style="transform: rotate(-45deg);" *ngIf="!(msg.dp | async)">
-                <div class="cursor-pointer text-center iconset icon-player text-theme" style="font-size: 3rem; margin-top:-1rem; margin-left: -1rem;"></div>       
+              <div class="dp-big circle" *ngIf="!(msg.dp | async)">
+                <div class="cursor-pointer text-center iconset2 icon-jolly-roger text-theme" style="font-size: 2rem;"></div>       
               </div>
               <h3 class="badge badge-pill badge-danger position-absolute" style="bottom: calc(100% - 4rem); left: 75%;">{{msg.totalunseen}}</h3>
             </div>
@@ -139,7 +184,7 @@
 
     </div>
 
-    <div class="navbar-item text-black mt-2" (click)="updateOptions()" style="z-index: 2;" title="Update">
+    <!-- <div class="navbar-item text-black mt-2" (click)="updateOptions()" style="z-index: 2;" title="Update">
       <div class="cursor-pointer text-center iconset icon-size icon-plus" >
         <span class="badge badge-danger"></span>
       </div>
@@ -150,25 +195,118 @@
           <span class="iconset icon-game-controller"></span>
           Now Playing</div>
       </div>
-    </div>
+    </div> -->
 
 
     <div class="navbar-item position-relative">
       <div class="cursor-pointer font-0-5-rem mt-3 text-center" (click)="userOptions()"><span class="iconset icon-dots-horizontal-triple h6 mt-3"></span></div>        
-      <div class="position-absolute d-inline-block bg-white position-relative w-100" style="z-index: 4; top: 100%; left:0;" *ngIf="showUserOptions">
-        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem" (click)="logout()"><span class="iconset icon-bug mr-2"></span>Report a problem / bug</div>
+      <div class="position-absolute d-inline-block bg-white position-relative w-100 std-box-shadow" style="z-index: 4; top: 100%; right:1rem;" *ngIf="showUserOptions">
+        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem" (click)="routeTo('about')"><span class="iconset icon-bug mr-2"></span>Report a problem / bug</div>
         <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem font-left"><span class="iconset icon-cog mr-2"></span>Privacy &nbsp;</div>
         <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem" (click)="logout()"><span class="iconset icon-switch mr-2"></span>Logout</div>
       </div>
     </div>
 
   </div>
+</nav>
+
+
+
+
+
+
+
+<!-- navbar bottom-->
+
+<nav class="mob-navbar-display position-absolute w-100 d-block bg-lite d-flex d-wrap-flex">
+
+  <div class="navbar-item text-black" title="Home" (click)="selectedOption = 'Home'; routeTo('/home')">
+    <div class="cursor-pointer text-center iconset h3 icon-home" [ngClass]="{'color-theme': selectedOption==='Home'}">
+    </div>
+    <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Home</div> -->
+  </div>
+
+
+  <div class="navbar-item text-black" title="Gamers around you"
+    (click)="selectedOption = 'Aroundyou'; routeTo('/aroundyou')">
+      <div class="cursor-pointer text-center iconset h3 icon-compass2" [ngClass]="{'color-theme': selectedOption==='Aroundyou'}">
+      </div>  
+  </div>
+
+
+
+
+  <div class="navbar-item text-black overflow-none" title="{{user.fname}}" (click)="routeTo('profile')" (click)="selectedOption = user.fname">
+    <div class="text-center overflow-hidden" style="height: 100%;">
+      <div class="cursor-pointer text-center iconset icon-size icon-player text-theme" *ngIf="!dp"></div>       
+      <img [src]="dp" *ngIf="dp" class="cursor-pointer dp circle" [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
+      <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div> -->
+    </div>
+  </div>
+
+
+  <div class="navbar-item text-black text-center position-relative" title="Notifications"
+    (click)="navOptionSelected('notifications')">
+      <div class="cursor-pointer" [ngClass]="{'color-theme': navbarFlags.showNotification}">
+        <span class="iconset h3 icon-bell"></span>
+        <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
+      </div>
+        <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div> -->
+
+        <div class="notifications-container-responsive bg-white position-absolute mt-3 rounded std-box-shadow" *ngIf="navbarFlags.showNotification">
+
+          <div class="bg-lite text-bold" style="height: 3rem;">
+            <label style="line-height: 3;">Notifications
+              <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span>
+            </label>
+            <div class="btn btn-default h-100 float-right border-gray" (click)="markAllNotificationsRead()"  title="Mark all as read" style="border-left: solid 1px #CCC; border-radius: 0;">
+              <span class="iconset icon-eye h4"></span>
+            </div>
+          </div>
+
+          <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No Notifications</div>
+          <div class="position-relative w-100" *ngIf="navbarFlags.notificationsLoading"><loader2 [type]="3"></loader2></div>
+          
+          <sh-notifications [notifications]="notifications"
+            (close)="closeNotificationOverlay($event)"
+            (notificationClicked)="markAsRead($event)">
+          </sh-notifications>
+          <div class="bg-lite text-bold cursor-pointer text-center mt-3" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;" (click)="routeToMessaging()">show more</div>
+        </div>
+        
+    </div>
+
+
+
 
 </nav>
 
-<div class="bg-white position-fixed z-nav edit-game-container rounded" *ngIf="showGameBroadcast">
-  <h5 class="p-2 bg-theme text-white">Tell people what you are playing <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); showGameBroadcast = false"></span></h5>
-  <form [formGroup]="nowplayingForm" (ngSubmit)="saveNowPlaying()" action="" method="POST">
+<!-- navbar bottom ends-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="bg-white position-fixed z-nav edit-game-container rounded" [perfectScrollbar]="{suppressScrollX: true}" *ngIf="showGameBroadcast">
+  <h5 class="p-2 bg-theme text-white border-bottom">Tell people what you are playing <span class="iconset2 icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); showGameBroadcast = false"></span></h5>
+  <form [formGroup]="nowplayingForm" (ngSubmit)="saveNowPlaying()" action="" method="POST" autocomplete="off">
     <div class="m-3">
       <div class="row">
         <div class="col-6">
@@ -183,17 +321,17 @@
         </ng-template>
           <!-- <input type="text" formControlName="game" class="form form-control" placeholder="Type and Select a game" /> -->
 
-          <div  *ngIf="true" class="position-absolute overflow-y-hidden z-nav bg-white">
-            <div class="position-relative" style="height: 3.5rem;" *ngIf="false">
+          <!-- <div  *ngIf="true" class="position-absolute overflow-y-hidden z-nav bg-white"> -->
+            <!-- <div class="position-relative" style="height: 3.5rem;" *ngIf="false">
               <div class="position-absolute search-icon-container">
                 <div class="" style="animation: rotate-left 1s infinite linear;">
                   <loader2 [type]="2"></loader2>
                 </div>
               </div>
-            </div>
-
-            <div class="class text-center text-secondary cursor-pointer" *ngIf="false">No users found, try adding '@' before search word  </div>
-          </div>
+            </div> -->
+<!-- 
+            <div class="class text-center text-secondary cursor-pointer" *ngIf="false">No users found, try adding '@' before search word  </div> -->
+          <!-- </div> -->
         </div>
 
         <div class="col-6">
@@ -205,9 +343,9 @@
       <div class="row mt-3">
         <div class="col-6 audience">
           Share the above information with: <br>
-          <input type="radio" id="all" name="audience" formControlName="audience" value="0" checked /> &nbsp;  <label for="all"> Everyone</label><br>
-          <input type="radio" id="following" name="audience"  formControlName="audience" value="1" />  &nbsp; <label for="following">Who I follow</label><br>
-          <input type="radio" id="followers" name="audience"  formControlName="audience" value="2" /> &nbsp; <label for="followers">Who follow me</label><br>
+          <input type="radio" id="all" name="audience" formControlName="audience" value="0" checked disabled /> &nbsp;  <label for="all"> Everyone</label><br>
+          <input type="radio" id="following" name="audience"  formControlName="audience" value="1" disabled />  &nbsp; <label for="following">Who I follow</label><br>
+          <input type="radio" id="followers" name="audience"  formControlName="audience" value="2" disabled /> &nbsp; <label for="followers">Who follow me</label><br>
         </div>
 
         
@@ -217,6 +355,15 @@
         </div>
       </div>
 
+
+      <div class="row">
+        <div class="col-6">
+          Select a console your're playing on:
+        </div>
+        <div class="col-6">
+          Estimated play duration in hours (to help viewers manage their time) (type 0 for infinity)
+        </div>
+      </div>
       <div class="row">
         <div class="col-6 position-relative">
           <div (click)="showConsoleList = !showConsoleList">
@@ -233,26 +380,54 @@
         </div>
 
         <div class="col-6">
-          <textarea class="form form-control"  formControlName="desc" placeholder="Additional Description"></textarea>    
+          <input type="number" formControlName="estplaytime" min="0" max="12" class="form form-control" placeholder="in hours">
         </div>
       </div>
 
-      <div class="row"><div class="col-12"><input type="checkbox" id="haveroomid" formControlName="hasPrivateRoom"> &nbsp;<label for="haveroomid">I have a personal Room ID / Server IP <span class="text-secondary font-italic">multiplayer / co-op</span></label>
-      </div></div>
-
-      <div class="row mt-1" *ngIf="nowplayingForm.get('hasPrivateRoom')?.value">
-        <div class="col-6">
-          <input type="text" class="form form-control" formControlName="roomid" placeholder="Room ID / 10.10.652.36" />
+      <div class="row">
+        <div class="col-12">
+          Add a Description
         </div>
-        <div class="col-6 text-secondary">
-          <input type="password" class="form form-control" formControlName="password" placeholder="Room/server password (optional)" />
-          <input type="checkbox" id="keepassprivate" formControlName="privatepassword" /> &nbsp;<label for="keepassprivate" class="m-0">Keep my password private</label><br>
-          <label class="text-small">(you will receive request for password if someone asks)</label>
+        <div class="col-12">
+          <textarea class="form form-control"  formControlName="desc" placeholder="Say something about your play/game/party"></textarea>    
         </div>
       </div>
 
+      <div class="row mt-2">
+        <div class="col-12">
+          <input type="checkbox" id="haveroomid" formControlName="hasPrivateRoom"> &nbsp;
+          <label for="haveroomid">I have a personal Room ID / Server IP <span class="text-secondary font-italic">multiplayer / co-op</span>
+          </label>
+      </div>
+    </div>
 
-      <div class="">
+      <div *ngIf="nowplayingForm.get('hasPrivateRoom')?.value">
+        <div class="row mt-1">
+          <div class="col-6">
+            <input type="text" class="form form-control" formControlName="roomid" autocomplete="off" placeholder="Room ID / 10.10.652.36" />
+          </div>
+          <div class="col-6 text-secondary">
+            <input type="password" class="form form-control password-box" formControlName="password" autocomplete="off" placeholder="Room/server password (optional)" />
+            <div class="save-password-qtip-text bg-black text-white position-absolute text-small z-nav rounded p-3 w-75">
+              Since we do not save this password; in order to keep password accessible by other gamers who might want to join your party,
+              please be online for that long
+            </div>
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-6">Send password to first "n" people who ask (1-150):
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-6"> <input type="number" formControlName="maxconnections" min="0" max="150" class="form form-control" placeholder=" 0 = infinity" /></div>
+        </div>
+      </div>
+      
+
+
+      <div class="mt-3">
         <button type="submit" class="btn bg-theme text-white float-right w-25" style="margin-right: -1rem; border-radius: 0;" >Save & Broadcast</button>
         <button class="btn float-right w-25 border-grey" (click)="closeOverlay(); showGameBroadcast = false">Cancel</button>
       </div>

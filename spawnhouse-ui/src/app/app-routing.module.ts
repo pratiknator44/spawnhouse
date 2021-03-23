@@ -10,6 +10,10 @@ import { HomeComponent } from './home/home.component';
 import { PasswordresetComponent } from './passwordreset/passwordreset.component';
 import { AroundyouComponent } from './aroundyou/aroundyou.component';
 import { MessagingComponent } from './messaging/messaging.component';
+import { AboutComponent } from './about/about.component';
+import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
+import { ViewPostComponent } from './view-post/view-post.component';
+
 const routes: Routes = [
   {
     path: 'home',
@@ -47,6 +51,11 @@ const routes: Routes = [
     component: MessagingComponent
   },
   {
+    path: 'view-post/:postid',
+    canActivate: [ProfileGuardService],
+    component: ViewPostComponent
+  },
+  {
     path: 'resetpassword/:token',
     loadChildren: () => import('./modules/passwordreset.module').then(m=> m.ResetModule),
     component: PasswordresetComponent
@@ -55,6 +64,15 @@ const routes: Routes = [
     path: 'not-found',
     component: NotFoundComponent
   },
+  {
+    path: 'about',
+    component: AboutComponent
+  },
+  {
+    path: 'all-notifications',
+    component: AllNotificationsComponent
+  },
+  
   {
     path: ':username',
     canActivate: [ProfileGuardService],

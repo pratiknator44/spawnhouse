@@ -47,6 +47,9 @@ export class RandomBgPipe implements PipeTransform {
 export class StreamLinkPipe implements PipeTransform {
 
     transform(link: string, onlyVendor?: boolean) {
+        
+        if(!link)   return '';
+        
         let returnValue;
         if(link.includes('youtu')) {
             returnValue = 'youtube text-danger';
@@ -88,6 +91,8 @@ export class PLayerTypePipe implements PipeTransform {
                 break;
                 case 'co': full = 'Loots while you blink, the main supplier of the team';
                 break;
+                case 'st': full = 'defines strategies and approach, like the Queen in chess';
+                break;
             }
         }
         else if(iconColor) {
@@ -106,6 +111,7 @@ export class PLayerTypePipe implements PipeTransform {
                 break;
                 case 'co': full = 'theme';
                 break;
+                case 'st': full = 'black';
             }
         } else
         switch(str) {
@@ -123,6 +129,7 @@ export class PLayerTypePipe implements PipeTransform {
             break;
             case 'co': full = isIcon ? 'bag' : 'collector';
             break;
+            case 'st': full = isIcon ? 'queen iconset2' : 'strategist';
         }
         return full;
     }

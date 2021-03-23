@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
 import { FormGroup } from '@angular/forms';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
@@ -36,7 +36,9 @@ export class ProfileComponent implements OnInit {
   followUsers; showFollow: boolean;
   bg = ['danger', 'warning', 'success', 'theme', 'danger'];
   tempFavGamesArray = []; // used to show before user clicks 'show all' option
-  profileFlags = {loadingFollow: true, loadingCover: true, loadingGamingInfo: true};
+  profileFlags = {loadingFollow: true, loadingCover: true, loadingGamingInfo: true, showFeeds: false, shownppwd: false, disableGetNppwdOption: false};
+  nppwd: String; // password for now playing: if set
+  nppwdRequestText: String = 'Send a request to join room';
 
   constructor( private _storageService : StorageService,
     private _apiService: APIservice,
@@ -55,16 +57,18 @@ export class ProfileComponent implements OnInit {
   
   ngOnInit(): void {
     this.user = {};
+    this.profileFlags.showFeeds = false;
     let addusername;
-    console.log("current user ", this._storageService.currentUser);
+    // console.log("current user ", this._storageService.currentUser);
     if(this._activeRoute.snapshot.params.username) {
 
-    if(this._activeRoute.snapshot.params.username === this._storageService.currentUser._id || this._activeRoute.snapshot.params.username !== this._storageService.currentUser.username) {
-      this._apiService.router.navigateByUrl('/profile'); return;
-    }
-
+    // if(this._activeRoute.snapshot.params.username === this._storageService.currentUser._id || this._activeRoute.snapshot.params.username !== this._storageService.currentUser.username) {
+    //   this._apiService.router.navigateByUrl('/profile'); return;
+    // }
+      this.userdp = null; this.usercover = null;
       this.isUserProfile = false;
-      this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.APIsignup+'/'+this._activeRoute.snapshot.params.username).subscribe( result => {
+      this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.APIsignup+'/'+this._activeRoute.snapshot.params.username).toPromise().then( result => {
+        console.log("this user ", result);
         this._notifService.setTitle(result['user'].username || result['user'].fname + ' ' + result['user'].lname);
         if(!result || result['error']) {
           console.log('user not found should route');
@@ -74,28 +78,32 @@ export class ProfileComponent implements OnInit {
         
         this.user = result['user'];
         this.user['nowplaying'] = result['nowplaying'];
-        // console.log("user now playing ", this.user['nowplaying']);
+        try {
+        this.nppwd = this.user['nowplaying']['password'];
+        } catch(e){ this.nppwd = null;}
+
         this.user['gamedata'] = result['gamedata'];
         
         this.tempFavGamesArray = result['gamedata']? result['gamedata']['fav']: [];
         this.getFollowData();
         this.profileFlags.loadingGamingInfo = false;
 
-        console.log("sending getonline status...");
+        // console.log("sending getonline status...");
         this._socketService.getData("online-status").subscribe( data => {
-          console.log("online status ", data);
+          // console.log("online status ", data);
           this.onlineStatus = data.status ? 1 : 2;
         });
         this._socketService.pushData('get-online-status', {userid: this._storageService.currentUser._id, targetid: this.user._id});
+      }).catch( error => {
+        this._apiService.router.navigate(['../not-found']);
       });
 
       // getting dp of the user
       this.getDpOfUser(this._activeRoute.snapshot.params.username);
       this.getCoverOfUser(this._activeRoute.snapshot.params.username);
       this.getFollowStatus(this._activeRoute.snapshot.params.username);
-      this.getGamedata()
+      // this.getGamedata()
       addusername = this._activeRoute.snapshot.params.username;
-
     } else {
       // if logged in user's profile
       this.isUserProfile = true;
@@ -124,11 +132,11 @@ export class ProfileComponent implements OnInit {
       this._apiService.getNowPlaying();
       addusername = '';
       this.getGamedata();
+      
     }
     this._notifService.setTitle(this.user.username || this.user.fname+' '+this.user.lname);
     
-    this.getCoverOfUser(this.user._id)
-    
+    this.getCoverOfUser(this.user._id);
   }
 
   getFollowStatus(id: String) {
@@ -137,9 +145,11 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+
   getGamedata() {
     this.user['gamedata'] = null;
     const operation = this.followStatus === 'Follow' ? 'add' : 'sub';
+    this.tempFavGamesArray = [];
     this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).toPromise().then( result => {
       this.user['gamedata'] = result['result'];
       this.profileFlags.loadingGamingInfo = false;
@@ -147,6 +157,9 @@ export class ProfileComponent implements OnInit {
       if(!result['result']) return;
       this._storageService.setSessionData('gamedata', JSON.stringify(result['result']));
       this.tempFavGamesArray = 'fav' in result['result'] ? result['result']['fav'].slice(0, 5) : [];
+
+
+
     });
   }
 
@@ -163,42 +176,28 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  addRemoveFollower(followStatus, userid, i?) {
+    if(i) {
+      console.log("slicing array ", i);
+      this.followUsers.splice(i, 1);
+    }
+    this._apiService.addRemoveFollower(followStatus, userid).then(resolve => {
+      console.log("resolve == ", resolve);
+    });
+  }
+
+  removeFollowing(userid, i) {
+    if(i) {
+      console.log('removing a follower', i);
+      this.followUsers.splice(i, 1);
+    }
+    this._apiService.removeFollowing(userid).then(resolve => {
+      console.log('follower removed => ', resolve);
+    })
+  }
+
   getDpOfUser(id) {
-    // this._apiService.getImagePromise('dp', id).then( image => {
-      
-    // if(image['type'] === 'application/json') {
-    //   this._storageService.setDp(null);
-    //   this.userdp = null;
-    //   return;
-    // };
-    //     let reader = new FileReader();
-    //   reader.addEventListener('load', () => {
-    //     this.userdp = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-    //     console.log(this.userdp);
-    //     if(this.isUserProfile) this._storageService.setDp(this.userdp);
-    //   }, false);
-  
-    //   if (image) {
-    //       reader.readAsDataURL(image);
-    //   }
-    // });
-
     this.userdp = this._apiService.getUserImageById('dp', id);
-
-    // this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).subscribe( image => {
-    //   if(image['type'] === 'application/json')  {
-    //     this.userdp = null;
-    //     return;
-    //   }
-
-    //   let reader = new FileReader();
-    //   reader.addEventListener('load', () => {
-    //     this.userdp = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-    //   }, false);
-    //   if (image) {
-    //      reader.readAsDataURL(image as Blob);
-    //   }
-    // });
   }
 
   getCoverOfUser(id) {
@@ -227,7 +226,7 @@ export class ProfileComponent implements OnInit {
   getFollowData(id?) {
     const param = this.isUserProfile ? '' : this._activeRoute.snapshot.params.username;
     this._apiService.getFollowDataById( id || this.user._id).then(followdata => {
-      console.log("followdata ", followdata);  
+      // console.log("followdata ", followdata);  
       this.user['followdata'] = followdata['data'];
     });
   }
@@ -293,7 +292,7 @@ export class ProfileComponent implements OnInit {
     else {
       this.imageSchema =
       {
-        aspectRatio: 1920/400,
+        aspectRatio: 4/1,   //4/400,
         format: 'jpg',
         resizeToWidth: '1080',
         maintainAspectRatio: true
@@ -350,6 +349,8 @@ export class ProfileComponent implements OnInit {
   nowPlayingFlags = {showDeleteNowPlaying: false, showAddToFavs: false};
   removeNowPlaying() {
     this.nowPlayingFlags.showDeleteNowPlaying = false;
+    this._storageService.deleteSessionData('nppwd');
+    this._storageService.deleteSessionData('accessorIds');
     const conf: any = this._apiService.removeNowPlaying().then( result => {
       if(result['message'] === 'passed') {
         this._apiService.getNowPlaying();
@@ -357,19 +358,6 @@ export class ProfileComponent implements OnInit {
     });
     this.closeOverlay();
     this.nowPlayingFlags.showAddToFavs = false;
-  }
-
-  showAddToFavWarning() {
-    this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
-    this.nowPlayingFlags.showAddToFavs = true;
-    this.nowPlayingFlags.showDeleteNowPlaying = false;
-  }
-  showAllFavourites() {
-    this.tempFavGamesArray  = this.user.gamedata.fav;
-  }
-
-  closeOverlay() {
-    this._overlayService.showSubject.next(false);
   }
 
   addFavgame(nowplaying, setFav?: boolean) {
@@ -384,6 +372,19 @@ export class ProfileComponent implements OnInit {
         }
       });
     }
+  }
+
+  showAddToFavWarning() {
+    this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
+    this.nowPlayingFlags.showAddToFavs = true;
+    this.nowPlayingFlags.showDeleteNowPlaying = false;
+  }
+  showAllFavourites() {
+    this.tempFavGamesArray  = this.user.gamedata.fav;
+  }
+
+  closeOverlay() {
+    this._overlayService.showSubject.next(false);
   }
 
   initMinimessage() {
@@ -424,18 +425,34 @@ export class ProfileComponent implements OnInit {
   }
 
   getCommonFavs() {
-    if(this.user['gamedata'].fav === [] || this.user['gamedata'].genres === []) return null;
-    
-    const currentUserFavs = JSON.parse(this._storageService.getSessionData('gamedata'))['fav'];
+    if(!('gamedata' in this.user && this.user['gamedata'])) return null;
+    if(!('fav' in this.user.gamedata)) {
+      return null;
+    }
+    // if(this.user['gamedata'].fav.length === 0 || this.user['gamedata'].genres.length  === 0) return null;
+    let currentUserFavs = [];
+    try {
+      currentUserFavs = JSON.parse(this._storageService.getSessionData('gamedata'))['fav'];
+      return this.user['gamedata']['fav'].filter(function(fav) { return currentUserFavs.indexOf(fav) == -1; });
 
-    return this.user['gamedata']['fav'].filter(function(fav) { return currentUserFavs.indexOf(fav) == -1; });
+    } catch(e) { currentUserFavs = []; }
+    return [];
   }
 
   getCommonGenres() {
-    if(this.user['gamedata'].fav === [] || this.user['gamedata'].genres === []) return null;
-    const currentUserGenres = JSON.parse(this._storageService.getSessionData('gamedata'))['genres'];
+    if(!('gamedata' in this.user && this.user['gamedata'])) return null;
+    if(!('genres' in this.user.gamedata)) {
+      return null;
+    }
+    let currentUserGenres = [];
+    try {
+      currentUserGenres = JSON.parse(this._storageService.getSessionData('gamedata'))['genres'];
+      return this.user['gamedata']['genres'].filter(function(genre) { return currentUserGenres.indexOf(genre) == -1; });
+    } catch(e) {
+      currentUserGenres = [];
+    }
+    return [];
 
-    return this.user['gamedata']['genres'].filter(function(genre) { return currentUserGenres.indexOf(genre) == -1; });
   }
   selectedFollowType;
   followDpLinks = [];

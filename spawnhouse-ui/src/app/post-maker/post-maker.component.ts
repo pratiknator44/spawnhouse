@@ -4,6 +4,7 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { debounceTime } from 'rxjs/operators';
 import { APIservice } from 'src/assets/services/api.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
+import { SocketService } from 'src/assets/services/socket.service';
 import { StorageService } from 'src/assets/services/storage.service';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 
@@ -21,7 +22,6 @@ export class PostMakerComponent implements OnInit {
   mentionSuggestions = [];
   regexForKeys = /^[a-zA-Z0-9\s@]{1}$/;
   searchWordCollector = '';
-  // postText: string;
   userdp;
   uploadProgress: Number;
   cachedIDs = []; // used to cache ID and add the mentions in case the user mentions.
@@ -37,7 +37,6 @@ export class PostMakerComponent implements OnInit {
     private _overlayService: OverlayService) { }
 
   ngOnInit(): void {
-
     this.userdp = this._apiService.getUserImageById('dp', this._storageService.currentUser._id);
   }
 
@@ -46,7 +45,6 @@ export class PostMakerComponent implements OnInit {
 
     this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER+'/'+searchWord).pipe(debounceTime(1000)).subscribe( res => {
       if(res['users'].length > 0) {
-        let userid = [];
         console.log("users = ", res['users']);
         res['users'].forEach( user => {
           this.chipsSuggestion.push({label: 'username' in user && user.username ? user.username : user.fname+' '+user.lname, subtext: 'fname' in user ? user.fname : '', value: user._id})
@@ -115,10 +113,7 @@ export class PostMakerComponent implements OnInit {
 
     if(this.pmFlags.statusHasImage) {
       const fd = this.encodeImageForUpload();
-      console.log("form data = ", fd);
       this._apiService.setPostImage(fd).subscribe(imageData => {
-        console.log("image data = ", imageData);
-
         // progress show
         if(imageData.type === HttpEventType.UploadProgress) {
           // console.log('sent config ');
@@ -127,7 +122,8 @@ export class PostMakerComponent implements OnInit {
 
         else if(imageData.message === "passed" || ('body' in imageData && imageData.body.message==="passed")) {
           // upload text data now
-          postOb['filename'] = imageData.filename;
+          postOb['filename'] = imageData.filename || imageData.body.filename;
+          console.log("postOb = ", postOb);
           updateStatus(this, postOb);
         }
       });

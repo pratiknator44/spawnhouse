@@ -16,6 +16,7 @@ import { FloatNotificationComponent } from './float-notification/float-notificat
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { PcViewComponent } from './pc-view/pc-view.component';
 import { NavbarService } from 'src/assets/services/navbar.service';
+import { NowplayingService } from 'src/assets/services/now-playing.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { OverlayComponent } from './overlay/overlay.component';
 import { OverlayService } from 'src/assets/services/overlay.service';
@@ -31,9 +32,12 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
-
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+import { NowPlayingSideDockComponent } from './now-playing-side-dock/now-playing-side-dock.component';
+import { APIvars } from 'src/assets/variables/api-vars.enum';
+import { AboutComponent } from './about/about.component';
+
+const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
 
 @NgModule({
   declarations: [
@@ -48,6 +52,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     ToastComponent,
     DialogComponent,
     NotificationsComponent,
+    NowPlayingSideDockComponent,
+    AboutComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,7 +66,6 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     AroundYouModule,
     SharedModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-
     SocketIoModule.forRoot(config)
 
   ],
@@ -81,7 +86,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     OverlayService,
     CookieService,
     UserService,
-    Title
+    Title,
+    NowplayingService
   ],
   bootstrap: [AppComponent]
 })

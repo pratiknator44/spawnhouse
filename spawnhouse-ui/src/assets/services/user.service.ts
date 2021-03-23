@@ -3,7 +3,6 @@ import { Injectable } from "@angular/core";
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { APIvars } from '../variables/api-vars.enum';
 import { StorageService } from './storage.service';
 

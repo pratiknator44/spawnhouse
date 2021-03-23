@@ -1,0 +1,26 @@
+.category-tile {
+    height: 6rem;
+    width: 6rem;
+}
+
+.category-tile-powerplay {
+    background: url('../../assets/images/powerplay.png');
+    background-position: center;
+    background-size: contain;
+}
+
+.icons-container {
+    height: 2rem;
+    width: 2rem;
+}
+
+.delete-desc:hover + .delete-desc-notice {
+    display: block;
+}
+.delete-desc-notice {
+    width: 7rem;
+    bottom: 2rem; right: -3.5rem;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    display: none;
+}

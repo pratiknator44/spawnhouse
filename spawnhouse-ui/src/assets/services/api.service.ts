@@ -194,8 +194,8 @@ export class APIservice {
     return this.http.get(APIvars.APIdomain+'/'+APIvars.GET_USERDATA+'/'+username).toPromise();
   }
 
-  getNotifications() {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.NOTIFICATIONS).toPromise();
+  getNotifications(pageNo?) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.NOTIFICATIONS, {pageNo}).toPromise();
   }
 
   getNewNotificationCount() {
@@ -227,8 +227,8 @@ export class APIservice {
     return this.http.post(APIvars.APIdomain+'/'+APIvars.ADD_POST, {post}).toPromise();
   }
 
-  getPosts(pageNo?) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_POSTS, {pageNo}).toPromise();
+  getPosts(pageNo?, author?) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_POSTS, {pageNo, userid: author}).toPromise();
   }
 
   deletePostById(id) {
@@ -241,5 +241,82 @@ export class APIservice {
 
   setPostImage(encodedImageForm) {
     return this.http.post(APIvars.APIdomain+'/'+APIvars.SET_POST_IMAGE, encodedImageForm, {reportProgress: true, observe: 'events'});
+  }
+
+  async getMediaFromPostId(postid, imageName?) {
+    let image = null;
+    // console.log("getting ", type, 'for id ', id);
+    if(postid){
+
+      // not storing in storage since it exceeds quota limit
+
+      // if(this._storageService.getSessionData(postid)) {
+      //   return new Promise((resolve, reject) => {
+      //     setTimeout( () => {
+      //       const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData(postid));
+      //       resolve(safeLink);
+      //     },0);
+      //   });
+      // }
+      image = await this._http.post(APIvars.APIdomain+'/'+APIvars.GET_POST_MEDIA_BY_ID, {postid}, { responseType: 'blob' }).toPromise();
+    }
+    // else if(type === 'cover') {
+    //   console.log("Calling url ", APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id);
+    //   image = await this._http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id,  { responseType: 'blob' }).toPromise();
+    // }
+    // else return null;
+
+    // console.log("image =  ",type, image);
+    if(image['type'] === 'application/json') return null;
+    
+    const readerResult: any = await this.readAsDataURL(image);
+    const domParsed = this._dom.bypassSecurityTrustResourceUrl(readerResult);
+    // save dp for future references:
+    // this._storageService.setSessionData(postid, readerResult); // exceeds quota, throws error
+    return domParsed;
+  }
+
+  removeUserImage(type) {
+    return this.http.get(APIvars.APIdomain+"/"+ APIvars.DELETE_DP_OR_COVER+"/"+type).toPromise();
+  }
+
+  getSimilarUsers(location, attributes?, pageNo?) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_SUGGESTED_USERS, {location, attributes, pageNo}).toPromise();
+  }
+
+  getNowPlayingOfFollowing(pageNo?: Number, userlist?) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_NP_OF_FOLLOWERS, {pageNo, userlist}).toPromise();
+  }
+
+  removeFollowing(userid) {
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.REMOVE_FOLLOWER+'/'+userid).toPromise();
+  }
+
+  likeNowPlaying(npid) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.LIKE_NP, {npid}).toPromise();
+  }
+
+  deleteNowPlayingPost(npid) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.DELETE_NP_POST, {npid}).toPromise();
+  }
+
+  getWhoLiked(npid) {
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.GET_WHO_LIKED+'/'+npid).toPromise();
+  }
+
+  addPlays(npid) {
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.ADD_PLAYS+'/'+npid).toPromise();
+  }
+
+  getPostDetails(npid) {
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.NP_POST_WITH_DETAILS+'/'+npid).toPromise();
+  }
+
+  addComment(npfeedid, comment) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.ADD_COMMENT, {npfeedid, comment}).toPromise();
+  }
+
+  getCommentsOnNp(npfeedid) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_COMMENTS_ON_NP, {npfeedid}).toPromise();
   }
 }

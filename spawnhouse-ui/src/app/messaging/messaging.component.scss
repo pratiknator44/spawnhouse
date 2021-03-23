@@ -1,5 +1,6 @@
 .message-area {
-    overflow: auto; height: calc(100vh - 10rem); border-top-right-radius: 3rem;
+    overflow: auto; height: calc(100vh - 10rem); 
+    // border-top-right-radius: 3rem;
 }
 
 .box-shadow-local {
@@ -38,7 +39,7 @@
 }
 
 .user-bubble {
-    background-color: rgb(233, 232, 232);
+    // background-color: rgb(233, 232, 232);
     text-align: right;
     max-width: 50%;
     width: fit-content;
@@ -64,7 +65,7 @@
 }
 
 .bg-blue-purple {
-    background: linear-gradient(#06F, rgb(139, 1, 194));
+    // background: linear-gradient(#06F, rgb(139, 1, 194));
 }
 
 .send-button {

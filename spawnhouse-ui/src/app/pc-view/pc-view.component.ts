@@ -21,6 +21,8 @@ export class PcViewComponent implements AfterViewInit, AfterContentInit {
   isLoggedIn: boolean;
   minimessage; // {show: false, userdata: {}};
   showLoginStrip: boolean;
+  showNpSidedock = false;
+  totalActiveNowPlayingUsers = 0;
   @ViewChild('navbar') navbar: NavbarComponent;
 
   constructor(private _floatNoteService: FloatNotificationService,

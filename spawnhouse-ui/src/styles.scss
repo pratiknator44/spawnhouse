@@ -2,6 +2,8 @@
 @import './assets/variables/variables.scss';
 @import './assets/variables/icons.scss';
 @import './assets/variables/icons2.scss';
+@import './assets/variables/media-queries.scss';
+
 @import '~perfect-scrollbar/css/perfect-scrollbar.css';
 .cursor-pointer {
     cursor: pointer !important;
@@ -58,8 +60,15 @@
 .bg-lite {
     background-color: $litegrey !important;
 }
+.text-lite {
+    color: $litegrey !important;
+}
 .bg-theme-lite {
     background-color: rgb(232, 241, 255) !important;
+}
+
+.hover-border-theme:hover {
+    border-color: $theme-color;
 }
 
 .border-none {
@@ -124,7 +133,7 @@
     border-radius: 50%;
 }
 .corners-sharp {
-    border-radius: 0;
+    border-radius: 0 !important;
 }
 
  .animate-float {
@@ -293,8 +302,8 @@ label {
 .emojione{font-size:inherit;height:3ex;width:3.1ex;min-height:20px;min-width:20px;display:inline-block;margin:-.2ex .15em .2ex;line-height:normal;vertical-align:middle}img.emojione{width:auto}
 
 .dp-big {
-    height: 4rem;
-    width: 4rem;
+    height: 4vw;
+    width: 4vw;
 }
 
 .dp-xl {
@@ -320,4 +329,28 @@ label {
 
 .resize-none {
     resize: none !important;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-1 { flex: 8.3333%;  }
+.flex-2 { flex: 16.666%;  }
+.flex-3 { flex: 24.9999%;  }
+.flex-4 { flex: 33.3333%;  }
+.flex-5 { flex: 41.6666%;  }
+.flex-6 { flex: 50%;  }
+.flex-7 { flex: 58.3331%;  }
+.flex-8 { flex: 66.666%;  }
+.flex-9 { flex: 74.9997%;  }
+.flex-10 { flex: 83.3333%;  }
+.flex-11 { flex: 91.6663%;  }
+.flex-12 { flex: 100%;  }
+
+@media screen and (max-width: 1000px) {
+    .flex-container {
+        flex-direction: column;
+    };
 }

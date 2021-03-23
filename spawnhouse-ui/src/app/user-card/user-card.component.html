@@ -1,0 +1,54 @@
+<div class="d-flex d-wrap-flex" style="justify-content: space-evenly;">
+    <div class="user-card std-box-shadow rounded bg-white text-center m-1 p-3 position-relative rounded" *ngFor="let user of carddata; let i = index">
+        <span class="text-grey position-absolute m-1 cursor-pointer z-nav iconset2 icon-cross" style="top:0; right:0; font-size: 1rem;" (click)="removeByIndex(i)"></span>
+        <div class="text-center">
+            <div>
+                <div class="text-white text-center mt-2 default-img cursor-pointer dp-xl ml-auto mr-auto position-relative">
+                    <img [src]="user?.dp | async" class="dp-xl circle" *ngIf="user?.dp | async" />
+                    <div class="dp-xl circle mr-auto ml-auto bg-theme overflow-hidden" *ngIf="!(user?.dp | async)">
+                        <div class="iconset2 icon-jolly-roger text-white text-center" style="opacity: 0.5; font-size: 5rem;"></div>
+                    </div>
+                    <div class="circle position-absolute h4 bg-white text-danger" title="Nearby" *ngIf="user?.isNearby" style="height: 2rem; width: 2rem; top: 0;">
+                        <span class="iconset2 icon-nearby"></span>
+                    </div>
+                    <div class="position-absolute bg-success circle" *ngIf="user?.isLive && user?.nowplaying?.roomid" style="right: -10px; top: 50%; height: 2rem; width: 2rem;" title="Accepting players on server">
+                        <div class="text-white iconset2 icon-game-server h5 ml-auto mr-auto mt-1" style=""></div>
+                    </div>
+                    <div class="position-absolute" *ngIf="user?.isLive" style="top:80%; left: 50%;" title="Goto Stream">
+                        <!-- <span class="iconset bg-white circle icon-{{user?.nowplaying?.stream | streamlink}} h4"></span> -->
+                        <span class="badge badge-danger badge-pill">LIVE <a class="text-white" target="__blank" [href]="user?.nowplaying?.stream" *ngIf="user?.nowplaying?.stream">Watch </a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="hover-underline cursor-pointer m-0" (click)="usernameClicked(user._id)">{{user?.username}}</h4>
+                <!-- <h6 class="text-secondary m-0">{{user?.fname+' '+user?.lname}} -->
+                <!-- </h6> -->
+                <div *ngIf="user?.playerType">
+                    <div class="ml-auto mr-auto d-flex w-75" style="font-size: 1.5rem; justify-content: space-between;                    ">
+                        <div class="iconset icon-{{type | playertype: true}} text-{{type | playertype : false : true}}" *ngFor="let type of user?.playerType" title="{{ type | playertype | titlecase }}">
+                        </div>
+                    </div>    
+                </div>
+
+                <div class="d-inline-block mt-2" *ngIf="user?.nowplaying">
+                    <div class="text-small">{{user?.isLive ? 'Now Playing' : 'Recently Played'}}</div>
+                    <div class="text-theme text-bold" [title]="user?.nowplaying?.game">{{ user?.nowplaying?.game }}
+                        <!-- &nbsp; <a *ngIf="user?.nowplaying?.stream" class="text-theme badge" target="__blank" [href]="user?.nowplaying?.stream">
+                            <span class="badge h3">
+                                <span class="iconset icon-{{user?.nowplaying?.stream | streamlink}}"></span>
+                            </span> Watch </a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-absolute w-100 rounded overflow-hidden" style="bottom: 0; left: 0;">
+            <div class="btn btn-danger w-100" *ngIf="user?.isFollowing" (click)="addRemoveUser(user?._id, i)"><span class="iconset icon-user-minus"></span>&nbsp;Unfollow</div>
+            <div class="btn bg-theme text-white w-100" *ngIf="!user?.isFollowing" (click)="addRemoveUser(user?._id, i)"><span class="iconset icon-user-plus"></span>&nbsp; Follow</div>
+            <div class="d-block"></div>
+            <!-- <div class="badge border-grey"><span class="iconset icon-bubbles3"></span>&nbsp;Message</div>     -->
+        </div>
+    </div>
+</div>

@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'sh-minimessage',
   templateUrl: './minimessage.component.html',
   styleUrls: ['./minimessage.component.scss']
 })
-export class MinimessageComponent implements OnInit {
+export class MinimessageComponent {
   @Input() message;
   @Input() user;
   @Output() fireMessage: EventEmitter<{id: string, message: string}>;
@@ -19,9 +18,9 @@ export class MinimessageComponent implements OnInit {
     this.close = new EventEmitter();
   }
 
-  ngOnInit(): void {
-    // this.user['dpLink'] = 
-  }
+  // ngOnInit(): void {
+  //   // this.user['dpLink'] = 
+  // }
 
   closeOverlay() {
     this.close.emit(false);
@@ -32,11 +31,10 @@ export class MinimessageComponent implements OnInit {
     let emitob = this.user._id ? {id: this.user._id, message: this.message} : {id: null, message: this.message};
     this.fireMessage.emit(emitob);
     this.sendingStatus = 'sent';
-
-    setTimeout(()=> {
-      this.close.emit(false);
-    }, 1000)
-
+    this.close.emit(false);
+    // setTimeout(()=> {
+    //   this.close.emit(false);
+    // }, 1000)
   }
 
 }

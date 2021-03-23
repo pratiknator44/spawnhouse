@@ -16,6 +16,10 @@ import { PerfectScrollbarConfigInterface, PerfectScrollbarModule, PERFECT_SCROLL
 import { ToggleComponent } from '../toggle/toggle.component';
 import { PostMakerComponent } from '../post-maker/post-maker.component';
 import { ProgressComponent } from '../progress/progress.component';
+import { NowPlayingComponent } from '../now-playing/now-playing.component';
+import { UserCardComponent } from '../user-card/user-card.component';
+import { AllNotificationsComponent } from '../all-notifications/all-notifications.component';
+import { ViewPostComponent } from '../view-post/view-post.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true,
@@ -34,7 +38,11 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MediatextComponent,
         ToggleComponent,
         PostMakerComponent,
-        ProgressComponent
+        ProgressComponent,
+        NowPlayingComponent,
+        UserCardComponent,
+        AllNotificationsComponent,
+        ViewPostComponent,
     ],
     imports: [
         PipesModule.forRoot(),
@@ -65,7 +73,11 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         PerfectScrollbarModule,
         ToggleComponent,
         PostMakerComponent,
-        ProgressComponent
+        ProgressComponent,
+        NowPlayingComponent,
+        UserCardComponent,
+        AllNotificationsComponent,
+        ViewPostComponent
     ]
 })
 

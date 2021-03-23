@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { StorageService } from 'src/assets/services/storage.service';
-import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
   selector: 'sh-aroundyou',
@@ -14,63 +13,58 @@ export class AroundyouComponent implements OnInit {
 
   location;
   sessionLocation: any;
-  dpLinks = []; // temp
-  loadingUsers: boolean = true;
   radius: number;
   loadingText = 'Getting Suggestions...';
-  pageNo = 0;
+  pageNo = 1;
   userSuggestions = []; // {_id: <userid>, username: <username>, name: <name>, isFollower: <true/false>};
-  @ViewChild('container') container: ElementRef;
-  @HostListener('window:scroll', ['$event'])
-  handleScroll(event) {
-    console.log(this.container.nativeElement.offsetHeight,' ',this.container.nativeElement.scrollTop, ' ',this.container.nativeElement.scrollHeight);
-  }
-
+  ayFlags = {loadingContent: false, noMoreUsers: false};
   constructor(
     private _storageService: StorageService,
     private _floatNotifService: FloatNotificationService,
     private _apiService: APIservice,
     private _router: Router) {
     }
+
   ngOnInit(): void {
 
     this.userSuggestions = [];
-    this._floatNotifService.getLocationToast();
-    this.sessionLocation = JSON.parse(this._storageService.getSessionData('location'));
-
-    if(this.sessionLocation) this.getUsers(this.sessionLocation);
-    else this.getLocation();
+    this.location = JSON.parse(this._storageService.getSessionData('location'));
+    console.log("session location = ", this.sessionLocation);
+    
+    if(!this.location) {
+      this.getLocation();
+      return;
+    }
+    this.getSimilarUsers();
   }
 
-  getUsers(location, refresh?: boolean) {
-    console.log("sending for page no ", this.pageNo);
-    this._apiService.getUsersAround(location, this.radius, this.pageNo).then( result => {
-      this.radius = result['radius'];
-
-      let startIndex = 0;
-      if(refresh) {
-        this.userSuggestions.push(...result['result']);
-        startIndex = result['result'].length;
-        startIndex = this.userSuggestions.length - startIndex;
+  getSimilarUsers() {
+    if(this.ayFlags.noMoreUsers)  return;
+    if(this.ayFlags.loadingContent) return;
+    // console.log("this.loadingUsers ", this.ayFlags.loadingContent);
+    // if(this.loadingUsers)  return;
+    this.ayFlags.loadingContent = true;
+    // console.log("pageNo = ", this.pageNo, " locatin = ", this.location);
+    this._apiService.getSimilarUsers(this.sessionLocation || this.location, null, this.pageNo).then(result => {
+      // console.log("suggested users => ", result);
+      const l = result.result.length;
+      if( l === 0) { this.ayFlags.noMoreUsers = true; return }
+      // this.pageNo === 1 ? this.userSuggestions = result.result : this.userSuggestions.;
+      for(let x=0; x<l; x++) {
+        result.result[x]['dp'] = this._apiService.getUserImageById('dp', result.result[x]._id);
+        result.result[x]['distance'] = this.location && result.result[x].location ? this.getDistance(this.location, result.result[x].location) : null;
       }
-      else this.userSuggestions = result['result'] || [];
-
-      const l = this.userSuggestions.length;
-      this.loadingUsers = false;
-      this.pageNo++;
-      console.log("start index = ", startIndex, "uptoLen", l);
-
-      for(let x=startIndex; x < l; x++) {
-        // this.getDpById(this.userSuggestions[x]._id, x);
-        this.dpLinks[x] = this._apiService.getUserImageById('dp', this.userSuggestions[x]._id);
-      }
+      this.pageNo === 1 ? this.userSuggestions = result.result : this.userSuggestions.push(...result.result);
+      // this.userSuggestions.push(...result.result, ...result.result, ...result.result, ...result.result);
+      
+      
+      if(result.result.length > 0) this.pageNo++;
+      this.ayFlags.loadingContent = false;
     });
   }
 
-  
   removeByIndex(i: number) {
     this.userSuggestions.splice(i,1);
-    this.dpLinks.splice(i, 1);
   }
 
   addRemoveUser(id, index) {
@@ -86,23 +80,39 @@ export class AroundyouComponent implements OnInit {
   }
 
   getLocation() {
-    // console.log("updating location");
+    // console.log("getLocation called");
     this._floatNotifService.getLocationToast();
-    this.loadingUsers = true;
+    // this.loadingUsers = true;
     this._floatNotifService.getLocationSubject.asObservable().subscribe(data => {
-      console.log("got data ", data);
+      // console.log("got data ", data);
       this.location = data;
-      this.getUsers(data);
+      this.pageNo = 1;
+      this.getSimilarUsers();
     });
+    this.location = this._storageService.currentUser.location;
+    // this.getUsers(this.location);
+
   }
 
   globalStatusChanged(event) {
-    console.log("event ", event);
-    this.loadingUsers = true;
+    // console.log("event ", event);
+    this.ayFlags.loadingContent = true;
     this.loadingText = 'Refreshing Suggestions...';
     this.radius = event ? 1200 : null;
-    this.pageNo = 0;
-    this.getUsers(this.location || this.sessionLocation);
+    this.pageNo = 1;
+    // this.getUsers(this.location || this.sessionLocation);
   }
 
+  /* getting distance from user's current location
+   * triggered only when user shares his LIVE location
+  */
+
+  getDistance([x1, y1], [x2, y2]):Number {
+    return Math.sqrt(Math.abs(Math.pow(x1-x2, 2) + Math.pow(y1-y2,2)));
+  }
+
+  loadmore($event) {
+    // console.log("getting similar users");
+    this.getSimilarUsers();
+  }
 }

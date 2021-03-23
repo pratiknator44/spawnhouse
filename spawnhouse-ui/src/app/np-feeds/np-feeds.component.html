@@ -1,0 +1,98 @@
+<div class="text-white bg-secondary font-bold text-small ml-auto mr-auto" style="max-width: 800px;" *ngIf="!(!np || np?.length === 0)">NOW PLAYING</div>
+    <div class="ml-auto mr-auto" style="max-width: 800px;">
+        <div class="border-bottom mt-2 bg-white m-2" *ngFor="let usernp of np; let i = index">
+            <div class="d-flex d-wrap-flex m-2">
+                <div class="circle bg-theme text-center m-2" style="height: 3rem; width: 3rem; transform: translate(-47deg);">
+                    <span class="iconset icon-player text-white h4" *ngIf="!(usernp?.dp | async)"></span>
+                    <img class="h-100 w-100 circle" [src]="usernp?.dp | async" *ngIf="usernp?.dp | async" />
+                </div>
+                <div class="" style="width: calc(100% - 4rem);">
+                    <h5 class="m-0 text-theme hover-underline">
+                        <span class="iconset2 icon-live text-danger" title="still playing" *ngIf="usernp?.stillplaying"></span>
+                        <span class="cursor-pointer" (click)="routeToProfile(usernp?.userid)">{{ usernp?.userdata?.username }}</span>
+                        <span class="text-secondary text-small" *ngIf="!usernp?.stillplaying"> was playing</span>
+                        
+                        
+                        <div class="d-inline-block float-right mt-1 cursor-pointer position-relative" *ngIf="usernp?.userid === currentuserid" (dblclick)="deleteNpPost(usernp._id, i)">
+                            <span class="iconset2 icon-cross delete-desc text-small"></span>
+                            <div class="delete-desc-notice rounded text-center position-absolute p-1 bg-black text-white">
+                                Double-click to permanently delete this post
+                            </div>
+                            <!-- <span class="iconset icon-dots-horizontal-triple text-secondary"></span>
+                            <div class="bg-white bg-hover-lite border-grey text-small p-1 hover-bg-lite position-absolute" style="width: 5rem; right: 0;">
+                                <span class="iconset icon-cross"></span> &nbsp; Delete</div> -->
+                        </div>
+                        
+                    </h5>
+                    <div class="m-0 overflow-hidden" style="text-overflow: ellipsis; white-space: nowrap;">
+                        {{ usernp?.game }}
+                        <span class="text-secondary font-italic">
+                            <span class="iconset2 icon-live text-small"></span> &nbsp;
+                            <span class="font-italic">started {{usernp?.time | ago: true }}</span>
+                        </span>
+                    </div>
+                    <!-- icons options -->
+                    <div class="m-0">
+                        <a class="text-theme m-1" target="__blank" [href]="usernp?.stream"
+                        *ngIf="usernp?.stream"
+                        title="Goto Stream" (click)="addPlays(usernp?._id, i)">
+                            <div class="circle bg-danger text-white d-inline-block text-center icons-container">
+                                <div class="iconset icon-tv mt-1"></div>
+                            </div>
+                        </a>
+
+                        <div class="circle bg-success d-inline-block icons-container text-center m-1" *ngIf="usernp?.maxconnections" >
+                            <div class="iconset2 icon-game-server text-white mt-1" title="accepting players on server"></div>
+
+                        </div>
+                    </div>
+                    <!-- icons options ends -->
+                </div>
+            </div>
+
+            <div class="mb-2 text-secondary" style="margin-left: 4rem;" *ngIf="usernp?.desc"> {{usernp?.desc}}</div>
+            
+
+
+            <div class="text-secondary">
+                <div class="d-inline-block ml-2" [title]="usernp?.plays+' users played your stream'" *ngIf="usernp?.plays"><span class="iconset icon-tv"></span> {{usernp?.plays}}</div>
+
+                <div class="d-inline-block ml-2 position-relative" *ngIf="usernp?.noOfLikes"><span class="iconset2 icon-heart"></span>  <span class="cursor-pointer hover-underline ml-1" (click)="getWhoLiked(usernp?._id, i)" >{{ usernp?.noOfLikes || '' }}</span>
+                
+                <div class="position-absolute overflow-hidden p-1 bg-black text-white text-small" [perfectScrollbar]="{suppressScrollX: true}"  style="max-height: 12rem;" *ngIf="mouseOverNp === i" >
+                    Likers: <span class="iconset2 icon-cross float-right mr-3 cursor-pointer" (click)="mouseOverNp=-1"></span>
+                    <loader2 [type]="2" *ngIf="homeflags.loadingWhoLiked"></loader2>
+                    <div class="p-2" style="width: 12rem; text-overflow: ellipsis;" *ngFor="let likeruser of usernp?.likerusers">
+                        <div class="text-bold">{{ likeruser?.username }}</div>
+                        <div>{{ likeruser?.fname+ ' '+likeruser?.lname }}</div>
+                    </div>
+                </div>
+                </div>
+
+
+                <div class="d-inline-block ml-2"><span class="iconset icon-bubble2"></span> 6</div>
+
+            </div>
+
+
+            <div class="user-reactions border-top mt-2" style="height: 2rem;">
+                <span class="iconset2 text-danger h4 cursor-pointer ml-1 mr-3" [ngClass]="{'icon-heart-o': !usernp.likedByUser, 'icon-heart': usernp.likedByUser}" (click)="likeNp(usernp?._id, i)"></span>
+
+                <span class="iconset icon-bubble2 h4 text-theme ml-3 cursor-pointer" (click)="routeToPost(usernp?._id)"></span>
+
+            </div>
+        </div>
+
+        <loader2 [type]="2" *ngIf="!homeflags.feedsEnd && !homeflags.loadMoreFeeds"></loader2>
+
+
+        <div *ngIf="!np || np?.length === 0">
+            <h1 class="text-secondary">Getting started</h1>
+            <ul>
+                <li>You can update what you're playing today on <var>Now Playing</var> button on the left</li>
+                <li>Set up your <var>favourites</var> games so it's easier for others to see what all you like to play, and connect</li>
+                <li>Select what kind of player you are, to get create or join co-op team! </li>
+            </ul>
+        </div>
+    </div>
+

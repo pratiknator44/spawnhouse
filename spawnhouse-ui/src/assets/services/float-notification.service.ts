@@ -35,7 +35,7 @@ export class FloatNotificationService {
     checkForLocation() {
         if(!this._storageService.getSessionData('location')) {
             this.configToast('Getting your location helps us to find people around with common interests', 'Later', 'Enable Location');
-        this.showToastSubject.next(true);
+        // this.showToastSubject.next(true);
 
         this.toastOkaySubject.asObservable().subscribe(okay => {
             this.configToast("Getting Location...", "Dismiss");
@@ -55,7 +55,6 @@ export class FloatNotificationService {
                 this._userService.saveLocation(formattedLocation);
                 
                 this.getLocationSubject.next(formattedLocation);
-                console.log("formatted location = ", formattedLocation);
                 this.configToast("Getting Location... Found you :D", "Dismiss");
                 setTimeout( () => {
                     this.showToastSubject.next(false);

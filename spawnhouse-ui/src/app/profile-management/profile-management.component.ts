@@ -8,7 +8,7 @@ import { StorageService } from 'src/assets/services/storage.service';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
-  selector: 'app-profile-management',
+  selector: 'sh-profile-management',
   templateUrl: './profile-management.component.html',
   styleUrls: ['./profile-management.component.scss']
 })
@@ -20,6 +20,7 @@ export class ProfileManagementComponent implements OnInit {
   gamedataForm: FormGroup;
   userinfoForm: FormGroup;
   saveText = {videogame: 'Save', personal: 'Save', type: 'Save'};
+  selectedSection: Number = 0;
   mgtFlags = {loadingData: true, usernameExists: false, checkingUsername: false};
   genres = [
     {id: 'action', genre: 'Action', example: 'PUBG, Call of Duty, Counter-Strike', checked: ''},
@@ -29,14 +30,17 @@ export class ProfileManagementComponent implements OnInit {
     {id: 'rpg', genre: 'RPGs (Role Playing Games)', example: 'Witcher, Skyrim, Dark Souls, Mass Effect, Fall', checked: ''},
     {id: 'sim', genre: 'Simulation', example: 'Flight Simulator, X-Planes', checked: ''},
     {id: 'sport', genre: 'E Sports', example: 'EA Cricket, FIFA, NBA Live', checked: ''},
-    {id: 'board', genre: 'Board Games', example: '(Chess Master, Ludo King', checked: ''},
+    {id: 'board', genre: 'Board Games', example: 'Chess Master, Ludo King', checked: ''},
     ];
-  
+  pageSections = [{title: 'gaming', icon: 'game-controller'},
+                  {title: 'personal', icon: 'user'}
+                ];
   playerTypes = [
     {id: 'as', icon: 'assaulter', checked: false},
     {id: 'df', checked: false},
     {id: 'sn', checked: false},
     {id: 'md', checked: false},
+    {id: 'st', checked: false},
     {id: 'sp', checked: false},
     {id: 'fr', checked: false},
     {id: 'co', checked: false},
@@ -72,25 +76,30 @@ export class ProfileManagementComponent implements OnInit {
       // videogame settings
       this.mgtFlags.loadingData = true;
       this._http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
+        console.log("user settings === ", result);
         if(result['result']) {
-          let l = result['result']['genres'].length || 0;
-          let gl = this.genres.length;
-          for(let x=0; x<l; x++) {
-            for(let y=0; y<gl; y++) {
-              if(result['result']['genres'][x] === this.genres[y].id) {
-                this.genres[y].checked = 'a';
+          try {
+            let l = result['result']['genres'].length || 0;
+            let gl = this.genres.length;
+            for(let x=0; x<l; x++) {
+              for(let y=0; y<gl; y++) {
+                if(result['result']['genres'][x] === this.genres[y].id) {
+                  this.genres[y].checked = 'a';
+                }
               }
             }
+          } catch(e) {
+            this.gamedataForm.patchValue({
+              genres: []
+            });  
           }
+          
           this.items = result['result']['fav'];
-          this.gamedataForm.patchValue({
-            genres: result['result']['genres']
-          });
-  
+          
           if(result['result']['playerType']) {
-            l = result['result']['playerType'].length;  
+            let l = result['result']['playerType'].length;  
             for(let x=0; x<l; x++) {
-              for(let y=0; y<7; y++) {
+              for(let y=0; y<8; y++) {
                 this.playerTypes[y].id === result['result']['playerType'][x] ? this.playerTypes[y].checked = true : false;
               }
             }
@@ -153,7 +162,8 @@ export class ProfileManagementComponent implements OnInit {
         this.saveText.personal = 'Saved!'
 
         // get fresh user data from api
-        this._http.get(APIvars.APIdomain+'/'+APIvars.GET_USERDATA).subscribe( result => {
+        this._http.post(APIvars.APIdomain+'/'+APIvars.GET_USERDATA, {properties: 'personal'}).subscribe( result => {
+          console.log("get userdata ", result);
           sessionStorage.setItem('user', JSON.stringify(result['result']));
           this._navbarService.refreshUser.next();
         });

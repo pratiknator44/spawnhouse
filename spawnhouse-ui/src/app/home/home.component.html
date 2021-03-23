@@ -1,4 +1,23 @@
-<div class="w-50 ml-auto mr-auto" style="min-width: 800px;">
-    <sh-post-maker></sh-post-maker>
-    <sh-feeds></sh-feeds>
+<div class="bg-white">
+    <!-- <h1 class="text-secondary">Home</h1> -->
+    <!-- <sh-np-feeds></sh-np-feeds> -->
+    <!-- Broadcast among your followers, what are you playing today?<br> -->
+    
+    <div class="rounded w-25 m-2" (click)="openGamingInfo()">
+        <div class="p-1 hover-bg cursor-pointer">
+            <div class="row">
+                <div class="col-5 text-right m-0 p-0">
+                    <span class="iconset2 icon-add h1 text-theme"></span>
+                </div>
+                <div class="col-7 text-left">
+                    <div style="margin-top: 0.75rem;">Now Playing</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div>
+    <sh-np-feeds></sh-np-feeds>
 </div>

@@ -7,7 +7,7 @@
 </div>
 
 <div class="w-100 row m-0" style="overflow: hidden !important; height: 93.5vh;" *ngIf="chats.length > 0">
-    <div class="col-3 p-1"  [perfectScrollbar]="{suppressScrollX: true}" style="overflow: auto; background-color: rgb(250,250,250);">
+    <div class="col-4 p-1"  [perfectScrollbar]="{suppressScrollX: true}" style="overflow: auto; background-color: rgb(250,250,250);">
 
         <!-- <div class="text-center text-primary mb-3 hover-underline cursor-pointer">New Message</div> -->
         <div class="m-2">
@@ -22,17 +22,17 @@
         <div class="font-italic text-secondary text-center " *ngIf="chats.length===0">
             no conversations
         </div>
-            <div class="message-user m-2 std-box-shadow cursor-pointer" style="border-radius: 0.75rem;" [perfectScrollbar]="{suppressScrollX: true}" [ngClass]="{'bg-blue-purple text-white std-box-shadow position-relative': selectedChat === chat.id, 'bg-white hover-bg box-shadow-local': selectedChat !== chat.id}" *ngFor="let chat of chats; let i = index" (click)="getMessagesFromId(chat.id); convoIndex = i;">
+            <div class="message-user ml-1 mr-1 mt-2 mb-2 cursor-pointer rounded" style="border-radius: 0;" [perfectScrollbar]="{suppressScrollX: true}" [ngClass]="{'bg-theme text-white position-relative': selectedChat === chat.id, 'bg-white hover-border-theme border-grey': selectedChat !== chat.id}" *ngFor="let chat of chats; let i = index" (click)="getMessagesFromId(chat.id); convoIndex = i;">
                 <div class="row">
                     <div class="col-4">
                         <img class="circle m-2 h-100" [src]="chat?.dpLink | async" style="max-height: 4rem;" *ngIf="chat?.dpLink | async" />
                         <div class="dp-big bg-grey text-black circle m-2" *ngIf="!(chat?.dpLink | async)">
-                            <div class="iconset icon-player h2 ml-3 mt-2" style="transform: translate(-45deg);">
+                            <div class="iconset2 icon-jolly-roger h2 ml-1 mt-2" style="transform: translate(-45deg);">
                             </div>
                         </div>
                     </div>
                     <div class="col-8">
-                        <div class="mt-2">{{chat?.username | async}}<span class="float-right mr-3 font-italic">{{chat.time | ago}}</span>
+                        <div class="mt-2">{{chat?.username | async}}<span class="float-right mr-3 text-grey">{{chat.time | ago}}</span>
                             <div class="row">
                                 <div class="col-10">
                                     <div class="font-italic overflow-hidden " style="font-size: 0.75rem; text-overflow: ellipsis;" [ngClass]="{'text-white': selectedChat === chat.id}">{{chat.text | slice : 0 : 25}} ...
@@ -49,16 +49,29 @@
         </div>
     </div>
 
-    <div class="col-7 position-relative p-0 bg-info bg-blue-purple">
+    <div class="col-8 position-relative p-0 bg-info bg-blue-purple">
         <div class="message-area w-100 position-relative bg-white" [perfectScrollbar]="{suppressScrollX: false}" #messageArea>
 
             <div style="overflow-wrap: break-word;" *ngFor="let msg of conversation" [ngClass]="{'user-bubble': msg.sender == user._id, 'other-user-bubble': msg.sender != user._id}" title="received on {{msg.time | date: 'HH:mm dd MMM, yyyy'}}
-            " class="mt-3">
-                    <div class="rounded p-2 pb-2" [ngClass]="{'bg-other-user': msg.sender != user._id}">
+            " class="mt-3" style="max-width: 50%;">
+
+                <div class="p-2 pb-2 d-flex">
+                    <div class="text-black circle bg-grey text-center mb-2 d-inline-block cursor-pointer" *ngIf="msg.sender !== user._id" style="bottom: 50%; height: 2rem; width: 2rem;" title="Goto Profile" (click)="routeToProfile()">
+                        <div class="iconset2 icon-jolly-roger" style="font-size: 1.5rem;" *ngIf="!(chats[convoIndex]?.dpLink | async)"></div>
+                        <img [src]="(chats[convoIndex]?.dpLink | async)" alt="" style="height: 2rem; width: 2rem;" class="circle" *ngIf="(chats[convoIndex]?.dpLink | async)">
+                    </div>
+
+                    <div class="p-2 rounded ml-1 d-inline-block" style="overflow-wrap: break-word; width: calc(100% - 2rem);" [ngClass]="{'bg-theme': msg.sender != user._id, 'bg-grey': msg.sender == user._id}">
                         {{msg.text}}
                     </div>
-                    <div class="bg-white text-small" [ngClass]="{'text-success': msg.sender == user._id, 'text-secondary': msg.sender != user._id}"><span class="iconset icon-checkmark" *ngIf="msg.seen"></span>
+
+                    <div class="text-black bg-white circle text-center mb-2 d-inline-block ml-1" *ngIf="msg.sender === user._id" style="bottom: 50%; height: 2rem; width: 2rem;">
+                        <div class="iconset icon-player" style="font-size: 1.5rem;" *ngIf="!(user?.dp | async)"></div>
+                        <img [src]="user?.dp | async" alt="" style="height: 2rem; width: 2rem;" class="circle" *ngIf="user?.dp | async">
                     </div>
+
+                </div>
+                <div class="bg-white text-grey text-small" [ngStyle]="{'margin-left': msg.sender !== user._id ? '2.5rem' : '0','margin-right': msg.sender === user._id ? '2.5rem' : '0'}">{{ msg.time | ago : false : true }} <span *ngIf="msg.seen"><span class="iconset icon-checkmark"></span></span></div>
             </div>
             <div class="text-center ml-auto mr-auto" style="transform: translate(0, 50%);" *ngIf="messageFlags.msgLoading">
                 <loader2 [type]="2"></loader2>
@@ -67,44 +80,34 @@
             </div>
 
         </div>
-        <div class="send-message-area w-100 bg-white" style="border-bottom-right-radius: 3rem;">
-            <div>
-                <span class="badge cursor-pointer badge-info m-1">Roger that!</span>
+        <div class="send-message-area w-100 bg-white">
+            <div><span class="text-small text-secondary">Quick chat: </span>
+                <span class="badge cursor-pointer badge-info m-1" *ngFor="let qc of quickChats; let i = index" (click)="sendQuickChat(i)">{{ qc }}</span>
+                <!-- <span class="badge cursor-pointer badge-info m-1" (click)>Roger that!</span>
                 <span class="badge cursor-pointer badge-info m-1">Reporting in</span>
                 <span class="badge cursor-pointer badge-info m-1">To the lobby</span>
-                <span class="badge cursor-pointer badge-info m-1">Aye, Cap'n</span>
+                <span class="badge cursor-pointer badge-info m-1">Aye, Cap'n</span> -->
             </div>
             <div class="position-relative h-100">
                 <div class="typing-area bg-white position-absolute border-grey" style="width: calc(100% - 3rem); margin-top: 0.5rem;">
-                <input type="text" [(ngModel)]="message"  class="h-100 outline-none border-none" style="border-radius: 3rem; width: calc(100% - 2.5rem); margin-left:0.5rem;" placeholder="Type a message..." />
+                <input type="text" [(ngModel)]="message"  class="h-100 outline-none border-none rounded" style="width: calc(100% - 2.5rem); margin-left:0.5rem;" placeholder="Type a message..."  (keydown)="keyPressedInMessageBox($event)" />
                 </div>
-                <div class="send-button circle position-absolute cursor-pointer"
-                (click)="sendMessage()" style="right: 0.125rem;" [ngClass]="{'bg-blue-purple': !messageFlags.msgLoading, 'bg-secondary': messageFlags.msgLoading}">
-                <h3 class="text-white" style="margin-top: 1.25rem;"><div class="iconset icon-paper-plane text-center"></div></h3></div>
+                <div class="send-button border-grey circle position-absolute cursor-pointer"
+                (click)="sendMessage()" style="right: 0.125rem;" [ngClass]="{'bg-theme': !messageFlags.msgLoading, 'bg-secondary': messageFlags.msgLoading}">
+                    <h3 style="margin-top: 1.25rem;"><div class="iconset icon-paper-plane text-center text-white"></div></h3></div>
             </div>
 
-            
-            <!-- <div class="row p-0 m-0">
-                <div class="col-10 p-0">
-                    <input type="text" [(ngModel)]="message" class="overflow-none m-2 border-none form form-control circle mt-1" placeholder="Send a message..." />
-                </div>
-                <div class="col-2 p-0">
-                    <div class="text-white text-center cursor-pointer bg-blue-purple h-100 circle" style="" (click)="sendMessage()">
-                        <div class="iconset icon-paper-plane mt-2 text-white"></div>
-                    </div>
-                </div>
-            </div> -->
         </div>
     </div>
 
-    <div class="col-2 bg-blue-purple">
+    <!-- <div class="col-2 bg-blue-purple d-none">
         <div class="mt-3">
             <div class="circle dp-xl bg-lite ml-auto mr-auto text-center m-3" (click)="routeToProfile()">
                 <span class="iconset icon-player" style="font-size: 4rem;" *ngIf="!(chats[convoIndex]?.dpLink | async)"></span>
                 <img [src]="(chats[convoIndex]?.dpLink | async)" alt="" class="h-100 w-100 circle" *ngIf="(chats[convoIndex]?.dpLink | async)">
             </div>
 
-            <h3 class="text-white text-center hover-underline cursor-pointer" (click)="routeToProfile()">{{ otherUser?.username | async }}</h3>
+            <h3 class="text-center hover-underline cursor-pointer" (click)="routeToProfile()">{{ otherUser?.username | async }}</h3>
         </div>
         
         <div *ngIf="messageFlags.userdataLoading">
@@ -112,28 +115,25 @@
         </div>
         <div *ngIf="!messageFlags.userdataLoading">
             <div class="d-flex" style="font-size: 3rem;">
-                <div class="ml-auto text-center mr-auto iconset icon-{{type | playertype: true}} text-white" *ngFor="let type of otherUser?.playerType" title="{{ type | playertype | titlecase }}">
+                <div class="ml-auto text-center mr-auto iconset icon-{{type | playertype: true}}" *ngFor="let type of otherUser?.playerType" title="{{ type | playertype | titlecase }}">
                 </div>
             </div>
             
             <div *ngIf="otherUser?.nowplaying">
-                <h6 class="text-secondary m-0 p-0">Playing</h6>
+                <h6 class="m-0 p-0">Playing</h6>
                 {{ otherUser?.nowplaying.game }}
             </div>
             <div *ngIf="otherUser?.gamedata?.genres.length > 0">
-                <h6 class="mt-3 text-white">Likes</h6>
+                <h6 class="mt-3">Likes</h6>
                 <span class="badge badge-info ml-1" *ngFor="let genre of otherUser?.gamedata?.genres">
                     {{ genre | gameGenre }}
                 </span>
             </div>
-        </div>
+        </div> -->
 
-        <div class="convo-options mt-3 position-absolute text-center w-100 text-secondary3" style="bottom: 3rem;">
-            <div class="badge badge-danger hover-underline cursor-pointer" (click)="convoOptions('delete')">
-                <span class="iconset icon-bin ml-auto mr-auto"></span>
-                &nbsp; Delete this conversation
-            </div>
-        </div>
+        <!-- <div class="qtip-1 d-inline-block circle mt-3 text-center cursor-pointer bg-danger text-white" style="height: 2rem; width: 2rem;" (click)="convoOptions('delete')">
+            <div class="iconset icon-bin mt-1"></div>
+        </div> -->
         
-    </div>
+    <!-- </div> -->
 </div>

@@ -1,0 +1,110 @@
+<!-- {{ postDetails | json }} -->
+<br>
+<div class="d-flex d-wrap-flex m-2">
+    <div class="circle bg-theme text-center m-2" style="height: 3rem; width: 3rem; transform: translate(-47deg);">
+        <span class="iconset icon-player text-white h4" *ngIf="!(postDetails?.userdata?.dpLink | async)"></span>
+        <img class="h-100 w-100 circle" [src]="postDetails?.userdata?.dpLink | async" *ngIf="postDetails?.userdata?.dpLink | async" />
+    </div>
+    <div class="" style="width: calc(100% - 4rem);">
+        <h5 class="m-0 text-theme hover-underline">
+            <span class="iconset2 icon-live text-danger" title="still playing" *ngIf="postDetails?.stillplaying"></span>
+            <span class="cursor-pointer" (click)="routeToProfile(postDetails?.userid)">{{ postDetails?.userdata?.username }}</span>
+            <span class="text-secondary text-small" *ngIf="!postDetails?.stillplaying"> was playing</span>
+            
+            
+            <div class="d-inline-block float-right mt-1 cursor-pointer position-relative" *ngIf="postDetails?.userid === currentuserid" (dblclick)="deleteNpPost(postDetails._id)">
+                <span class="iconset2 icon-cross delete-desc text-small"></span>
+                <div class="delete-desc-notice rounded text-center position-absolute p-1 bg-black text-white">
+                    Double-click to permanently delete this post
+                </div>
+                <!-- <span class="iconset icon-dots-horizontal-triple text-secondary"></span>
+                <div class="bg-white bg-hover-lite border-grey text-small p-1 hover-bg-lite position-absolute" style="width: 5rem; right: 0;">
+                    <span class="iconset icon-cross"></span> &nbsp; Delete</div> -->
+            </div>
+            
+        </h5>
+        <div class="m-0 overflow-hidden" style="text-overflow: ellipsis; white-space: nowrap;">
+            {{ postDetails?.game }}
+            <span class="text-secondary font-italic">
+                <span class="iconset2 icon-live text-small"></span> &nbsp;
+                <span class="font-italic">started {{postDetails?.time | ago: true }}</span>
+            </span>
+        </div>
+        <!-- icons options -->
+        <div class="m-0">
+            <a class="text-theme m-1" target="__blank" [href]="postDetails?.stream"
+            *ngIf="postDetails?.stream"
+            title="Goto Stream" (click)="addPlays(postDetails?._id)">
+                <div class="circle bg-danger text-white d-inline-block text-center icons-container">
+                    <div class="iconset icon-tv mt-1"></div>
+                </div>
+            </a>
+
+            <div class="circle bg-success d-inline-block icons-container text-center m-1" *ngIf="postDetails?.maxconnections" >
+                <div class="iconset2 icon-game-server text-white mt-1" title="accepting players on server"></div>
+
+            </div>
+        </div>
+        <!-- icons options ends -->
+    </div>
+</div>
+
+<div class="mb-2 text-secondary" style="margin-left: 4rem;" *ngIf="postDetails?.desc"> {{postDetails?.desc}}</div>
+
+<div class="text-secondary">
+    <div class="d-inline-block ml-2" [title]="postDetails?.plays+' users played this stream'" *ngIf="postDetails?.plays"><span class="iconset icon-tv"></span> {{postDetails?.plays}}</div>
+
+    <div class="d-inline-block ml-2 position-relative" *ngIf="postDetails?.noOfLikes"><span class="iconset2 icon-heart"></span>  <span class="cursor-pointer hover-underline ml-1" (click)="getWhoLiked(postDetails?._id)" >{{ postDetails?.noOfLikes || '' }}</span>
+    
+    <div class="position-absolute overflow-hidden p-1 bg-black text-white text-small" [perfectScrollbar]="{suppressScrollX: true}"  style="max-height: 12rem;" *ngIf="vpflags.mouseOverNp" >
+        Likers: <span class="iconset2 icon-cross float-right mr-3 cursor-pointer" (click)="vpflags.mouseOverNp=false"></span>
+        <loader2 [type]="2" *ngIf="vpflags.loadingWhoLiked"></loader2>
+        <div class="p-2" style="width: 12rem; text-overflow: ellipsis;" *ngFor="let likeruser of postDetails?.likerusers">
+            <div class="text-bold">{{ likeruser?.username }}</div>
+            <div>{{ likeruser?.fname+ ' '+likeruser?.lname }}</div>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="d-inline-block ml-2" *ngIf="postDetails?.noOfComments"><span class="iconset icon-bubble2"></span> {{ postDetails?.noOfComments }}</div>
+
+</div>
+
+<div class="user-reactions border-top mt-2" style="height: 2rem;">
+    <span class="iconset2 text-danger h4 cursor-pointer ml-1 mr-3" [ngClass]="{'icon-heart-o': !postDetails?.likedByUser, 'icon-heart': postDetails?.likedByUser}" (click)="likeNp(postDetails?._id)"></span>
+    <!-- <span class="iconset icon-bubble2 h4 text-theme ml-3 cursor-pointer"></span> -->
+</div>
+
+<div class="add-comments-area m-3">
+    <textarea class="w-100 rounded m-1 outline-none border-grey" [(ngModel)]="comment" cols=10 [placeholder]="'Comment as '+currentusername" maxlength="200" [disabled]="vpflags.submittingComment"></textarea>
+    <div class="text-secondary">{{comment.trim().length}}/200
+        <div class="btn corners-sharp text-white float-right" [ngClass]="{
+            'bg-theme': comment.trim().length > 0,
+            'bg-secondary': comment.trim().length === 0 }"
+        (click)="addComment()">{{vpflags.submittingComment ? 'Submitting...' : 'Comment'}}</div>
+    </div>
+</div>
+
+<div class="previous-comments mt-3">
+    <!-- {{comments | json}} -->
+
+    <div class="m-1 bg-theme-lite" *ngFor="let comment of comments">
+        <div class="d-flex d-wrap-flex">
+            <div class="m-2">
+                <div class="circle bg-theme text-center text-white" style="height: 3rem; width: 3rem;">
+                    <img [src]="comment?.commenterdata?.dpLink | async" class="h-100 w-100" *ngIf="comment?.commenterdata?.dpLink | async" />
+                    <div *ngIf="!(comment?.commenterdata?.dpLink | async)">
+                        <span class="iconset icon-player h2"></span>
+                    </div>
+                </div>
+            </div>
+            <div style="width: calc(100% - 4rem);">
+                <h6 class="text-theme cursor-pointer hover-underline ml-2 p-0 mb-0">{{ comment?.commenterdata?.username}}:
+                </h6>
+                <div class="text-secondary text-small ml-2"> {{comment.time | ago }} ago</div>
+                <div class="ml-2">{{comment?.comment}}</div>
+            </div>
+        </div>
+    </div>
+</div>

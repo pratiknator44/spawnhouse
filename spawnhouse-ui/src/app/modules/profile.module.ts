@@ -5,6 +5,7 @@ import { ImageuploadComponent } from '../imageupload/imageupload.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { SharedModule } from './shared.module';
 import { StorageService } from 'src/assets/services/storage.service';
+import { FeedsModule } from "./feeds.module";
 
 @NgModule({
     declarations: [
@@ -15,7 +16,8 @@ import { StorageService } from 'src/assets/services/storage.service';
     imports: [
         SharedModule,
         CommonModule,
-        ImageCropperModule
+        ImageCropperModule,
+        FeedsModule
     ],
     providers: [StorageService]
 })

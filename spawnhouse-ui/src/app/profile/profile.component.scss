@@ -12,7 +12,8 @@
 
 .cover-picture {
     background-color: #CCC;
-    height: auto;
+    // height: auto;
+    aspect-ratio: 4 / 1;
 }
 
 .cover-picture > img {
@@ -26,22 +27,21 @@
 }
 .dp-size {
     height: 9rem; width: 9rem;
-    border-radius: 50%;
     background-color: #06C;
     overflow: hidden;
-    // background-image: url('./goku.jpg');
     background-size: contain;
 
 }
-.dp-size:hover > div {
+.dp-size:hover > .dp-edit {
     height: 50%;
     transition: height 0.5s;
 }
 .dp-edit {
-    position: relative;
+    position: absolute;
     width: 9rem; height: 0;
     background-color: $theme-color;
     opacity: 0.75;
+    // height: 50%;
     border-bottom-left-radius: 6rem;
     border-bottom-right-radius: 6rem;
     bottom: 0;
@@ -171,4 +171,52 @@
 
 .btn {
     border-radius: 0 !important ;
+}
+
+.medq-np-width {
+    width: 30%;
+}
+
+.medq-d-block {
+    display: none;
+}
+
+
+
+// @media screen and (max-width: 500px) {
+    
+//     .dp-size {
+//         height: 3rem; width: 3rem;
+//         background-color: #06C;
+//         overflow: hidden;
+//         background-size: contain;
+
+//     }
+// }
+
+@media screen and (max-width: 1000px) {
+    .medq-np-width {
+        width: 100%;
+    }
+
+    .medq-d-none {
+        display: none;
+    }
+
+    .medq-d-block {
+        display: block;
+    }
+
+    
+    .user-name > label {
+        font-size: 2rem;
+        top: 4.5rem;
+    }
+       
+    // .dp-size {
+    //     height: 5rem; width: 5rem;
+    //     background-color: #06C;
+    //     overflow: hidden;
+    //     background-size: contain;
+    // }
 }

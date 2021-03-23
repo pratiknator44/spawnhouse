@@ -13,8 +13,8 @@ export class AgoPipe implements PipeTransform {
         {label: 'm', divisor: 30},
         {label: 'y', divisor: 12}
     ];
-    transform(value: number, fullForm?:boolean): string {
-
+    transform(value: number, fullForm?:boolean, addAgo?:boolean): string {
+        if(!value)  return '';
         let time = new Date().getTime() - value;
         if(time < 60000) return 'Just Now';             // return Just Now for 1 minute
 
@@ -25,7 +25,7 @@ export class AgoPipe implements PipeTransform {
                 time = time/this.terms[x].divisor;
             // if(time < 12 && time > 1) {
             else
-                return Math.floor(time)+this.terms[x-1].label;
+                return Math.floor(time)+this.terms[x-1].label + (addAgo ? ' ago': '');
             
         }
     }

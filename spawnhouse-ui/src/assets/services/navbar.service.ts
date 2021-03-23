@@ -13,9 +13,11 @@ export class NavbarService {
     showOption = new Subject<string>();
     refreshUser = new Subject();    // update user fname in navbar
     refreshUnseenMessages = new Subject();
+    npShowSubject = new Subject();
     selectedConvo: any;        // present a conversation during message component loading
     unseenMessagesRecord = [];
     audio: any;
+    nppwdOb;        // observable to get data for np password
     constructor(
         private _http: HttpClient,
         private _socketService: SocketService,
@@ -32,9 +34,6 @@ export class NavbarService {
             this._socketService.pushData('user-online', this._storageService.currentUser._id.toString());
     }
 
-
-
-    
     async getUnseenMessageCount() {
         return await this._http.get(APIvars.APIdomain+'/'+APIvars.GET_UNSEEN_MESSAGE_COUNT).toPromise().then(result => {
             console.log('count ', result);

@@ -25,6 +25,7 @@ export class MessagingComponent implements OnInit {
   messageFlags = { convosLoading: true, msgLoading: false, userdataLoading: false};
   message: any;
   unseenConvos = [];
+  quickChats = ['Roger that!', 'To the lobby!', 'Lock & load', 'server password please?', 'Noob!']
   @ViewChild('messageArea') messageArea: ElementRef;
 
   constructor(private _notifService: FloatNotificationService,
@@ -37,7 +38,7 @@ export class MessagingComponent implements OnInit {
 
   ngOnInit(): void {
     this._notifService.setTitle('Messages');
-    this.user = JSON.parse(this._storageService.getSessionData('user'));
+    this.user = this._storageService.currentUser;
 
     this._socketService.getData('new-message').subscribe( data => {
       console.log("message = ", data);
@@ -46,6 +47,7 @@ export class MessagingComponent implements OnInit {
 
     this.unseenConvos = this._navbarService.unseenMessagesRecord;
     this.briefmessages();
+    this.user['dp'] = this._apiService.getUserImageById('dp', this.user._id);
   }
 
   addToConversation(messageOb) {
@@ -89,7 +91,7 @@ export class MessagingComponent implements OnInit {
       this.chats.push({
         id: messages[x].id,
         userid: messages[x]['senderid'],
-        username: this.getUserdataById(messages[x]['senderid'], 'username fname lname').then(res => {return (res['data']['username'] || res['data']['fname']+' '+res['data']['lname']);}),
+        username: this.getUserdataById(messages[x]['senderid'], 'username fname lname').then(res => {return (res['result']['username'] || res['result']['fname']+' '+res['result']['lname']);}),
         text: messages[x]['text'],
         time: messages[x]['time'],
         seen: messages[x]['seen'],
@@ -114,12 +116,6 @@ export class MessagingComponent implements OnInit {
     return await this._http.post(APIvars.APIdomain+"/"+APIvars.GET_USERDATA_BY_ID, {id: userid, fields}).toPromise();
   }
 
-  // getUserImageById(userid: string, type: string, index?: any) {
-  //   if(!userid) return;
-  //   const i = this.chats.findIndex( message => message.userid === userid);
-  //   this.chats[i]['dpLink'] = this._apiService.getUserImageById('dp', userid);
-  // }
-
   // gets messages and sets all seen to true;
   getMessagesFromId(chatid) {
     if(this.selectedChat === chatid)  return;
@@ -134,7 +130,8 @@ export class MessagingComponent implements OnInit {
         this.chats = [];
         return;
       }
-      this.setOtherUserInfo();
+      // this.setOtherUserInfo();
+      this.otherUser = this.chats[this.convoIndex];
       this.messageFlags.msgLoading = false;
       this.scrollDownMessages();
     });
@@ -192,6 +189,11 @@ export class MessagingComponent implements OnInit {
     }
   }
 
+  sendQuickChat(index) {
+    this.message = this.quickChats[index];
+    this.sendMessage();
+  }
+
   scrollDownMessages() {
     console.log("scrolling ", this.messageArea.nativeElement.scrollHeight);
     this.messageArea.nativeElement.scrollTop = this.messageArea.nativeElement.scrollHeight;
@@ -210,5 +212,12 @@ export class MessagingComponent implements OnInit {
     this.chats.sort((m1, m2) => {
       return m1.time > m2.time ? -1 : 1;
     });
+  }
+
+  keyPressedInMessageBox(event: KeyboardEvent) {
+    if(event.key === 'Enter') {
+      this.sendMessage();
+    }
+    return;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
 import { APIservice } from 'src/assets/services/api.service';
 import { Subject } from 'rxjs';
@@ -14,6 +14,7 @@ import { UserService } from 'src/assets/services/user.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { INavbarMessage } from 'src/assets/interfaces/MsgNotif.interface';
 import { SocketService } from 'src/assets/services/socket.service';
+import { NowplayingService } from 'src/assets/services/now-playing.service';
 
 @Component({
   selector: 'navbar',
@@ -41,9 +42,10 @@ export class NavbarComponent implements OnInit {
   showConsoleList = false;
   consolePipe;
   selectedConsole: string;
-  navbarFlags = {showMessages: false, messagelistLoading: false, showNotification: false, notificationsLoading: false};
+  navbarFlags = {showMessages: false, messagelistLoading: false, showNotification: false, notificationsLoading: false, notificationsEnd: false};
   messages: INavbarMessage[] | any= [];
   notifications = [];  //INotification[] = [];
+  pageNo: number = 1;
   // dpLinks = []; // cuz sanetized links cant be binded to object properties of messages.dpLink
 
   consoles = [
@@ -67,7 +69,22 @@ export class NavbarComponent implements OnInit {
   @Input() imageUploadMode: string;
   @Output() onPicUpdate = new EventEmitter(); 
   @ViewChild('gameSuggestComp') gameSuggestComp: SuggestionsComponent;
-  
+  // @ViewChild('notificationListArea') notificationListArea: ElementRef;
+
+  // @HostListener('window: scroll', ['$event']) onScroll(e: Event): void {
+  //   console.log()
+
+    // if(
+    //   (e.target['scrollingElement'].scrollTop / (e.target['scrollingElement'].scrollHeight
+    //   - e.target['scrollingElement'].clientHeight)) > 0.75) {
+    //     this.getPosts(false);
+    // }
+  // }
+
+
+
+
+
   constructor(
     private _storageService: StorageService,
     private _apiService: APIservice,
@@ -75,7 +92,8 @@ export class NavbarComponent implements OnInit {
     private _notifService: FloatNotificationService,
     private _overlayService: OverlayService,
     private _userService: UserService,
-    private _socketService: SocketService) { }
+    private _socketService: SocketService,
+    private _nowplayingService: NowplayingService) { }
 
   ngOnInit(): void {
     this._navbarService.startSocketConnection();
@@ -95,7 +113,6 @@ export class NavbarComponent implements OnInit {
     this.selectedOption = this.options[0].name;
     // call profile picture api
     this.user = JSON.parse(this._storageService.getSessionData('user'));
-    // this.dp = this._api.getDp();
     this.getDp();
     this._navbarService.getDpSubject.asObservable().subscribe( status => {
       if(status) this.getDp();
@@ -118,48 +135,94 @@ export class NavbarComponent implements OnInit {
     this.getNotificationCount();
     this.getUnseenMessageCount();
     this.startNotificationMessageSockets();
-    this.getNotifications();
+    this.getNotifications(true);
+
+    // if nppwd is present in the memory, start the password listener;
+    if(this._storageService.getSessionData('nppwd')) {
+      this._nowplayingService.startListeningNPpwdRequests();
+    }
+
+    this._navbarService.npShowSubject.asObservable().subscribe(data => {
+      this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
+      this._overlayService.showSubject.next(true);
+      this.showGameBroadcast = true;
+    });
   }
 
   update(event) { }
 
+  notifScroll(e: Event) {
+    // console.log(e['target']['scrollTop']);
+    if(
+      (e['target']['scrollTop'] / (e['target']['scrollHeight']
+      - e['target']['clientHeight'])) > 0.95) {
+        // console.log("hello trigger scroll");
+        this.getNotifications(false);
+    }
+  }
+
   getNotificationCount() {
     this._apiService.getNewNotificationCount().then(result => {
+
       this.alerts.notifications = result['count'];
     });
   }
+  
   startNotificationMessageSockets() {
-      this._socketService.getMessageCountOb().subscribe( count => {
-        console.log("got data => via new-message-count ", count); 
-        ++this.alerts.messages;
-        this.getUnseenMessageCount();
-        console.log("this.alerts.messages = ", this.alerts.messages);
-        this._navbarService.playNotificationSound();
-      });
-      this._socketService.getData('new-notification').subscribe( count => {
-        console.log("got new notification ");
-        this.getNotifications();
-        ++this.alerts.notifications;
-        this._navbarService.playNotificationSound();
-      });
+    // message
+    this._socketService.getMessageCountOb().subscribe( count => {
+      console.log("got data => via new-message-count ", count); 
+      ++this.alerts.messages;
+      this.getUnseenMessageCount();
+      // console.log("this.alerts.messages = ", this.alerts.messages);
+      this._navbarService.playNotificationSound();
+    });
+
+    // notification
+    this._socketService.getData('new-notification').subscribe( count => {
+      console.log("got new notification ");
+      this.getNotifications();
+      ++this.alerts.notifications;
+      this._navbarService.playNotificationSound();
+    });
+
+    // like
+    this._socketService.getData('new-like').subscribe( likeData => {
+      // console.log("got a new like data = ", likeData);
+    })
   }
 
-  getNotifications() {
+  getNotifications(refresh?) {
+    // if(this.navbarFlags.notificationsEnd) return;
+    if(this.navbarFlags.notificationsLoading) return;
+
+    if(refresh) this.pageNo = 1;
     this.navbarFlags.notificationsLoading = true;
-    this._apiService.getNotifications().then( result => {
+    this._apiService.getNotifications(this.pageNo).then( result => {
       console.log("detailed notification ", result);
-      this.notifications = result['result'];
-      const l = this.notifications.length;
+      let temp = result['result'];
+      const l = temp.length;
+
+      if(l === 0) {
+        this.navbarFlags.notificationsLoading = false;
+        this.navbarFlags.notificationsEnd = true;
+        return;
+      };
+
       for(let x = 0; x < l; x++) {
-        this.notifications[x].dp = this._apiService.getUserImageById('dp', this.notifications[x].userid);
-        // this.getUserImageById(this.notifications[x].userid, 'dp', x, 'notification');
-        this._apiService.getUserdataById(this.notifications[x].userid, 'fname username'+(this.notifications['type'] == 2 ? ' nowplaying' : '')).then( userdata => {
+        temp[x].dp = this._apiService.getUserImageById('dp', temp[x].userid);
+        this._apiService.getUserdataById(temp[x].userid, 'fname username'+(temp[x]['type'] == 2 ? ' nowplaying' : '')).then( result => {
           // both notifications and userdata have _id, so we need to remove _id from userdata
-          delete userdata['data']['_id'];
-          Object.assign(this.notifications[x], userdata['data']); // concat object properties
+          Object.assign(temp[x], result['result']); // concat object properties
+          this.navbarFlags.notificationsLoading = false;
         });
       }
-      this.navbarFlags.notificationsLoading = false;
+      if(refresh) {
+        this.notifications = temp;
+      } else {
+        this.notifications.push(...temp);
+      }
+      ++this.pageNo;
     });
   }
 
@@ -201,6 +264,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
+    this._overlayService.showSubject.next(false);
     this._userService.logout();
   }
 
@@ -210,7 +274,11 @@ export class NavbarComponent implements OnInit {
       // if image size is less than 30 bytes
       if(image.size < 30) {
         this.onPicUpdate.emit({type: 'dp', src: null});
-        return;
+        // means if dp is null, dissociate from memory as well:
+        this._storageService.deleteSessionData(this.user._id);
+        this._navbarService.dpUpdated.next({type: 'dp', src: null});
+        this.dp = null;
+        return null;
       }
       // convert raw image to Blob object
       let reader = new FileReader();
@@ -227,9 +295,6 @@ export class NavbarComponent implements OnInit {
          reader.readAsDataURL(image);
       }
     });
-  }
-
-  showOverlay() {
   }
 
   userOptions() {
@@ -261,17 +326,18 @@ export class NavbarComponent implements OnInit {
         audience: new FormControl(),
         stream: new FormControl(),
         console: new FormControl(),
+        estplaytime: new FormControl(0, [Validators.min(0), Validators.max(12)]),
+        desc: new FormControl(),
         hasPrivateRoom: new FormControl(),
         roomid: new FormControl(),
         password: new FormControl(),
-        privatepassword: new FormControl(),
-        desc: new FormControl()
+        maxconnections: new FormControl(0, [Validators.min(0), Validators.max(150)])
       });
       this.nowplayingForm.patchValue({
         audience: '0',
         console: '',
         hasPrivateRoom: false,
-        privatepassword: true
+        // privatepassword: true
       });
 
       this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
@@ -292,20 +358,33 @@ export class NavbarComponent implements OnInit {
       });
       this.showConsoleList = false;
     }
-
+    let nppw; // nowplaying password of server to be saved in local
     if(!this.nowplayingForm.get('hasPrivateRoom').value) {
       this.nowplayingForm.removeControl('roomid');
       this.nowplayingForm.removeControl('password');
-      this.nowplayingForm.removeControl('privatepassword');
+      this.nowplayingForm.removeControl('maxconnections');
     }
+    else {
+      nppw = this.nowplayingForm.get('password').value || ':o:';
+      this._storageService.setSessionData("nppwd", nppw);
+      this._storageService.setSessionData("accessorIds", "[]");
+    }
+    if(nppw === ':o:')  this.nowplayingForm.patchValue({password: ':o:'});  // server is open
     this.nowplayingForm.removeControl('hasPrivateRoom');
+
     this._apiService.http.post(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING, this.nowplayingForm.value).subscribe(result => {
-      // console.log(result);
+      console.log("np after update => ", result);
+      this._socketService.pushData('new-notification', {type: 'broadcast', sentBy: this.user._id, sentTo: 'follower'});
       this._notifService.closeOn.next(false); // close notification
       this.showGameBroadcast = false;
       setTimeout(() => {
         this._apiService.getNowPlaying();
       },500);
+
+      // if now playing has password, open a listener to that will keep adding people in case thy ask for password.
+      if(nppw && nppw!==':o:') {
+        this._nowplayingService.startListeningNPpwdRequests();
+      }
     });
   }
 
@@ -363,14 +442,18 @@ export class NavbarComponent implements OnInit {
     switch (option) {
       case 'messages':
         if(this.navbarFlags.showMessages) { this.navbarFlags.showMessages = false; this.closeOverlay(); return; }
+
         this.navbarFlags.showMessages = true;
         this.navbarFlags.messagelistLoading = true;
-        // this.messages = [];
         this.briefmessages();
         break;
       case 'notifications':
         this.navbarFlags.showNotification = !this.navbarFlags.showNotification;
-        if(this.navbarFlags.showNotification) this._overlayService.showSubject.next();
+        // debugger;
+        if(this.navbarFlags.showNotification) {
+          this._overlayService.showSubject.next();
+          this.getNotifications(true);
+        }
         else this.falseAllFlags();
     }
     this._overlayService.configSubject.next({closeOnClick: true, transparent: true});
@@ -405,7 +488,7 @@ export class NavbarComponent implements OnInit {
       this.messages.push({
         _id: messages[x].id,
         userid: messages[x]['senderid'],
-        username: this.getUserdataById(messages[x]['senderid'], 'username fname lname').then(res => {return (res['data']['username'] || res['data']['fname']+' '+res['data']['lname']);}),
+        username: this.getUserdataById(messages[x]['senderid'], 'username fname lname').then(res => res['result']['username'] || res['result']['fname']+' '+res['result']['lname']),
         text: messages[x]['text'],
         time: messages[x]['time'],
         seen: messages[x]['seen'],
@@ -430,31 +513,7 @@ export class NavbarComponent implements OnInit {
     if(!userid) return;
     return await this._apiService.http.post(APIvars.APIdomain+"/"+APIvars.GET_USERDATA_BY_ID, {id: userid, fields}).toPromise();
   }
-
-  // getUserImageById(userid: string, type: string, index?: any, assignVar?: any) {
-  //   if(!userid) return;
-  //   this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+userid, { responseType: 'blob' }).subscribe( image => {
-  //     if(image['type'] === 'application/json')  {
-  //       // this.dpLinks[index] = null;
-  //       return;
-  //     }
-
-  //     let reader = new FileReader();
-
-  //     reader.addEventListener('load', () => {
-  //       if(assignVar === 'notification') {
-  //         this.notifications[index]['dp'] = this._apiService.dom.bypassSecurityTrustUrl(reader.result.toString());
-  //         return;
-  //       }
-  //       const i = this.messages.findIndex( message => message.userid === userid);
-  //       this.messages[i].dp = this._apiService.dom.bypassSecurityTrustUrl(reader.result.toString());
-  //     }, false);
-  //     if (image) {
-  //        reader.readAsDataURL(image as Blob);
-  //     }
-  //   });
-  // }
-
+  
   routeToMessaging( convoID?) {
     // this.closeOverlay();
     if(convoID) this._navbarService.selectedConvo = convoID;

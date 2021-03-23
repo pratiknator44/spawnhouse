@@ -1,0 +1,89 @@
+<div>
+    <div class="d-inline-block">
+        <!-- <span class="iconset icon-game-controller text-secondary mr-1"></span> -->
+        <div class="d-inline-block" title="playing LIVE">
+            <loader2 [type]="'live'" *ngIf="npFlags.isLive"></loader2>
+            <span class="iconset icon-game-controller text-theme h3" *ngIf="!npFlags.isLive"></span>
+        </div>
+    </div>
+    <h4 class="text-secondary d-inline-block ml-2">PLAYING
+    </h4>
+    
+    <label class="float-right">
+        <span class="d-inline-block iconset icon-bin text-danger cursor-pointer ml-3" *ngIf="isUserProfile"  title="Remove, not playing this anymore" (click)="doOnRemove()">
+        </span>     
+    </label>
+
+    <label class="text-theme cursor-pointer float-right mr" (click)="doOnNew()" *ngIf="isUserProfile">
+        <span class="icon-add iconset2"></span>
+    </label>
+    
+    <label class="text-secondary font-italic ml-2">{{ npdata?.time | ago }}</label>
+</div>
+
+
+
+<label class="text-theme text-bold hover-underline cursor-pointer m-0"><span class="iconset icon-game-controller mr-1 h5"></span>{{npdata?.game}}</label>
+<span *ngIf="npdata?.username">&nbsp; as </span>
+<span class="text-secondary m-0" *ngIf="npdata?.username">{{ npdata?.username }}</span> <span *ngIf="npdata?.console">  on </span>
+<div class="badge text-white ml-1" [ngClass]="{'badge-success': npdata?.console?.startsWith('x'),
+'badge-primary':npdata?.console?.startsWith('pc'),
+'bg-theme':npdata?.console?.startsWith('ps'),
+'bg-off-black': npdata?.console === 'mac' || npdata?.console === 'ios',
+'bg-secondary': npdata?.console === 'wii'}">
+    <span class="iconset icon-{{npdata?.console | consoleicon }}"></span>
+    {{npdata?.console | gameGenre: true}}
+</div>
+
+<div class="text-secondary mt-2" *ngIf="npdata?.stream">
+    <span class="iconset icon-{{ npdata?.stream | streamlink }} mr-2 text-black"></span>
+    <a class="text-theme" target="__blank" [href]="npdata?.stream">Watch on {{ npdata?.stream | streamlink: true | titlecase }} </a>
+</div>
+<div *ngIf="npdata?.desc">
+    <label class="text-secondary m-0 pt-1 pb-1">{{ npdata?.desc }}</label>
+</div>
+
+<div *ngIf="npdata?.roomid">
+    <div class="text-small" *ngIf="npdata?.roomid">Server IP / Room ID: </div><label class="text-secondary"> {{ npdata?.roomid }}</label>
+<div *ngIf="npdata?.password">
+    <div class="text-small">Password:</div>
+
+        <div *ngIf="!isUserProfile && nppwd!==':o:'" [ngClass]="{'hover-underline cursor-pointer': !npFlags.disableGetNppwdOption}" (click)="sendRequestForNppwd()">
+            <span class="iconset icon-lock text-warning" *ngIf="nppwdRequestText.startsWith('Send')"></span>{{nppwdRequestText}}
+        </div>
+        <span class="cursor-pointer hover-underline text-theme" (click)="startShowNppwdTimeout()" *ngIf="isUserProfile && nppwd!==':o:'">Tap to know your password</span>
+        <div class="" *ngIf="npFlags.shownppwd && isUserProfile">{{nppwd}}</div>
+        <span class="badge badge-success" *ngIf="nppwd===':o:'">Open Server</span>
+    </div>
+    <div class="row text-small" *ngIf="npdata?.maxconnections >= 0">
+        <div class="col-6">join requests served</div>
+        <div class="col-6">expected play duration</div>
+    </div>
+    <div class="row" *ngIf="npdata?.maxconnections >= 0">
+        <div class="col-6"><span class="h4" >{{playersJoined}}</span> <span *ngIf="npdata?.maxconnections !== 0">/ {{npdata?.maxconnections}}</span></div>
+        <div class="col-6">{{ npdata?.estplaytime > 0 ? npdata?.estplaytime+'h' : 'N/A' }}</div>
+    </div>
+    <!-- <div *ngIf="playersJoined > npdata.maxconnections || true">
+        <div class="row">
+            <div class="col-6 text-danger text-small">Pending Requests</div>
+        </div>
+        <div class="row">
+            <div class="col-6 h4 hover-underline text-danger cursor-pointer text-left" (click)="showPendingRequests()">{{ pendingRequests.length }}</div>
+        </div>
+    </div> -->
+</div>
+
+
+
+<!-- pending requests -->
+<!-- <div class="bg-white position-fixed z-nav ml-auto mr-auto w-50" style="left: 50%; top: 10%; transform: translate(-50%); min-width: 400px;"*ngIf="npFlags.showPendingReq">
+    <h5 class="p-2 bg-theme text-white">Tell people what you are playing <span class="iconset icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); npFlags.showPendingReq = false"></span></h5>
+    <div class="row" *ngFor="let req of pendingRequests">
+        <div class="col-6">{{req.receiverid}}
+
+        </div>
+        <div class="col-6">
+            <div class="btn btn-success text-white" (click)="sendPasscodeTo(req.receiverid)">Send Server passcode</div>
+        </div>
+    </div>
+</div> -->

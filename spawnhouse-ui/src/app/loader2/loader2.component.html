@@ -12,17 +12,13 @@
         <div class="ball position-absolute"></div>
         <div class="shadow position-absolute"></div>
     </div>
-    <div class="text">ading</div>
+    <div class="text">Loading</div>
 </div>
 
 
-<div  *ngIf="type==2" class="border-none bg-secondary position-relative circle ml-auto mr-auto circle overflow-hidden"
-style="height: 2rem; width: 2rem;
+<div  *ngIf="type==2" class="circle ml-auto mr-auto"
+style="height: 3rem; width: 3rem; border: solid 0.25rem rgb(216, 216, 216); border-top: solid 0.25rem transparent; animation: rotate 0.5s infinite linear;
 ">
-    <div class="w-100 h-100 position-absolute" style="left:0; top:0; animation: rotate 0.5s linear infinite;">
-        <div class="revolving-circles circle bg-white position-absolute">
-        </div>
-    </div>
 </div>
 
 <!-- <div class="ml-auto mr-auto bg-none" *ngIf="type==3" style="height: 3rem; width: 3rem;">
@@ -37,6 +33,14 @@ style="height: 2rem; width: 2rem;
     <div class="type3-container position-relative rounded overflow-hidden" style="height: 0.25rem;">
         <div class="type-3-animation bg-danger h-100 rounded position-absolute">
 
+        </div>
+    </div>
+</div>
+
+<div *ngIf="type === 'live'">
+    <div class="type-live-container">
+        <div class="h-100 w-100 circle position-relative bg-danger">
+            <div class="inner-circle circle bg-white position-absolute"></div>
         </div>
     </div>
 </div>

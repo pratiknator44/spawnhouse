@@ -6,7 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./loader2.component.scss']
 })
 export class Loader2Component implements OnInit {
-  @Input() type: Number;
+  @Input() type: Number | String;
   constructor() { }
 
   ngOnInit(): void {

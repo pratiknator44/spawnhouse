@@ -3,6 +3,7 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { IPictureUploadSchema } from 'src/assets/interfaces/picture-upload-schema.interface';
+import { APIservice } from 'src/assets/services/api.service';
 
 @Component({
   selector: 'sh-imageupload',
@@ -27,7 +28,7 @@ export class ImageuploadComponent implements OnInit {
   @Output() newsubmit = new EventEmitter();
   @Output() onImageRemove = new EventEmitter();
 
-  constructor( private http: HttpClient) { }
+  constructor( private _apiService: APIservice) { }
 
   ngOnInit(): void {
   }
@@ -78,8 +79,8 @@ export class ImageuploadComponent implements OnInit {
       url = url+APIvars.REMOVE_COVER;
     }
 
-    this.http.delete(url).subscribe(confirm => {
-      // console.log(this.mode+' removed '+confirm);
+    this._apiService.removeUserImage(this.mode).then(result => {
+      console.log("result = ", result);
       this.onImageRemove.emit();
     });
   }
