@@ -13,7 +13,7 @@
           "/*.css",
           "/*.js"
         ],
-        "urls": ["http://localhost:3000/resources/coverufuser/*"]
+        "urls": ["/resources/coverufuser/*"]
       }
     }, {
       "name": "assets",
@@ -31,11 +31,11 @@
     {
       "name": "responses",
       "urls": [
-        "http://localhost:3000/resources/getfollowdata",
-        "http://localhost:3000/resources/dpofuser/*",
-        "http://localhost:3000/signup",
-        "http://localhost:3000/gamedata/*",
-        "http://localhost:3000/*"],
+        "/resources/getfollowdata",
+        "/resources/dpofuser/*",
+        "/signup",
+        "/gamedata/*",
+        "/*"],
       "cacheConfig": {
         "maxSize": 1000,
         "maxAge": "24h",

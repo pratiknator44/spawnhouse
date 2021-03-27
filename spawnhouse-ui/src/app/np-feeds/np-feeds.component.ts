@@ -64,7 +64,6 @@ export class NpFeedsComponent implements OnInit {
 
   getDpOfEntries(nowplayings) {
     const l = nowplayings.length;
-    // console.log("new np data = ", nowplayings);
     for(let x=0; x < l; x++) {
       if(!nowplayings[x]['isDead']) {
         try {

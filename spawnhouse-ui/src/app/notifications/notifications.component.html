@@ -6,12 +6,17 @@
       </div>
       <div class="col-9 text-left border-bottom-thin">
         <div>
-            <span class="text-theme hover-underline">
-                {{notification?.username ? '@'+notification?.username : notification?.fname}}
+            <span class="text-theme hover-underline font-weight-bold">
+              {{notification?.username}}
             </span>
             <!-- sent a notification {{notification?.time | ago}} -->
             <!-- templates as per the type of notification -->
             <span class="text-secondary" *ngIf="notification?.type == 0"> liked your post </span>
+
+            <!-- comment on a post -->
+            <span class="text-secondary" *ngIf="notification?.type == 1"> commented on your <span class="text-theme hover-underline" (click)="gotoNPpost(notification?.associatednppostid)">Now Playing post</span></span>
+            
+
             <span class="text-secondary" *ngIf="notification?.type == 2"> started following you</span>
             <span class="text-secondary" *ngIf="notification?.type == 3">is {{notification?.extra?.stream ? 'streaming' : 'playing'}}
                 <span class="text-theme">{{ notification?.extra?.game}}</span> <span *ngIf="notification?.extra?.username">&nbsp;as <span class="text-theme">{{ notification?.extra?.username }}</span></span>

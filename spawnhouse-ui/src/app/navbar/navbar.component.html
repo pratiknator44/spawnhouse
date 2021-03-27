@@ -123,7 +123,7 @@
             </div>
           </div>
 
-          <loader2 [type]="3" *ngIf="navbarFlags.notificationsLoading"></loader2>
+          <!-- <loader2 [type]="3" *ngIf="navbarFlags.notificationsLoading"></loader2> -->
           <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No Notifications</div>
           
           <div class="position-relative" [perfectScrollbar]="{suppressScrollX: true}" style="height: 20rem;" (scroll)="notifScroll($event)">
@@ -169,7 +169,7 @@
 
             <div class="col-9 border-bottom-thin">
                 <span class="text-theme hover-underline">
-                    {{msg?.username | async}} <span class="badge badge-secondary float-right mt-1">{{msg.time | ago }}</span>
+                    {{msg?.username }} <span class="badge badge-secondary float-right mt-1">{{msg.time | ago }}</span>
 
                 </span>
                 <div class="text-secondary mr-2" style="text-overflow: ellipsis; overflow: hidden; width: 11rem; white-space: nowrap;">
@@ -265,7 +265,10 @@
           </div>
 
           <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No Notifications</div>
-          <div class="position-relative w-100" *ngIf="navbarFlags.notificationsLoading"><loader2 [type]="3"></loader2></div>
+          
+          <div class="position-relative w-100" *ngIf="navbarFlags.notificationsLoading">
+            <loader2 [type]="3"></loader2>
+          </div>
           
           <sh-notifications [notifications]="notifications"
             (close)="closeNotificationOverlay($event)"

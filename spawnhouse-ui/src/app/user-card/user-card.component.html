@@ -12,7 +12,7 @@
                         <span class="iconset2 icon-nearby"></span>
                     </div>
                     <div class="position-absolute bg-success circle" *ngIf="user?.isLive && user?.nowplaying?.roomid" style="right: -10px; top: 50%; height: 2rem; width: 2rem;" title="Accepting players on server">
-                        <div class="text-white iconset2 icon-game-server h5 ml-auto mr-auto mt-1" style=""></div>
+                        <div class="text-white iconset2 icon-game-server h5 ml-auto mr-auto mt-1"></div>
                     </div>
                     <div class="position-absolute" *ngIf="user?.isLive" style="top:80%; left: 50%;" title="Goto Stream">
                         <!-- <span class="iconset bg-white circle icon-{{user?.nowplaying?.stream | streamlink}} h4"></span> -->
@@ -22,7 +22,7 @@
             </div>
 
             <div>
-                <h4 class="hover-underline cursor-pointer m-0" (click)="usernameClicked(user._id)">{{user?.username}}</h4>
+                <h4 class="hover-underline cursor-pointer m-0 text-truncate" (click)="usernameClicked(user._id)" [title]="user?.username">{{user?.username}}</h4>
                 <!-- <h6 class="text-secondary m-0">{{user?.fname+' '+user?.lname}} -->
                 <!-- </h6> -->
                 <div *ngIf="user?.playerType">

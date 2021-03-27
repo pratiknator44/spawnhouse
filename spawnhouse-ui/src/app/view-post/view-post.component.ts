@@ -24,6 +24,8 @@ export class ViewPostComponent implements OnInit {
   ngOnInit(): void {
     this.postid = this._activeRoute.snapshot.params.postid;
     this.currentusername = this._storageService.currentUser.username;
+    this.currentuserid = this._storageService.currentUser._id;
+
     this._apiService.getPostDetails(this.postid).then( result => {
       this.postDetails = result['result'];
       console.log(this.postDetails);
@@ -33,9 +35,6 @@ export class ViewPostComponent implements OnInit {
     }).catch( error => {
       this.postDetails = error;
     });
-
-    this.currentuserid = this._storageService.currentUser._id;
-
   }
 
   deleteNpPost(npid) {
@@ -48,7 +47,7 @@ export class ViewPostComponent implements OnInit {
     if(this.postDetails['noOfComments'] > 0 || refresh)
         this._apiService.getCommentsOnNp(this.postid).then( result => {
           this.comments = result['result'];
-          // console.log("comments = ", this.comments);
+          console.log("comments = ", this.comments);
           const l = this.comments.length;
           
           for(let x=0; x<l; x++) {
@@ -100,6 +99,15 @@ export class ViewPostComponent implements OnInit {
       this.getComments(true);
       this.vpflags.submittingComment = false;
       this.comment = '';
+    });
+  }
+
+  removeComment(npfeedid, commentid, i) {
+    this._apiService.deleteNpComment(npfeedid, commentid).then( result => {
+      console.log("result = ", result);
+      if(result['message'] === 'passed') {
+        this.comments.splice(i, 1);
+      }
     });
   }
 

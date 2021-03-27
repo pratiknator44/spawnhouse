@@ -319,4 +319,8 @@ export class APIservice {
   getCommentsOnNp(npfeedid) {
     return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_COMMENTS_ON_NP, {npfeedid}).toPromise();
   }
+
+  deleteNpComment(npfeedid, commentid) {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.NP_DELETE_COMMENT, {npfeedid, commentid}).toPromise();
+  }
 }

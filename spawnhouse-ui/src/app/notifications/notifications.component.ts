@@ -42,6 +42,10 @@ export class NotificationsComponent implements AfterViewInit, OnChanges {
     }
   }
 
+  gotoNPpost(npfeedid) {
+    this._router.navigate(['/view-post/'+npfeedid]);
+  }
+
   markAsRead(i) {
     this.notificationClicked.emit(i);
   }

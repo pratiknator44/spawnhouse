@@ -81,21 +81,40 @@ export class ProfileManagementComponent implements OnInit {
           try {
             let l = result['result']['genres'].length || 0;
             let gl = this.genres.length;
+            
+            // pre-select the checklist
             for(let x=0; x<l; x++) {
               for(let y=0; y<gl; y++) {
                 if(result['result']['genres'][x] === this.genres[y].id) {
-                  this.genres[y].checked = 'a';
+                  this.genres[y].checked = 'ok';
                 }
               }
             }
+
+            this.gamedataForm.patchValue({
+              genres: result['result']['genres']
+            });
+
           } catch(e) {
+            console.error("found error ", e);
             this.gamedataForm.patchValue({
               genres: []
             });  
           }
-          
+
           this.items = result['result']['fav'];
-          
+
+          try {
+            this.gamedataForm.patchValue({
+              fav: this.items
+            });
+          }catch (e) {
+            this.gamedataForm.patchValue({
+              fav: []
+            });
+          }
+
+
           if(result['result']['playerType']) {
             let l = result['result']['playerType'].length;  
             for(let x=0; x<l; x++) {
@@ -111,6 +130,7 @@ export class ProfileManagementComponent implements OnInit {
 
 
   newSelections(items) {
+    console.log("new selections: ", items);
     this.gamedataForm.patchValue({
       fav: items
     });
@@ -131,6 +151,7 @@ export class ProfileManagementComponent implements OnInit {
   submitGamedata() {
     if(this.saveText.videogame === 'Saving...') return;
     this.saveText.videogame = 'Saving...';
+    console.log(this.gamedataForm.value);
     this._http.post(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA, this.gamedataForm.value).subscribe( result => {
       if(result['message'] = 'passed') {
         this.saveText.videogame = 'Saved!';
@@ -152,6 +173,8 @@ export class ProfileManagementComponent implements OnInit {
     this.gamedataForm.patchValue({
       genres: ar
     });
+
+    console.log("genre checked ", ar);
   }
 
   submitUserdata() {

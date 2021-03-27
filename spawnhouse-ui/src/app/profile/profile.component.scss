@@ -39,7 +39,7 @@
 .dp-edit {
     position: absolute;
     width: 9rem; height: 0;
-    background-color: $theme-color;
+    background-color: black;
     opacity: 0.75;
     // height: 50%;
     border-bottom-left-radius: 6rem;
@@ -163,8 +163,7 @@
 }
 
 .edit-game-container {
-    // transform: translate(0%, 50%);
-    margin-left: 40%;
+    margin-left: 18.75%;
     top: 10%;
     box-shadow: 0 0 5px 0 #000;
 }

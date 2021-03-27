@@ -211,12 +211,14 @@ export class NavbarComponent implements OnInit {
 
       for(let x = 0; x < l; x++) {
         temp[x].dp = this._apiService.getUserImageById('dp', temp[x].userid);
-        this._apiService.getUserdataById(temp[x].userid, 'fname username'+(temp[x]['type'] == 2 ? ' nowplaying' : '')).then( result => {
-          // both notifications and userdata have _id, so we need to remove _id from userdata
-          Object.assign(temp[x], result['result']); // concat object properties
-          this.navbarFlags.notificationsLoading = false;
-        });
+        // this._apiService.getUserdataById(temp[x].userid, 'fname username'+(temp[x]['type'] == 2 ? ' nowplaying' : '')).then( result => {
+        //   // both notifications and userdata have _id, so we need to remove _id from userdata
+        //   console.log("result - > ", result['result']);
+        //   Object.assign(temp[x], result['result']); // concat object properties
+        //   
+        // });
       }
+      this.navbarFlags.notificationsLoading = false;
       if(refresh) {
         this.notifications = temp;
       } else {
@@ -449,7 +451,6 @@ export class NavbarComponent implements OnInit {
         break;
       case 'notifications':
         this.navbarFlags.showNotification = !this.navbarFlags.showNotification;
-        // debugger;
         if(this.navbarFlags.showNotification) {
           this._overlayService.showSubject.next();
           this.getNotifications(true);
@@ -462,7 +463,7 @@ export class NavbarComponent implements OnInit {
 
   briefmessages() {
     return this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_BRIEF_MESSAGES).toPromise().then(result => {
-      console.log(result);
+      console.log("ungrouped messages: ", result);
       this.groupMessages(result['result']);
     });
   }
@@ -474,6 +475,8 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+
+  // transforming the object
   groupMessages(messages) {
     const l = messages.length;
     if( l === 0) {
@@ -483,12 +486,13 @@ export class NavbarComponent implements OnInit {
     this.messages = []
     // this.dpLinks = [];
     // seen is already sorted
-
+    
+    // trandforming array 
     for(let x=0; x<l; x++) {
       this.messages.push({
         _id: messages[x].id,
         userid: messages[x]['senderid'],
-        username: this.getUserdataById(messages[x]['senderid'], 'username fname lname').then(res => res['result']['username'] || res['result']['fname']+' '+res['result']['lname']),
+        username: messages[x]['username'],
         text: messages[x]['text'],
         time: messages[x]['time'],
         seen: messages[x]['seen'],

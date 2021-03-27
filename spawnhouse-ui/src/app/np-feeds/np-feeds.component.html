@@ -68,17 +68,13 @@
                     </div>
                 </div>
                 </div>
-
-
-                <div class="d-inline-block ml-2"><span class="iconset icon-bubble2"></span> 6</div>
-
+                
+                <div class="d-inline-block ml-2" *ngIf="usernp?.noOfComments"><span class="iconset icon-bubble2"></span> {{usernp?.noOfComments}}</div>
             </div>
-
-
             <div class="user-reactions border-top mt-2" style="height: 2rem;">
                 <span class="iconset2 text-danger h4 cursor-pointer ml-1 mr-3" [ngClass]="{'icon-heart-o': !usernp.likedByUser, 'icon-heart': usernp.likedByUser}" (click)="likeNp(usernp?._id, i)"></span>
 
-                <span class="iconset icon-bubble2 h4 text-theme ml-3 cursor-pointer" (click)="routeToPost(usernp?._id)"></span>
+                <span class="iconset icon-bubble2 h4 text-black ml-3 cursor-pointer" (click)="routeToPost(usernp?._id)"></span>
 
             </div>
         </div>

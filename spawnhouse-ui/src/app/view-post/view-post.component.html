@@ -89,7 +89,7 @@
 <div class="previous-comments mt-3">
     <!-- {{comments | json}} -->
 
-    <div class="m-1 bg-theme-lite" *ngFor="let comment of comments">
+    <div class="m-1 bg-theme-lite" *ngFor="let comment of comments; let i = index">
         <div class="d-flex d-wrap-flex">
             <div class="m-2">
                 <div class="circle bg-theme text-center text-white" style="height: 3rem; width: 3rem;">
@@ -101,6 +101,7 @@
             </div>
             <div style="width: calc(100% - 4rem);">
                 <h6 class="text-theme cursor-pointer hover-underline ml-2 p-0 mb-0">{{ comment?.commenterdata?.username}}:
+                    <div class="iconset2 icon-cross float-right d-inline-block text-secondary" title="Double click to permanently remove this comment" (click)="removeComment(postDetails?._id, comment?.time, i)" *ngIf="comment.commenter === currentuserid || postDetails?.userid === currentuserid"></div>
                 </h6>
                 <div class="text-secondary text-small ml-2"> {{comment.time | ago }} ago</div>
                 <div class="ml-2">{{comment?.comment}}</div>
