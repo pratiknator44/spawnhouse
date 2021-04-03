@@ -12,7 +12,7 @@ export class ViewPostComponent implements OnInit {
 
   postid: String;
   postDetails: any;
-  vpflags = {loadingPost: false, loadingWhoLiked: false, mouseOverNp: false, submittingComment: false}
+  vpflags = {loadingPost: false, loadingWhoLiked: false, mouseOverNp: false, submittingComment: false, loadingComments: false}
   currentuserid: String;
   currentusername: String;
   comment: String = '';
@@ -28,7 +28,7 @@ export class ViewPostComponent implements OnInit {
 
     this._apiService.getPostDetails(this.postid).then( result => {
       this.postDetails = result['result'];
-      console.log(this.postDetails);
+      // console.log(this.postDetails);
 
       this.postDetails.userdata['dpLink'] = this._apiService.getUserImageById('dp', this.postDetails.userdata._id);
       this.getComments();
@@ -45,15 +45,19 @@ export class ViewPostComponent implements OnInit {
 
   getComments(refresh?) {
     if(this.postDetails['noOfComments'] > 0 || refresh)
-        this._apiService.getCommentsOnNp(this.postid).then( result => {
-          this.comments = result['result'];
-          console.log("comments = ", this.comments);
-          const l = this.comments.length;
-          
-          for(let x=0; x<l; x++) {
-            this.comments[x]['commenterdata']['dpLink'] = this._apiService.getUserImageById('dp', this.comments[x]['commenterdata']._id);
-          }
-        });
+    {
+      this.vpflags.loadingComments = true;
+      this._apiService.getCommentsOnNp(this.postid).then( result => {
+        this.comments = result['result'];
+        // console.log("comments = ", this.comments);
+        const l = this.comments.length;
+        
+        for(let x=0; x<l; x++) {
+          this.comments[x]['commenterdata']['dpLink'] = this._apiService.getUserImageById('dp', this.comments[x]['commenterdata']._id);
+        }
+        this.vpflags.loadingComments = false;
+      });
+    }
 
   }
 
@@ -61,7 +65,7 @@ export class ViewPostComponent implements OnInit {
 
   addPlays(npid) {
     this._apiService.addPlays(npid).then(result => {
-      console.log("result ", result);
+      // console.log("result ", result);
     });
   }
 
@@ -104,7 +108,7 @@ export class ViewPostComponent implements OnInit {
 
   removeComment(npfeedid, commentid, i) {
     this._apiService.deleteNpComment(npfeedid, commentid).then( result => {
-      console.log("result = ", result);
+      // console.log("result = ", result);
       if(result['message'] === 'passed') {
         this.comments.splice(i, 1);
       }

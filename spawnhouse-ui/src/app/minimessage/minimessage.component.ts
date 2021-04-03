@@ -28,6 +28,7 @@ export class MinimessageComponent {
 
   emitMessage() {
     // console.log(this.user);
+    if(this.message.trim().length === 0)  return;
     let emitob = this.user._id ? {id: this.user._id, message: this.message} : {id: null, message: this.message};
     this.fireMessage.emit(emitob);
     this.sendingStatus = 'sent';

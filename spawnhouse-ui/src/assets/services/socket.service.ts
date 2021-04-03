@@ -13,6 +13,7 @@ export class SocketService {
   socket;
   obList;
   msgCountOb;
+  disconnectionListener;
 
   constructor( private _storageService: StorageService) {
     // this.socket = io(APIvars.APIdomain);
@@ -36,21 +37,13 @@ export class SocketService {
     this.observable = new Rx.Observable((observer) => 
       this.socket.on(eventName, data => observer.next(data))
     );
-
-    // const ob = new Rx.Observable((observer) => 
-    // this.socket.on(eventName, (data) => {
-    //   console.log("got data");
-    //   observer.next(data)
-    // }));
-
-    // this.obList = {[eventName]: ob}; 
     return this.observable;
   }
 
   getMessageCountOb(): Rx.Observable<any> {
     this.msgCountOb = new Rx.Observable((observer) => 
-    this.socket.on('new-message-count', (data) => {
-      observer.next(data)
+      this.socket.on('new-message-count', (data) => {
+        observer.next(data)
     }));
     return this.msgCountOb;
   }
@@ -59,4 +52,13 @@ export class SocketService {
   pushData(eventName, data) {
     this.socket.emit(eventName, data);
   }
+
+  // listenToDisconnect() {
+  //   console.log("started listneing to disconnect");
+  //   this.disconnectionListener = new Rx.Observable(o => {
+  //     this.socket.on('disconnect', () => {
+  //       console.log("You have been disconnected ", this.socket.connected);
+  //     });
+  //   });
+  // }
 }

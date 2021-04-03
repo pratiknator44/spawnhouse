@@ -16,6 +16,7 @@ declare var gapi: any;
 export class LoginComponent implements OnInit {
   verficationProgress: Boolean = false;
   rememberMe: Boolean = false;
+  hasLoggedOut: Boolean = false;
   constructor(private _metaService: Meta,
     _ngZone: NgZone,
     private _storageService: StorageService,
@@ -39,6 +40,7 @@ export class LoginComponent implements OnInit {
       this.verifyTokenAndSignin(this._cookieService.get('past_token'));
     }
     console.log("past token: ", this._cookieService.get('past_token'));
+    // this.hasLoggedOut = true;
   }
 
   onSignIn(gUser) {

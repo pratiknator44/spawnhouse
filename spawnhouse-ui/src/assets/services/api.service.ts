@@ -2,10 +2,11 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { APIvars } from '../variables/api-vars.enum';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { IUser } from '../interfaces/user.interface';
 import { StorageService } from './storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CookieService } from "ngx-cookie-service";
 @Injectable({
   providedIn: 'root'
 })
@@ -26,12 +27,25 @@ export class APIservice {
     private _router: Router,
     private _dom: DomSanitizer,
     private _activeRoute: ActivatedRoute,
-    private _storageService: StorageService) {
+    private _storageService: StorageService,
+    private _cookieService: CookieService) {
       this.http = this._http;
       this.router = this._router;
       this.dom = this._dom;
       this.activatedRoute = this._activeRoute;
     }
+
+
+  logout() {
+    this.relogin();
+    this._cookieService.deleteAll('');
+  }
+
+  relogin() {
+    this._storageService.reset();
+    // this._cookieService.deleteAll('');
+    this._router.navigate(['./login']);
+  }
 
   getPhotos(type?) {
     if(type === 'dp') {
@@ -166,7 +180,7 @@ export class APIservice {
   async addRemoveFollower(currentFollowStatus, userid) {
     const operation = currentFollowStatus === 'Follow' ? 'add' : 'sub';
     return this._http.get(APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+userid).toPromise();
-  }  
+  }
 
   getMessagesByChatid(chatid) {
     if(chatid)

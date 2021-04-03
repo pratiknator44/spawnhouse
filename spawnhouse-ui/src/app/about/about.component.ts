@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-about',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AboutComponent implements OnInit {
 
-  constructor() { }
+  constructor(private modalService: NgbModal) { }
   option = 'about';
   ngOnInit(): void {
   }
@@ -16,4 +17,18 @@ export class AboutComponent implements OnInit {
     this.option = op;
   }
 
+  // closeResult;
+  open(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
+  }
+  
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return  `with: ${reason}`;
+  //   }
+  // }
 }

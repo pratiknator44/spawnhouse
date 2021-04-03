@@ -2,7 +2,7 @@
     <div class="user-info pt-3 pl-3 pr-3">
         <div class="d-inline-block dp circle">
             <img [src]="post?.dp | async" *ngIf="post?.dp | async" class="circle h-100 w-100" />
-            <div class="bg-theme text-white w-100 h-100 circle" *ngIf="!(post?.dp | async)"><span class="iconset icon-player h3 ml-2"></span></div>
+            <div class="bg-theme text-white w-100 h-100 circle" *ngIf="!(post?.dp | async)"><span class="iconset icon-jolly-roger h3 ml-2"></span></div>
         </div>
         <div class="info ml-3 d-inline-block">
             <h5 class="text-theme font-bold mt-2 cursor-pointer" (click)="routeToProfile(post.userid)">{{ post?.username}}

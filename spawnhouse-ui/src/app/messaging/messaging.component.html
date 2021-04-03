@@ -66,7 +66,7 @@
                     </div>
 
                     <div class="text-black bg-white circle text-center mb-2 d-inline-block ml-1" *ngIf="msg.sender === user._id" style="bottom: 50%; height: 2rem; width: 2rem;">
-                        <div class="iconset icon-player" style="font-size: 1.5rem;" *ngIf="!(user?.dp | async)"></div>
+                        <div class="iconset2 icon-jolly-roger" style="font-size: 1.5rem;" *ngIf="!(user?.dp | async)"></div>
                         <img [src]="user?.dp | async" alt="" style="height: 2rem; width: 2rem;" class="circle" *ngIf="user?.dp | async">
                     </div>
 

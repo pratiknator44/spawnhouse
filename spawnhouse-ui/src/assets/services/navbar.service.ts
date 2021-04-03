@@ -29,7 +29,7 @@ export class NavbarService {
     }
 
     startSocketConnection() {
-        console.log("calling user online via socket");
+        // console.log("calling user online via socket");
             this._socketService.startConnection();
             this._socketService.pushData('user-online', this._storageService.currentUser._id.toString());
     }

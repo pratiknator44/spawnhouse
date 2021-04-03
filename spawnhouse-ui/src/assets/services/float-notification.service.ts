@@ -53,7 +53,7 @@ export class FloatNotificationService {
                 this._storageService.setSessionData('location', JSON.stringify(formattedLocation));
 
                 this._userService.saveLocation(formattedLocation);
-                
+                console.log("formattedLocation ", formattedLocation);
                 this.getLocationSubject.next(formattedLocation);
                 this.configToast("Getting Location... Found you :D", "Dismiss");
                 setTimeout( () => {

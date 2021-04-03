@@ -12,6 +12,7 @@ import { UserService } from 'src/assets/services/user.service';
 import { take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { SocketService } from 'src/assets/services/socket.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'sh-profile',
@@ -33,12 +34,14 @@ export class ProfileComponent implements OnInit {
   showImageUpload: boolean;
   isUserProfile = true;    // if user accesses someone else's profile, this is false;
   followStatus: String;
-  followUsers; showFollow: boolean;
+  followUsers;
   bg = ['danger', 'warning', 'success', 'theme', 'danger'];
   tempFavGamesArray = []; // used to show before user clicks 'show all' option
   profileFlags = {loadingFollow: true, loadingCover: true, loadingGamingInfo: true, showFeeds: false, shownppwd: false, disableGetNppwdOption: false};
   nppwd: String; // password for now playing: if set
   nppwdRequestText: String = 'Send a request to join room';
+  nowPlayingFlags = {showDeleteNowPlaying: false, showAddToFavs: false};
+
 
   constructor( private _storageService : StorageService,
     private _apiService: APIservice,
@@ -47,7 +50,8 @@ export class ProfileComponent implements OnInit {
     private _overlayService: OverlayService,
     private _userService: UserService,
     private _activeRoute: ActivatedRoute,
-    private _socketService: SocketService) {
+    private _socketService: SocketService,
+    private _modalService: NgbModal) {
 
       this._activeRoute.params.subscribe( val => {
         if(this._activeRoute.snapshot.params.username)
@@ -248,7 +252,7 @@ export class ProfileComponent implements OnInit {
         isOpenFlag = false;
       }
       if(result.type === HttpEventType.UploadProgress) {
-        this.setVisibilityImageOverlay(false);
+        // this.setVisibilityImageOverlay(false);
         // console.log('sent config ');
         this._notifService.config.next({text: 'Upading picture', icon: 'image'});
         this._notifService.progress.next(Math.round(result['loaded']*100/result['total'])+'%');
@@ -262,7 +266,7 @@ export class ProfileComponent implements OnInit {
         setTimeout(() => {
           this.uploadMode === 'dp' ? this._navbarService.getDpSubject.next(true) : this.getCoverOfUser(this.user._id);
           // this.uploadMode === 'dp' ? this.navbar.getDp() : this._apiService.getImage('cover');;
-          this.setVisibilityImageOverlay(false);
+          // this.setVisibilityImageOverlay(false);
         }, 1000);
       }
       // console.log(result);
@@ -275,11 +279,11 @@ export class ProfileComponent implements OnInit {
         // event.src
         setTimeout(() => resolve(event.src), 0);
       });
-      this.setVisibilityImageOverlay(false);
+      // this.setVisibilityImageOverlay(false);
     }
   }
 
-  setupImageUpload(isDp?) {
+  setupImageUpload(isDp?, template?) {
     if( isDp) {
       this.imageSchema = {
         aspectRatio: 1/1,
@@ -300,11 +304,12 @@ export class ProfileComponent implements OnInit {
       this.uploadMode = 'cover';
     }
     // this.showOverlay = true;
-    this.setVisibilityImageOverlay(true);
+    // this.setVisibilityImageOverlay(true);
+    this.modalOpen(template);
   }
 
   setupCoverPhotoUpload() {
-    this.setVisibilityImageOverlay(true);
+    // this.setVisibilityImageOverlay(true);
   }
 
   refreshImage() {
@@ -314,15 +319,15 @@ export class ProfileComponent implements OnInit {
     } else if(this.uploadMode === 'cover') {
       this.getCoverOfUser(this.user._id);
     }
-    this.setVisibilityImageOverlay(false);
+    // this.setVisibilityImageOverlay(false);
   }
 
   setVisibilityImageOverlay( visibility: boolean) {
-    if(visibility)
-      this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
+    // if(visibility)
+    //   this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
     
-    this._overlayService.showSubject.next(visibility);
-    this.showImageUpload = visibility;
+    // this._overlayService.showSubject.next(visibility);
+    // this.showImageUpload = visibility;
   }
 
   openGamingInfo() {
@@ -346,7 +351,6 @@ export class ProfileComponent implements OnInit {
       window.open(url, '__blank');
   }
 
-  nowPlayingFlags = {showDeleteNowPlaying: false, showAddToFavs: false};
   removeNowPlaying() {
     this.nowPlayingFlags.showDeleteNowPlaying = false;
     this._storageService.deleteSessionData('nppwd');
@@ -374,11 +378,30 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  showAddToFavWarning() {
-    this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
-    this.nowPlayingFlags.showAddToFavs = true;
-    this.nowPlayingFlags.showDeleteNowPlaying = false;
+  showAddToFavWarning(content) {
+    // this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
+    // this.nowPlayingFlags.showAddToFavs = true;
+
+    // this.nowPlayingFlags.showDeleteNowPlaying = false;
+    // open(content) {
+
+    this.modalOpen(content);
+     // this._modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+        // this.closeResult = `Closed with: ${result}`;
+     // }, (reason) => {
+        // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+     // }); 
+    // }
   }
+
+  modalOpen(content) {
+    this._modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    }, (reason) => {
+    });
+  }
+
+
+
   showAllFavourites() {
     this.tempFavGamesArray  = this.user.gamedata.fav;
   }
@@ -388,7 +411,7 @@ export class ProfileComponent implements OnInit {
   }
 
   initMinimessage() {
-    console.log(this.user);
+    // console.log(this.user);
     const userdata = {
       _id: this.user._id,
       fname: this.user.fname,
@@ -400,7 +423,7 @@ export class ProfileComponent implements OnInit {
 
     userdata.gamedata.fav = this.getCommonFavs();
     userdata.gamedata.genres = this.getCommonGenres();
-    console.log(userdata.gamedata.fav);
+    // console.log(userdata.gamedata.fav);
 
     this._overlayService.configSubject.next({show: true, closeOnClick: false});
     this._overlayService.showSubject.next(true);
@@ -457,13 +480,13 @@ export class ProfileComponent implements OnInit {
   selectedFollowType;
   followDpLinks = [];
 
-  getFollow(type: string){
-    this.showFollow = true;
+  getFollow(type: string, template){
+    this.modalOpen(template);
     this.profileFlags.loadingFollow = true;
     this.followUsers = null;
     this.selectedFollowType = type;
-    this._overlayService.configSubject.next({transparent: false, closeOnClick: false});
-    this._overlayService.showSubject.next(true);
+    // this._overlayService.configSubject.next({transparent: false, closeOnClick: false});
+    // this._overlayService.showSubject.next(true);
     this._userService.getFollowData(type, this.user._id).then(result => {
       console.log("followers ", result);
       this.followUsers =  result['result'];

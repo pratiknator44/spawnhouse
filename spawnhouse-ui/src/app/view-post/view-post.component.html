@@ -88,7 +88,11 @@
 
 <div class="previous-comments mt-3">
     <!-- {{comments | json}} -->
-
+    
+    <div class="text-center" *ngIf="vpflags.loadingComments">
+        <loader2 [type]="2"></loader2>
+        Loading Comments
+    </div>
     <div class="m-1 bg-theme-lite" *ngFor="let comment of comments; let i = index">
         <div class="d-flex d-wrap-flex">
             <div class="m-2">

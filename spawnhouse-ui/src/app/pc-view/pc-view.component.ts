@@ -13,7 +13,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 })
 export class PcViewComponent implements AfterViewInit, AfterContentInit {
   
-  title = 'spawnhouse-ui';
+  // title = 'spawnhouse-ui';
   isNotifVisible: boolean;
   config: {closeOnClick: boolean, transparent: boolean} = {closeOnClick: false, transparent: false};
   floatNotifConfig: FloatNotificationSchema;

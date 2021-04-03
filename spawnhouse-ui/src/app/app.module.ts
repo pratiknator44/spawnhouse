@@ -36,6 +36,9 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { NowPlayingSideDockComponent } from './now-playing-side-dock/now-playing-side-dock.component';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { AboutComponent } from './about/about.component';
+import { ModalComponent } from './modal/modal.component';
+import { NgbActiveModal, NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { ModalAboutComponent } from './modal-about/modal-about.component';
 
 const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
 
@@ -54,6 +57,8 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     NotificationsComponent,
     NowPlayingSideDockComponent,
     AboutComponent,
+    ModalComponent,
+    ModalAboutComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,9 +71,10 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     AroundYouModule,
     SharedModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    SocketIoModule.forRoot(config)
-
-  ],
+    SocketIoModule.forRoot(config),
+    NgbTooltipModule,
+    NgbModule
+],
   exports: [
   ],
   providers: [{ 
@@ -87,8 +93,12 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     CookieService,
     UserService,
     Title,
-    NowplayingService
+    NowplayingService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  
+  entryComponents: [
+    ModalAboutComponent
+  ]
 })
 export class AppModule { }

@@ -5,13 +5,18 @@
             Videogamers around your location
         </div>
     </div>
-
+    <div *ngIf="!this.sessionLocation" class="text-secondary">Showing results of previous location (if any). Please enable current location</div>
     <h6 class="" *ngIf="!sessionLocation && !location"><span class="text-theme cursor-pointer hover-underline ml-2">Enable location</span> for better results</h6>
 
     <sh-user-card [carddata]="userSuggestions" (loadmore)="loadmore($event)" (userClicked)="routeToProfile($event)"></sh-user-card>
 
     <div class="text-center mt-3 mb-3" *ngIf="ayFlags.loadingContent && (sessionLocation || location) && !ayFlags.noMoreUsers">
+        <div class="text-center text-secondary">
+            <span class="iconset2 icon-nearby h3 text-danger"></span> &nbsp; icon indicates a fellow user plays/last played near your location
+        </div>
+        <br>
         <loader2 [type]="2"></loader2>
+        Searching for friendlies
     </div>
     
     <h6 class="w-100 text-center mt-3" *ngIf="ayFlags.noMoreUsers">

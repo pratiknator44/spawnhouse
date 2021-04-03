@@ -6,20 +6,26 @@ import { Subject } from 'rxjs';
 import { APIvars } from '../variables/api-vars.enum';
 import { StorageService } from './storage.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserService {
 
     minimessageConfigSubject = new Subject();
     minimessageFiredSubject = new Subject<any>();
 
-    bg = ['primary', 'warning', 'success', 'theme', 'danger'];    
+    bg = ['primary', 'warning', 'success', 'theme', 'danger'];  
+
+    // used to display feedback feature in case user logs out ONLY!
+    hasLoggedOut: Boolean = false;
+
     constructor(private _http: HttpClient,
       private _storageService: StorageService,
       private _cookieService: CookieService,
       private _router: Router) {}
 
     saveLocation(location) {
-      this._http.post(APIvars.APIdomain+'/'+APIvars.SET_LOCATION,{location: location}).subscribe( result => {
+      this._http.post(APIvars.APIdomain+'/'+APIvars.SET_LOCATION,{location: location}).toPromise().then( result => {
         console.log('location saved', result);
       });
     }
@@ -28,6 +34,7 @@ export class UserService {
   logout() {
     this.relogin();
     this._cookieService.deleteAll('');
+    this.hasLoggedOut = true;
   }
 
   relogin() {
@@ -38,7 +45,7 @@ export class UserService {
 
   sendMessage(targetUser, message) {
     this._http.post(APIvars.APIdomain+'/'+APIvars.SEND_MESSAGE, {targetUser, message}).subscribe( result => {
-      console.log(result);
+      // console.log(result);
     });
   }
 

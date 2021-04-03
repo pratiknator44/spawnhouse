@@ -78,7 +78,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         UserCardComponent,
         AllNotificationsComponent,
         ViewPostComponent
-    ]
+    ],
+    
 })
 
 export class SharedModule { }

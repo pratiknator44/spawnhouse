@@ -91,7 +91,6 @@ export class NavbarComponent implements OnInit {
     private _navbarService: NavbarService,
     private _notifService: FloatNotificationService,
     private _overlayService: OverlayService,
-    private _userService: UserService,
     private _socketService: SocketService,
     private _nowplayingService: NowplayingService) { }
 
@@ -211,12 +210,6 @@ export class NavbarComponent implements OnInit {
 
       for(let x = 0; x < l; x++) {
         temp[x].dp = this._apiService.getUserImageById('dp', temp[x].userid);
-        // this._apiService.getUserdataById(temp[x].userid, 'fname username'+(temp[x]['type'] == 2 ? ' nowplaying' : '')).then( result => {
-        //   // both notifications and userdata have _id, so we need to remove _id from userdata
-        //   console.log("result - > ", result['result']);
-        //   Object.assign(temp[x], result['result']); // concat object properties
-        //   
-        // });
       }
       this.navbarFlags.notificationsLoading = false;
       if(refresh) {
@@ -267,7 +260,7 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     this._overlayService.showSubject.next(false);
-    this._userService.logout();
+    this._apiService.logout();
   }
 
   getDp() {
@@ -328,7 +321,7 @@ export class NavbarComponent implements OnInit {
         audience: new FormControl(),
         stream: new FormControl(),
         console: new FormControl(),
-        estplaytime: new FormControl(0, [Validators.min(0), Validators.max(12)]),
+        estplaytime: new FormControl(1, [Validators.min(1), Validators.max(12)]),
         desc: new FormControl(),
         hasPrivateRoom: new FormControl(),
         roomid: new FormControl(),
@@ -463,7 +456,7 @@ export class NavbarComponent implements OnInit {
 
   briefmessages() {
     return this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.GET_BRIEF_MESSAGES).toPromise().then(result => {
-      console.log("ungrouped messages: ", result);
+      // console.log("ungrouped messages: ", result);
       this.groupMessages(result['result']);
     });
   }
