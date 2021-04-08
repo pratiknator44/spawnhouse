@@ -5,7 +5,7 @@
             Videogamers around your location
         </div>
     </div>
-    <div *ngIf="!this.sessionLocation" class="text-secondary">Showing results of previous location (if any). Please enable current location</div>
+    <div *ngIf="!location" class="text-secondary">Showing results of previous location (if any). Please enable current location</div>
     <h6 class="" *ngIf="!sessionLocation && !location"><span class="text-theme cursor-pointer hover-underline ml-2">Enable location</span> for better results</h6>
 
     <sh-user-card [carddata]="userSuggestions" (loadmore)="loadmore($event)" (userClicked)="routeToProfile($event)"></sh-user-card>

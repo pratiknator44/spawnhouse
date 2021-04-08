@@ -2,7 +2,7 @@
     <navbar *ngIf="isLoggedIn" #navbar></navbar>
 </div>
 
-<nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex p-0" *ngIf="showLoginStrip">
+<!-- <nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex p-0" *ngIf="showLoginStrip">
     <div class="w-100" style="height: auto; flex-wrap: wrap;">
       <div class="text-white navbar-item text-center bg-theme d-inline-block w-75" style="font-size: 2rem;">
         <span class="cursor-pointer iconset icon-sh font-lg">
@@ -13,7 +13,7 @@
         <div class="btn btn-success text-white mt-1 ml-2"><span class="iconset icon-user-plus"></span> Signup</div>
       </div>
     </div>
-</nav>  
+</nav>   -->
 
 
 <div class="position-absolute" style="top: 10%; left: calc(50% - 12.5vw);" *ngIf="minimessage?.show">
@@ -43,7 +43,7 @@
 </div>
 
 
-<sh-float-notification class=""
+<sh-float-notification
 *ngIf="isNotifVisible"
 [ngClass]="{'float-in': isNotifVisible}"
 [config]="floatNotifConfig"

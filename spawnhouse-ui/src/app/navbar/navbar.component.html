@@ -1,44 +1,3 @@
-<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="text-theme">
-    <h4 class="iconset icon-sh text-center p-0"></h4>
-  </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" (click)="routeTo('/profile')">{{user?.username}} <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" (click)="routeTo('/home')">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="messaging">Link</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
-      </li>
-    </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-  </div>
-</nav> -->
-
 <nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex sh-nav">
   <div class="w-100 d-flex" style="height: auto; flex-wrap: wrap;">
     <div class="w-10 text-white navbar-item text-center bg-theme mob-d-none">
@@ -47,35 +6,45 @@
       <div class="text-center m-0 font-0-5-rem cursor-pointer">Spawnhouse</div>
     </div>
 
-    <div class="navbar-item navbar-item-responsive text-black overflow-none" title="{{user.username}}" (click)="routeTo('profile')" (click)="selectedOption = user.username">
+    <div class="navbar-item navbar-item-responsive text-black overflow-none" title="{{user.username}}"
+      (click)="routeTo('profile')" (click)="selectedOption = user.username">
       <div class="text-center overflow-hidden" style="height: 100%;">
-        <div class="cursor-pointer text-center iconset2 icon-size icon-jolly-roger text-theme"  [ngClass]="{'text-black': selectedOption!==user.username}"  *ngIf="!dp"></div>       
-        <img [src]="dp" *ngIf="dp" class="cursor-pointer dp circle" [ngClass]="{'filter-greyscale': selectedOption!==user.username}" />
-        <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label" [ngClass]="{'text-theme': selectedOption===user.username}">{{ user?.username }}</div>
+        <div class="cursor-pointer text-center iconset2 icon-size icon-jolly-roger text-theme"
+          [ngClass]="{'text-black': selectedOption !== user.username}" *ngIf="!dp"></div>
+        <img [src]="dp" *ngIf="dp" class="cursor-pointer dp circle"
+          [ngClass]="{'filter-greyscale': selectedOption !== user.username}" />
+        <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label"
+          [ngClass]="{'text-theme': selectedOption === user.username}">{{ user?.username }}</div>
       </div>
-      
+
     </div>
 
-    <div class="navbar-item navbar-item-responsive text-black" title="Home" (click)="selectedOption = 'Home'; routeTo('/home')">
-      <div class="cursor-pointer text-center iconset icon-size icon-home" [ngClass]="{'color-theme': selectedOption==='Home'}">
+    <div class="navbar-item navbar-item-responsive text-black" title="Home"
+      (click)="selectedOption = 'Home'; routeTo('/home')">
+      <div class="cursor-pointer text-center iconset icon-size icon-home"
+        [ngClass]="{'color-theme': selectedOption==='Home'}">
       </div>
       <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Home</div>
     </div>
 
     <div class="navbar-item navbar-item-responsive text-black" title="Gamers around your location"
-    (click)="selectedOption = 'Aroundyou'; routeTo('/aroundyou')">
-      <div class="cursor-pointer text-center iconset icon-size icon-compass2" [ngClass]="{'color-theme': selectedOption==='Aroundyou'}">
-      </div>  
-      <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Around You</div>
+      (click)="selectedOption = 'Aroundyou'; routeTo('/aroundyou')">
+      <div class="cursor-pointer text-center iconset icon-size icon-compass2"
+        [ngClass]="{'color-theme': selectedOption==='Aroundyou'}">
+      </div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Nearby</div>
     </div>
 
 
-      <!-- search bar and suggestions-->
+    <!-- search bar and suggestions-->
     <div class="mt-1 mob-search-flex ml-1">
-      <sh-suggestions [placeholder]="'Search by name, username, or email'" [icon]="'search'" [template]="searchSuggestionTemplate" (inputChanged)="searchThis($event)" [showSuggestions]="showUserSuggestions"></sh-suggestions>
+      <sh-suggestions [placeholder]="'Search by name, username, or email'" [icon]="'search'"
+        [template]="searchSuggestionTemplate" (inputChanged)="searchThis($event)"
+        [showSuggestions]="showUserSuggestions"></sh-suggestions>
       <ng-template #searchSuggestionTemplate>
         <!-- search template -->
-        <div class="position-relative border-grey" style="height: 3.5rem;" *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
+        <div class="position-relative border-grey" style="height: 3.5rem;"
+          *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
           <div class="position-absolute search-icon-container">
             <div style="animation: rotate-left 1s infinite linear;">
               <!-- <loader2 [type]=""></loader2> -->
@@ -85,101 +54,123 @@
         </div>
 
         <!-- data template -->
-        <div class="hover-bg-grey std-box-shadow" *ngFor="let suggestion of searchSuggestions" (click)="gotoProfile(suggestion)">
+        <div class="hover-bg-grey std-box-shadow" *ngFor="let suggestion of searchSuggestions"
+          (click)="gotoProfile(suggestion)">
           <div class="d-flex">
-            <img class="m-1 circle" [src]="suggestion?.dpaddress | async" style="width: 2.5rem; height: 2.5rem;" *ngIf="suggestion?.dp" /> <div class="bg-secondary m-1 circle text-white" style="width: 2.5rem; height: 2.5rem;" *ngIf="!suggestion?.dp">
+            <img class="m-1 circle" [src]="suggestion?.dpaddress | async" style="width: 2.5rem; height: 2.5rem;"
+              *ngIf="suggestion?.dp" />
+            <div class="bg-secondary m-1 circle text-white" style="width: 2.5rem; height: 2.5rem;"
+              *ngIf="!suggestion?.dp">
               <span class="iconset icon-player h3 ml-1"></span>
-              </div>
-              <div style="width: calc(100% - 3rem);">
-                  <div class="text-truncate hover-underline cursor-pointer" [ngClass]="{'mt-2': !suggestion.username }">&nbsp;{{ suggestion.fname + ' ' + suggestion.lname }}</div>
-                  <div class="text-secondary" *ngIf="suggestion.username">&nbsp;@{{ suggestion.username }}</div>
-              </div>
+            </div>
+            <div style="width: calc(100% - 3rem);">
+              <div class="text-truncate hover-underline cursor-pointer" [ngClass]="{'mt-2': !suggestion?.username }">
+                &nbsp;{{ suggestion?.fname + ' ' + suggestion?.lname }}</div>
+              <div class="text-secondary">&nbsp;@{{ suggestion?.username }}</div>
+            </div>
           </div>
         </div>
 
         <!-- not found template -->
         <div class="class text-center text-secondary cursor-pointer" *ngIf="noUserFound">No users found</div>
-        <div class="class text-center hover-underline text-primary cursor-pointer" *ngIf="searchSuggestions.length > 5">See All</div>
+        <div class="class text-center hover-underline text-primary cursor-pointer"
+          *ngIf="searchSuggestions?.length > 5">
+          See All</div>
       </ng-template>
     </div>
 
 
     <div class="navbar-item navbar-item-responsive text-black text-center position-relative" title="Notifications"
-    (click)="navOptionSelected('notifications')">
+      (click)="navOptionSelected('notifications')">
       <div class="cursor-pointer" [ngClass]="{'color-theme': navbarFlags.showNotification}">
         <span class="iconset icon-size icon-bell"></span>
-        <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
+        <span class="badge badge-danger" style="margin-left: -0.25rem;"
+          *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
       </div>
-        <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div>
 
-        <div class="notifications-container bg-white position-absolute mt-3 rounded std-box-shadow" *ngIf="navbarFlags.showNotification">
+      <div class="notifications-container bg-white position-absolute mt-3 rounded std-box-shadow"
+        *ngIf="navbarFlags.showNotification">
 
-          <div class="bg-lite text-bold" style="height: 3rem;">
-            <label style="line-height: 3;">Notifications
-              <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span>
-            </label>
-            <div class="btn btn-default h-100 float-right border-gray" (click)="markAllNotificationsRead()"  title="Mark all as read" style="border-left: solid 1px #CCC; border-radius: 0;">
-              <span class="iconset icon-eye h4"></span>
-            </div>
+        <div class="bg-lite text-bold" style="height: 3rem;">
+          <label style="line-height: 3;">Notifications
+            <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span>
+          </label>
+          <div class="btn btn-default h-100 float-right border-gray" (click)="markAllNotificationsRead()"
+            title="Mark all as read" style="border-left: solid 1px #CCC; border-radius: 0;">
+            <span class="iconset icon-eye h4"></span>
           </div>
-
-          <!-- <loader2 [type]="3" *ngIf="navbarFlags.notificationsLoading"></loader2> -->
-          <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No Notifications</div>
-          
-          <div class="position-relative" [perfectScrollbar]="{suppressScrollX: true}" style="height: 20rem;" (scroll)="notifScroll($event)">
-            <sh-notifications [notifications]="notifications"
-              (close)="closeNotificationOverlay($event)"
-              (notificationClicked)="markAsRead($event)">
-            </sh-notifications>
-          </div>
-          <div class="bg-lite" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px; height: 1rem;"></div>
         </div>
-        
+
+        <!-- <loader2 [type]="3" *ngIf="navbarFlags.notificationsLoading"></loader2> -->
+        <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No Notifications</div>
+
+        <div class="position-relative" [perfectScrollbar]="{suppressScrollX: true}" style="height: 20rem;"
+          (scroll)="notifScroll($event)">
+          <sh-notifications [notifications]="notifications" (close)="closeNotificationOverlay($event)"
+            (notificationClicked)="markAsRead($event)">
+          </sh-notifications>
+        </div>
+        <div class="bg-lite" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px; height: 1rem;">
+        </div>
+      </div>
+
     </div>
 
     <div class="navbar-item text-black text-center position-relative" title="Messages"
-    (click)="navOptionSelected('messages');">
+      (click)="navOptionSelected('messages');">
       <div class="cursor-pointer" [ngClass]="{'color-theme': navbarFlags.showMessages}">
         <span class="iconset icon-size icon-bubbles3"></span>
-        <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.messages !== 0">{{alerts.messages}}</span>
+        <span class="badge badge-danger" style="margin-left: -0.25rem;"
+          *ngIf="alerts.messages !== 0">{{alerts.messages}}</span>
       </div>
-        <div class="text-center m-0 font-0-5-rem cursor-pointer">Messages</div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer">Messages</div>
 
-    
-      <div class="message-container bg-white position-absolute mt-3 std-box-shadow rounded" *ngIf="navbarFlags.showMessages">
+
+      <div class="message-container bg-white position-absolute mt-3 std-box-shadow rounded"
+        *ngIf="navbarFlags.showMessages">
         <div class="bg-lite text-bold" style="height: 3rem;">
-          <label style="line-height: 3;">Messages <span class="badge badge-pill badge-danger">{{alerts.messages}}</span></label>
+          <label style="line-height: 3;">Messages <span
+              class="badge badge-pill badge-danger">{{alerts.messages}}</span></label>
         </div>
 
-        <div class="text-center font-italic text-secondary" *ngIf="navbarFlags.messagelistLoading===null ">No messages yet</div>
-        <div class="position-relative w-100" *ngIf="navbarFlags.messagelistLoading"><loader2 [type]="3"></loader2><br>
+        <div class="text-center font-italic text-secondary" *ngIf="navbarFlags.messagelistLoading===null ">No messages
+          yet</div>
+        <div class="position-relative w-100" *ngIf="navbarFlags.messagelistLoading">
+          <loader2 [type]="3"></loader2><br>
         </div>
         <div>
         </div>
-        <div class="user-message-row hover-bg-grey cursor-pointer mt-1" [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}" *ngFor="let msg of messages; let i = index" (click)="routeToMessaging(msg._id)">
+        <div class="user-message-row hover-bg-grey cursor-pointer mt-1"
+          [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}"
+          *ngFor="let msg of messages; let i = index" (click)="routeToMessaging(msg._id)">
 
           <div class="row m-1 text-left">
             <div class="col-3 text-center">
               <img class="circle dp-big" [src]="msg.dp | async" *ngIf="msg.dp | async" />
               <div class="dp-big circle" *ngIf="!(msg.dp | async)">
-                <div class="cursor-pointer text-center iconset2 icon-jolly-roger text-theme" style="font-size: 2rem;"></div>       
+                <div class="cursor-pointer text-center iconset2 icon-jolly-roger text-theme" style="font-size: 2rem;">
+                </div>
               </div>
-              <h3 class="badge badge-pill badge-danger position-absolute" style="bottom: calc(100% - 4rem); left: 75%;">{{msg.totalunseen}}</h3>
+              <h3 class="badge badge-pill badge-danger position-absolute" style="bottom: calc(100% - 4rem); left: 75%;">
+                {{msg.totalunseen}}</h3>
             </div>
 
             <div class="col-9 border-bottom-thin">
-                <span class="text-theme hover-underline">
-                    {{msg?.username }} <span class="badge badge-secondary float-right mt-1">{{msg.time | ago }}</span>
+              <span class="text-theme hover-underline">
+                {{msg?.username }} <span class="badge badge-secondary float-right mt-1">{{msg.time | ago }}</span>
 
-                </span>
-                <div class="text-secondary mr-2" style="text-overflow: ellipsis; overflow: hidden; width: 11rem; white-space: nowrap;">
-                  {{ msg.text }}
-                </div>
+              </span>
+              <div class="text-secondary mr-2"
+                style="text-overflow: ellipsis; overflow: hidden; width: 11rem; white-space: nowrap;">
+                {{ msg.text }}
+              </div>
             </div>
           </div>
-      </div>
+        </div>
 
-      <div class="bg-lite text-bold cursor-pointer text-center mt-3" *ngIf="!navbarFlags.messagelistLoading || true"(click)="routeToMessaging()">show more</div>
+        <div class="bg-lite text-bold cursor-pointer text-center mt-3" *ngIf="!navbarFlags.messagelistLoading || true"
+          (click)="routeToMessaging()">show more</div>
       </div>
 
     </div>
@@ -199,11 +190,16 @@
 
 
     <div class="navbar-item position-relative">
-      <div class="cursor-pointer font-0-5-rem mt-3 text-center" (click)="userOptions()"><span class="iconset icon-dots-horizontal-triple h6 mt-3"></span></div>        
-      <div class="position-absolute d-inline-block bg-white position-relative w-100 std-box-shadow" style="z-index: 4; top: 100%; right:1rem;" *ngIf="showUserOptions">
-        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem" (click)="routeTo('about')"><span class="iconset icon-bug mr-2"></span>Report a problem / bug</div>
-        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem font-left"><span class="iconset icon-cog mr-2"></span>Privacy &nbsp;</div>
-        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem" (click)="logout()"><span class="iconset icon-switch mr-2"></span>Logout</div>
+      <div class="cursor-pointer font-0-5-rem mt-3 text-center" (click)="userOptions()"><span
+          class="iconset icon-dots-horizontal-triple h6 mt-3"></span></div>
+      <div class="position-absolute d-inline-block bg-white position-relative w-100 std-box-shadow"
+        style="z-index: 4; top: 100%; right: 1rem;" *ngIf="showUserOptions">
+        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem" (click)="routeTo('about')"><span
+            class="iconset icon-bug mr-2"></span>Report a problem / bug</div>
+        <!-- <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem font-left"><span
+            class="iconset icon-cog mr-2"></span>Privacy &nbsp;</div> -->
+        <div class="hover-bg-grey p-2 cursor-pointer font-0-5-rem" (click)="logout()"><span
+            class="iconset icon-switch mr-2"></span>Logout</div>
       </div>
     </div>
 
@@ -229,17 +225,20 @@
 
   <div class="navbar-item text-black" title="Gamers around you"
     (click)="selectedOption = 'Aroundyou'; routeTo('/aroundyou')">
-      <div class="cursor-pointer text-center iconset h3 icon-compass2" [ngClass]="{'color-theme': selectedOption==='Aroundyou'}">
-      </div>  
+    <div class="cursor-pointer text-center iconset h3 icon-compass2"
+      [ngClass]="{'color-theme': selectedOption==='Aroundyou'}">
+    </div>
   </div>
 
 
 
 
-  <div class="navbar-item text-black overflow-none" title="{{user.fname}}" (click)="routeTo('profile')" (click)="selectedOption = user.fname">
+  <div class="navbar-item text-black overflow-none" title="{{user.fname}}" (click)="routeTo('profile')"
+    (click)="selectedOption = user.fname">
     <div class="text-center overflow-hidden" style="height: 100%;">
-      <div class="cursor-pointer text-center iconset icon-size icon-player text-theme" *ngIf="!dp"></div>       
-      <img [src]="dp" *ngIf="dp" class="cursor-pointer dp circle" [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
+      <div class="cursor-pointer text-center iconset icon-size icon-player text-theme" *ngIf="!dp"></div>
+      <img [src]="dp" *ngIf="dp" class="cursor-pointer dp circle"
+        [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
       <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div> -->
     </div>
   </div>
@@ -247,37 +246,41 @@
 
   <div class="navbar-item text-black text-center position-relative" title="Notifications"
     (click)="navOptionSelected('notifications')">
-      <div class="cursor-pointer" [ngClass]="{'color-theme': navbarFlags.showNotification}">
-        <span class="iconset h3 icon-bell"></span>
-        <span class="badge badge-danger" style="margin-left: -0.25rem;" *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
-      </div>
-        <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div> -->
-
-        <div class="notifications-container-responsive bg-white position-absolute mt-3 rounded std-box-shadow" *ngIf="navbarFlags.showNotification">
-
-          <div class="bg-lite text-bold" style="height: 3rem;">
-            <label style="line-height: 3;">Notifications
-              <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span>
-            </label>
-            <div class="btn btn-default h-100 float-right border-gray" (click)="markAllNotificationsRead()"  title="Mark all as read" style="border-left: solid 1px #CCC; border-radius: 0;">
-              <span class="iconset icon-eye h4"></span>
-            </div>
-          </div>
-
-          <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No Notifications</div>
-          
-          <div class="position-relative w-100" *ngIf="navbarFlags.notificationsLoading">
-            <loader2 [type]="3"></loader2>
-          </div>
-          
-          <sh-notifications [notifications]="notifications"
-            (close)="closeNotificationOverlay($event)"
-            (notificationClicked)="markAsRead($event)">
-          </sh-notifications>
-          <div class="bg-lite text-bold cursor-pointer text-center mt-3" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;" (click)="routeToMessaging()">show more</div>
-        </div>
-        
+    <div class="cursor-pointer" [ngClass]="{'color-theme': navbarFlags.showNotification}">
+      <span class="iconset h3 icon-bell"></span>
+      <span class="badge badge-danger" style="margin-left: -0.25rem;"
+        *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
     </div>
+    <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div> -->
+
+    <div class="notifications-container-responsive bg-white position-absolute mt-3 rounded std-box-shadow"
+      *ngIf="navbarFlags.showNotification">
+
+      <div class="bg-lite text-bold" style="height: 3rem;">
+        <label style="line-height: 3;">Notifications
+          <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span>
+        </label>
+        <div class="btn btn-default h-100 float-right border-gray" (click)="markAllNotificationsRead()"
+          title="Mark all as read" style="border-left: solid 1px #CCC; border-radius: 0;">
+          <span class="iconset icon-eye h4"></span>
+        </div>
+      </div>
+
+      <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No Notifications</div>
+
+      <div class="position-relative w-100" *ngIf="navbarFlags.notificationsLoading">
+        <loader2 [type]="3"></loader2>
+      </div>
+
+      <sh-notifications [notifications]="notifications" (close)="closeNotificationOverlay($event)"
+        (notificationClicked)="markAsRead($event)">
+      </sh-notifications>
+      <div class="bg-lite text-bold cursor-pointer text-center mt-3"
+        style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;" (click)="routeToMessaging()">show more
+      </div>
+    </div>
+
+  </div>
 
 
 
@@ -297,151 +300,171 @@
 
 
 
+<ng-template #nowplayingTemplate let-dismiss="dismiss">
+  <div class="modal-header bg-theme">
+    <h4 class="modal-title text-white" id="modal-basic-title">Tell people what you are playing </h4>
+    <button type="button" class="close border-none text-white" aria-label="Close" (click)="dismiss('Cross click')">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body p-0 border-none">
+    <div class="bg-white" [perfectScrollbar]="{suppressScrollX: true}">
+      <!-- <h5 class="p-2 bg-theme text-white border-bottom">Tell people what you are playing <span
+        class="iconset2 icon-cross text-white float-right h6 cursor-pointer mt-1"
+        (click)="closeOverlay();"></span></h5> -->
+      <form [formGroup]="nowplayingForm" (ngSubmit)="saveNowPlaying()" action="" method="POST" autocomplete="off">
+        <div class="m-3">
 
-
-
-
-
-
-
-
-
-
-<div class="bg-white position-fixed z-nav edit-game-container rounded" [perfectScrollbar]="{suppressScrollX: true}" *ngIf="showGameBroadcast">
-  <h5 class="p-2 bg-theme text-white border-bottom">Tell people what you are playing <span class="iconset2 icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay(); showGameBroadcast = false"></span></h5>
-  <form [formGroup]="nowplayingForm" (ngSubmit)="saveNowPlaying()" action="" method="POST" autocomplete="off">
-    <div class="m-3">
-      <div class="row">
-        <div class="col-6">
-          What are you playing today? <span class="text-danger">*</span>
-
-          <sh-suggestions [icon]="'search'"
-          [placeholder]="'Type a game name...'"
-          (inputChanged)="searchGame($event)" [inProgress]="searchingGame" [template]="gameTemplate" #gameSuggestComp></sh-suggestions>
-                
-          <ng-template class="border-grey bg-white border-grey" #gameTemplate>
-            <div class="text-truncate hover-bg-grey p-2 cursor-pointer" *ngFor="let game of gameSuggestions" (click)="gameSelect(game)">{{ game.label }}</div>
-        </ng-template>
-          <!-- <input type="text" formControlName="game" class="form form-control" placeholder="Type and Select a game" /> -->
-
-          <!-- <div  *ngIf="true" class="position-absolute overflow-y-hidden z-nav bg-white"> -->
-            <!-- <div class="position-relative" style="height: 3.5rem;" *ngIf="false">
-              <div class="position-absolute search-icon-container">
-                <div class="" style="animation: rotate-left 1s infinite linear;">
-                  <loader2 [type]="2"></loader2>
-                </div>
+          <div class="d-flex flex-wrap">
+            <div class="min-width-flex flex-6">
+              <div class="m-1">
+                What are you playing today?<span class="text-danger">*</span>
               </div>
-            </div> -->
-<!-- 
-            <div class="class text-center text-secondary cursor-pointer" *ngIf="false">No users found, try adding '@' before search word  </div> -->
-          <!-- </div> -->
-        </div>
 
-        <div class="col-6">
-          Username to help readers connect, if multiplayer:
-          <input type="text" formControlName="username" class="form form-control" placeholder="alterbeast119" />
-        </div>      
-      </div>
+              <div class="m-1">
+                <sh-suggestions [icon]="'search'" [placeholder]="'Type a game name...'"
+                  (inputChanged)="searchGame($event)" [inProgress]="searchingGame" [template]="gameTemplate"
+                  [searchInput]="searchedGame" #gameSuggestComp></sh-suggestions>
 
-      <div class="row mt-3">
-        <div class="col-6 audience d-none">
-          Share the above information with: <br>
-          <input type="radio" id="all" name="audience" formControlName="audience" value="0" checked disabled /> &nbsp;  <label for="all"> Everyone</label><br>
-          <input type="radio" id="following" name="audience"  formControlName="audience" value="1" disabled />  &nbsp; <label for="following">Who I follow</label><br>
-          <input type="radio" id="followers" name="audience"  formControlName="audience" value="2" disabled /> &nbsp; <label for="followers">Who follow me</label><br>
-        </div>
-
-        
-        <!-- <div class="col-6">
-          Streaming Link:
-          <input type="text" class="form form-control"  formControlName="stream" placeholder="http://www.youtube.com/some-stream-url" />
-        </div> -->
-      </div>
-
-
-      <div class="row">
-        <div class="col-6">
-          Select a console your're playing on:
-        </div>
-        <div class="col-6">
-          Estimated play duration in hours (to help viewers manage their time)
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-6 position-relative">
-          <div (click)="showConsoleList = !showConsoleList">
-            <input type="text" class="form form-control d-inline-block bg-white" placeholder="Select a gaming console (optional)" disabled formControlName="console" style="width: calc(100% - 3rem);" formControlName="console" />
-            <div class="btn btn-default d-inline-block">
-              <div style="transform: rotate(90deg);"><span class="iconset icon-chevron-right"></span></div></div>
-          </div>
-          <div class="bg-white position-absolute z-nav w-100" style="max-height: 40vh; overflow:auto;" *ngIf="showConsoleList">
-            <div class="p-2 hover-bg-grey cursor-pointer" *ngFor="let console of consoles" (click)="selectConsole(console)"> 
-              <h5><span class="iconset icon-{{console.icon}}"></span> {{console.id | gameGenre: true}}
-              </h5>
+                <ng-template class="border-grey bg-white border-grey" #gameTemplate>
+                  <div class="text-truncate hover-bg-grey p-2 cursor-pointer" *ngFor="let game of gameSuggestions"
+                    (click)="gameSelect(game)">{{ game.label }}</div>
+                </ng-template>
               </div>
-          </div>
-        </div>
+            </div>
 
-        <div class="col-6">
-          <input type="number" formControlName="estplaytime" min="1" max="12" class="form form-control" placeholder="in hours">
-        </div>
-      </div>
-
-      <div class="d-flex flex-wrap">
-        <div class="flex-6" style="min-width: 200px;">
-          Add a Description
-        </div>
-        <div class="flex-6" style="min-width: 200px;">
-          Streaming Link:
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-6">
-          <textarea class="form form-control"  formControlName="desc" placeholder="Say something about your play/game/party"></textarea>    
-        </div>
-        <div class="col-6">
-          <input type="text" class="form form-control"  formControlName="stream" placeholder="http://www.youtube.com/some-stream-url" />
-        </div>
-      </div>
-
-      <div class="row mt-2">
-        <div class="col-12">
-          <input type="checkbox" id="haveroomid" formControlName="hasPrivateRoom"> &nbsp;
-          <label for="haveroomid">I have a personal Room ID / Server IP <span class="text-secondary font-italic">multiplayer / co-op</span>
-          </label>
-      </div>
-    </div>
-
-      <div *ngIf="nowplayingForm.get('hasPrivateRoom')?.value">
-        <div class="row mt-1">
-          <div class="col-6">
-            <input type="text" class="form form-control" formControlName="roomid" autocomplete="off" placeholder="Room ID / 10.10.652.36" />
-          </div>
-          <div class="col-6 text-secondary">
-            <input type="password" class="form form-control password-box" formControlName="password" autocomplete="off" placeholder="Room/server password (optional)" />
-            <div class="save-password-qtip-text bg-black text-white position-absolute text-small z-nav rounded p-3 w-75">
-              Since we do not save this password; in order to keep password accessible by other gamers who might want to join your party,
-              please be online for that long
+            <div class="min-width-flex flex-6">
+              <div>
+                Username to help readers connect, if multiplayer:
+              </div>
+              <div>
+                <input type="text" formControlName="username" class="form form-control m-1"
+                  placeholder="alterbeast119" />
+              </div>
             </div>
           </div>
-        </div>
-  
-        <div class="row">
-          <div class="col-6">Send password to first "n" people who ask (1-150):
+
+
+
+          <div class="row mt-3 d-none">
+            <div class="col-6 audience">
+              Share the above information with: <br>
+              <input type="radio" id="all" name="audience" formControlName="audience" value="0" checked disabled />
+              &nbsp;
+              <label for="all"> Everyone</label><br>
+              <input type="radio" id="following" name="audience" formControlName="audience" value="1" disabled /> &nbsp;
+              <label for="following">Who I follow</label><br>
+              <input type="radio" id="followers" name="audience" formControlName="audience" value="2" disabled /> &nbsp;
+              <label for="followers">Who follow me</label><br>
+            </div>
+          </div>
+
+
+          <div class="d-flex flex-wrap mt-3">
+            <div class="min-width-flex flex-6">
+              <div>Select a console your're playing on:</div>
+              <div>
+                <div (click)="showConsoleList = !showConsoleList">
+                  <input type="text" class="form form-control d-inline-block bg-white"
+                    placeholder="Select a gaming console (optional)" disabled formControlName="console"
+                    style="width: calc(100% - 3rem);" formControlName="console" />
+                  <div class="btn btn-default d-inline-block">
+                    <div style="transform: rotate(90deg);"><span class="iconset icon-chevron-right"></span></div>
+                  </div>
+                </div>
+                <div class="bg-white position-absolute z-nav w-100" style="max-height: 40vh; overflow:auto;"
+                  *ngIf="showConsoleList">
+                  <div class="p-2 hover-bg-grey cursor-pointer" *ngFor="let console of consoles"
+                    (click)="selectConsole(console)">
+                    <h5><span class="iconset icon-{{console.icon}}"></span> {{console.id | gameGenre: true}}
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="min-width-flex flex-6">
+              <div>Estimated play duration in hours (to help viewers manage their time)</div>
+              <div>
+                <input type="number" formControlName="estplaytime" min="1" max="12" class="form form-control"
+                  placeholder="in hours">
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap mt-3">
+            <div class="min-width-flex flex-6">
+              <div>Add a Description</div>
+              <div>
+                <textarea class="form form-control" formControlName="desc"
+                  placeholder="Say something about your play/game/party"></textarea>
+              </div>
+            </div>
+            <div class="min-width-flex flex-6">
+              <div>Stream Link:</div>
+              <div>
+                <input type="text" class="form form-control" formControlName="stream"
+                  placeholder="http://www.youtube.com/some-stream-url" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-12">
+              <input type="checkbox" id="haveroomid" formControlName="hasPrivateRoom"> &nbsp;
+              <label for="haveroomid">I have a personal Room ID / Server IP <span
+                  class="text-secondary font-italic">multiplayer / co-op</span>
+              </label>
+            </div>
+          </div>
+
+          <div *ngIf="nowplayingForm.get('hasPrivateRoom')?.value">
+            <div class="d-flex flex-wrap">
+              <div class="min-width-flex flex-6">
+                <div>Server or Room ID</div>
+                <div>
+                  <input type="text" class="form form-control" formControlName="roomid" autocomplete="off"
+                    placeholder="Room ID / 10.10.652.36" />
+                </div>
+              </div>
+              <div class="text-secondary min-width-flex flex-6">
+                <div>Server password (if any)</div>
+                <div>
+                  <input type="password" class="form form-control password-box" formControlName="password"
+                    autocomplete="off" placeholder="Room/server password (optional)" />
+
+                  <div
+                    class="bg-black text-white text-small rounded p-1 mt-1">
+                    Since we do not save this password; in order to keep password accessible by other gamers who might
+                    want
+                    to
+                    join your party,
+                    please be online for that long and DO NOT close this tab.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">Send password to first "n" people who ask (1-150):
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12"> <input type="number" formControlName="maxconnections" min="0" max="150"
+                  class="form form-control" placeholder=" 0 = infinity" /></div>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <button type="submit" class="btn bg-theme text-white float-right w-50"
+              style="margin-right: -1rem; border-radius: 0;" (click)="dismiss('Cross click');">Save &
+              Broadcast</button>
           </div>
         </div>
-  
-        <div class="row">
-          <div class="col-6"> <input type="number" formControlName="maxconnections" min="0" max="150" class="form form-control" placeholder=" 0 = infinity" /></div>
-        </div>
-      </div>
-      
-      <div class="mt-3">
-        <button type="submit" class="btn bg-theme text-white float-right w-25" style="margin-right: -1rem; border-radius: 0;" >Save & Broadcast</button>
-        <button class="btn float-right w-25 border-grey" (click)="closeOverlay(); showGameBroadcast = false">Cancel</button>
-      </div>
+      </form>
+      <button class="btn float-right w-50 border-grey" (click)="dismiss('Cross click');">Cancel</button>
     </div>
-  </form>
-
-</div>
+  </div>
+</ng-template>

@@ -12,10 +12,10 @@
             <span class="text-secondary text-small" *ngIf="!postDetails?.stillplaying"> was playing</span>
             
             
-            <div class="d-inline-block float-right mt-1 cursor-pointer position-relative" *ngIf="postDetails?.userid === currentuserid" (dblclick)="deleteNpPost(postDetails._id)">
+            <div class="d-inline-block float-right mt-1 cursor-pointer position-relative" *ngIf="postDetails?.userid === currentuserid" (click)="modalopen(confirmDeletePostTemplate)">
                 <span class="iconset2 icon-cross delete-desc text-small"></span>
                 <div class="delete-desc-notice rounded text-center position-absolute p-1 bg-black text-white">
-                    Double-click to permanently delete this post
+                    click to permanently delete this post
                 </div>
                 <!-- <span class="iconset icon-dots-horizontal-triple text-secondary"></span>
                 <div class="bg-white bg-hover-lite border-grey text-small p-1 hover-bg-lite position-absolute" style="width: 5rem; right: 0;">
@@ -49,7 +49,7 @@
     </div>
 </div>
 
-<div class="mb-2 text-secondary" style="margin-left: 4rem;" *ngIf="postDetails?.desc"> {{postDetails?.desc}}</div>
+<div class="mb-2 display-4" style="margin-left: 4rem; font-size: 2rem;" *ngIf="postDetails?.desc"> {{postDetails?.desc}}</div>
 
 <div class="text-secondary">
     <div class="d-inline-block ml-2" [title]="postDetails?.plays+' users played this stream'" *ngIf="postDetails?.plays"><span class="iconset icon-tv"></span> {{postDetails?.plays}}</div>
@@ -105,7 +105,7 @@
             </div>
             <div style="width: calc(100% - 4rem);">
                 <h6 class="text-theme cursor-pointer hover-underline ml-2 p-0 mb-0">{{ comment?.commenterdata?.username}}:
-                    <div class="iconset2 icon-cross float-right d-inline-block text-secondary" title="Double click to permanently remove this comment" (click)="removeComment(postDetails?._id, comment?.time, i)" *ngIf="comment.commenter === currentuserid || postDetails?.userid === currentuserid"></div>
+                    <div class="iconset2 icon-cross float-right d-inline-block text-secondary" title="Double click to permanently remove this comment" (click)="confirmDeleteComment(confirmDeleteCommentTemplate, postDetails?._id, comment?.time, i)" *ngIf="comment.commenter === currentuserid || postDetails?.userid === currentuserid"></div>
                 </h6>
                 <div class="text-secondary text-small ml-2"> {{comment.time | ago }} ago</div>
                 <div class="ml-2">{{comment?.comment}}</div>
@@ -113,3 +113,27 @@
         </div>
     </div>
 </div>
+
+
+
+<ng-template #confirmDeleteCommentTemplate let-dismiss="dismiss">
+    <div class="modal-body text-center">
+        Are you sure you want to delete this comment?
+
+        <div class="mt-3">
+            <button class="btn btn-default w-50" (click)="dismiss('Save item')">Cancel</button>
+            <button class="btn btn-danger w-50" (click)="removeComment(); dismiss('Save item')">Delete</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #confirmDeletePostTemplate let-dismiss="dismiss">
+    <div class="modal-body text-center">
+        Are you sure you want to permanently delete this post?
+
+        <div class="mt-3">
+            <button class="btn btn-default w-50" (click)="dismiss('Save item')">Cancel</button>
+            <button class="btn btn-danger w-50" (click)="deleteNpPost(); dismiss('Save item')">Delete</button>
+        </div>
+    </div>
+</ng-template>

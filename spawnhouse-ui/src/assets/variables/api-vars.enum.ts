@@ -78,7 +78,8 @@ export enum APIvars {
     NP_POST_WITH_DETAILS = 'nowplaying/postwithdetails',
     ADD_COMMENT = 'nowplaying/addcomment',
     GET_COMMENTS_ON_NP = 'nowplaying/commentsonnppost',
-    NP_DELETE_COMMENT = 'nowplaying/deletecomment'
+    NP_DELETE_COMMENT = 'nowplaying/deletecomment',
+    DELETE_ACCOUNT = 'signup/deleteAccount'
 }
 
 export enum GlobalContantsEnum {

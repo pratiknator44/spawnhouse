@@ -14,7 +14,7 @@ export class LoginGuardService implements CanActivate {
         if(sessionStorage.getItem('sh_auth_token')){
             // check for expiry of the token as well here
             this._router.navigate(['/home']);        
-            console.log('login guard 0, going to profile');
+            console.log('token present, going home');
             this._navService.isLoggedIn.next(true);      // for navbar
             return false;
         }

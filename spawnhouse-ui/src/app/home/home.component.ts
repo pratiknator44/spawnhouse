@@ -8,11 +8,11 @@ import { SocketService } from 'src/assets/services/socket.service';
 import { StorageService } from 'src/assets/services/storage.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'sh-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
 
   // userSuggestions = [];
   // homeflags = {loadMoreFeeds: true, feedsEnd: false};
@@ -33,24 +33,23 @@ export class HomeComponent implements OnInit {
 
 
   constructor(private _notifService: FloatNotificationService,
-    private _storageService: StorageService,
-    private _apiService: APIservice,
-    private _socketService: SocketService,
-    private _navbarService: NavbarService,
-    private _overlayService: OverlayService) {
+    // private _storageService: StorageService,
+    // private _apiService: APIservice,
+    // private _socketService: SocketService,
+    private _navbarService: NavbarService) {
     }
 
 
-  ngOnInit(): void {
+  // ngOnInit(): void {
     // this._notifService.checkForLocation();
     // this._notifService.setTitle(JSON.parse(this._storageService.getSessionData('user'))['fname']+' | Home');
     // this.loadMore();
     // this.currentuserid = this._storageService.currentUser._id;
-  }
+  // }
 
   openGamingInfo() {
     this._navbarService.showOption.next('gamebroadcast');
-    this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
+    // this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
   }
 
   // loadMore(refresh?) {

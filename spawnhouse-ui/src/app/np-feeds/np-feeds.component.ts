@@ -1,4 +1,5 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { APIservice } from 'src/assets/services/api.service';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
@@ -17,7 +18,8 @@ export class NpFeedsComponent implements OnInit {
   currentuserid;
   npListPageNo = 1;
   mouseOverNp: number;    // used to show and hide liker users
-
+  postToDelete;
+  
   @Input() userlist: Array<string> = null;
   @HostListener('window: scroll', ['$event']) onScroll(e: Event): void {
     if(
@@ -31,7 +33,8 @@ export class NpFeedsComponent implements OnInit {
   constructor(private _notifService: FloatNotificationService,
     private _storageService: StorageService,
     private _apiService: APIservice,
-    private _navbarService: NavbarService) {
+    private _navbarService: NavbarService,
+    private _modalService: NgbModal) {
     }
 
 
@@ -107,7 +110,12 @@ export class NpFeedsComponent implements OnInit {
     });
   }
 
-  deleteNpPost(npid, i) {
+  deleteNpPost(npid?, i?) {
+
+    if(!npid) {
+      npid = this.postToDelete.postid;
+      i = this.postToDelete.i;
+    }
     this._apiService.deleteNowPlayingPost(npid).then(result => {
       this.np.splice(i, 1);
     });
@@ -132,9 +140,16 @@ export class NpFeedsComponent implements OnInit {
     this._apiService.router.navigateByUrl('/'+id);
   }
 
+  
+  modalopen(template) {
+    this._modalService.open(template, {ariaLabelledBy: 'modal-basic-title', size: 'sm'}).result.then((result) => {
+    }, (reason) => {
+    });  
+  }
 
-
-
-
+  confirmDeletePost(template, postid, i) {
+    this.modalopen(template);
+    this.postToDelete = {postid, i};
+  }
 
 }

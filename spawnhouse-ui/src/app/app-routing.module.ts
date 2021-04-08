@@ -13,8 +13,13 @@ import { MessagingComponent } from './messaging/messaging.component';
 import { AboutComponent } from './about/about.component';
 import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
 import { ViewPostComponent } from './view-post/view-post.component';
+import { RedirectComponent } from './redirect/redirect.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    component: RedirectComponent,
+  },
   {
     path: 'home',
     canActivate: [ProfileGuardService],
@@ -79,6 +84,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/profile.module').then( m=> m.ProfileModule),
     component: ProfileComponent
   }, 
+  // { path: '',   redirectTo: '/login', pathMatch: 'full' }, // redirect to `first-component`
    {
     path: '**',
     component: NotFoundComponent

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
-import { take } from 'rxjs/operators';
 import { NowplayingService } from 'src/assets/services/now-playing.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
 import { SocketService } from 'src/assets/services/socket.service';
@@ -112,7 +111,7 @@ export class NowPlayingComponent implements OnInit {
     if(this.npdata['estplaytime'] && this.npdata['estplaytime'] !== 0)
       {
         // console.log("estplaytime = ", (3600000 * this.npdata['estplaytime']), " ", (new Date().getTime() - this.npdata['time']));
-        this.npFlags.isLive = 3600000 * this.npdata['estplaytime'] > new Date().getTime() - this.npdata['time'] ;
+        this.npFlags.isLive = 3600000 * this.npdata['estplaytime'] > new Date().getTime() - this.npdata['time'];
       }
     else 
       this.npFlags.isLive = true;

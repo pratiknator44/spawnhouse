@@ -32,7 +32,7 @@
                         </div>
                     </div>
                     <div class="col-8">
-                        <div class="mt-2">{{chat?.username | async}}<span class="float-right mr-3 text-grey">{{chat.time | ago}}</span>
+                        <div class="mt-2">{{(chat?.username | async ) || 'spawnhouser'}}<span class="float-right mr-3 text-grey">{{chat.time | ago}}</span>
                             <div class="row">
                                 <div class="col-10">
                                     <div class="font-italic overflow-hidden " style="font-size: 0.75rem; text-overflow: ellipsis;" [ngClass]="{'text-white': selectedChat === chat.id}">{{chat.text | slice : 0 : 25}} ...

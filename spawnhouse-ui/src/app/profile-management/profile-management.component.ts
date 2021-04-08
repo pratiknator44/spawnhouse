@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { debounceTime } from 'rxjs/operators';
 import { APIservice } from 'src/assets/services/api.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
@@ -33,7 +34,8 @@ export class ProfileManagementComponent implements OnInit {
     {id: 'board', genre: 'Board Games', example: 'Chess Master, Ludo King', checked: ''},
     ];
   pageSections = [{title: 'gaming', icon: 'game-controller'},
-                  {title: 'personal', icon: 'user'}
+                  {title: 'personal', icon: 'user'},
+                  {title: 'account', icon: 'cog'}
                 ];
   playerTypes = [
     {id: 'as', icon: 'assaulter', checked: false},
@@ -44,17 +46,20 @@ export class ProfileManagementComponent implements OnInit {
     {id: 'sp', checked: false},
     {id: 'fr', checked: false},
     {id: 'co', checked: false},
-  ]
+  ];
+  customcomment;
+  recommendIndex;
   
   constructor(
     private _storageService: StorageService,
     private _http: HttpClient,
     private _navbarService: NavbarService,
-    private _apiService: APIservice) { }
+    private _apiService: APIservice,
+    private _modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.user = this._storageService.currentUser;
-    console.log('user ', this.user);
+    // console.log('user ', this.user);
     this.gamedataForm = new FormGroup({
       fav: new FormControl([]),
       genres: new FormControl([]),
@@ -76,7 +81,7 @@ export class ProfileManagementComponent implements OnInit {
       // videogame settings
       this.mgtFlags.loadingData = true;
       this._http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).subscribe( result => {
-        console.log("user settings === ", result);
+        // console.log("user settings === ", result);
         if(result['result']) {
           try {
             let l = result['result']['genres'].length || 0;
@@ -216,11 +221,25 @@ export class ProfileManagementComponent implements OnInit {
   }
 
   checkUsername() {
-    if(this.userinfoForm.get('username').value.trim() === "") return;
+    if(this.userinfoForm.get('username').value.trim() === '') return;
     this.mgtFlags.checkingUsername = true;
     this._apiService.exists("username", this.userinfoForm.get('username').value.trim()).then(result => {
       this.mgtFlags.usernameExists = result['status'];
       this.mgtFlags.checkingUsername = false;
+    })
+  }
+
+  confirmDelete(template) {
+    this._modalService.open(template, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    }, (reason) => {
+    });
+  }
+  
+  initiateAccountDelete() {    
+    this._apiService.deleteAccount().then(response => {
+      if(response['message'] === 'passed') {
+        this._apiService.logout();
+      }
     })
   }
 

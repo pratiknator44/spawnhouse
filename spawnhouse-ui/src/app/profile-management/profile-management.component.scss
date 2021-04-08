@@ -17,3 +17,7 @@
     border: solid 1px $theme-color;
     color: $theme-color;
 }
+
+.list-group-item > label {
+    margin-left: 0.5rem !important;
+}

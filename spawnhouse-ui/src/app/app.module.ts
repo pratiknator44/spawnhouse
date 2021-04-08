@@ -37,8 +37,9 @@ import { NowPlayingSideDockComponent } from './now-playing-side-dock/now-playing
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { AboutComponent } from './about/about.component';
 import { ModalComponent } from './modal/modal.component';
-import { NgbActiveModal, NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalAboutComponent } from './modal-about/modal-about.component';
+import { RedirectComponent } from './redirect/redirect.component';
 
 const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
 
@@ -59,6 +60,7 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     AboutComponent,
     ModalComponent,
     ModalAboutComponent,
+    RedirectComponent,
   ],
   imports: [
     BrowserModule,

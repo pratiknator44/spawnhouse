@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { APIservice } from 'src/assets/services/api.service';
+import { SocketService } from 'src/assets/services/socket.service';
 import { StorageService } from 'src/assets/services/storage.service';
 
 @Component({
@@ -17,9 +19,12 @@ export class ViewPostComponent implements OnInit {
   currentusername: String;
   comment: String = '';
   comments = [];
+  commentToDelete;
   constructor(private _activeRoute: ActivatedRoute,
     private _apiService: APIservice,
-    private _storageService: StorageService) { }
+    private _storageService: StorageService,
+    private _socketService: SocketService,
+    private _modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.postid = this._activeRoute.snapshot.params.postid;
@@ -28,8 +33,11 @@ export class ViewPostComponent implements OnInit {
 
     this._apiService.getPostDetails(this.postid).then( result => {
       this.postDetails = result['result'];
-      // console.log(this.postDetails);
+      console.log("psot details ", this.postDetails);
 
+      if(!this.postDetails || this.postDetails.length === 0) {
+        this._apiService.router.navigate(['/not-found']);
+      }
       this.postDetails.userdata['dpLink'] = this._apiService.getUserImageById('dp', this.postDetails.userdata._id);
       this.getComments();
     }).catch( error => {
@@ -37,11 +45,15 @@ export class ViewPostComponent implements OnInit {
     });
   }
 
-  deleteNpPost(npid) {
-    // this._apiService.deleteNowPlayingPost(npid).then(result => {
-    //   this.pos.splice(i, 1);
-    // });
+  deleteNpPost() {
+    console.log("delete post init");
+    this._apiService.deleteNowPlayingPost(this.postDetails._id).then(result => {
+      if(result['message'] === 'passed') {
+        this._apiService.router.navigate(['/home']);
+      }
+    });
   }
+
 
   getComments(refresh?) {
     if(this.postDetails['noOfComments'] > 0 || refresh)
@@ -61,7 +73,9 @@ export class ViewPostComponent implements OnInit {
 
   }
 
-  routeToProfile(_id) {}
+  routeToProfile(_id) {
+    this._apiService.router.navigate(['/'+_id]);
+  }
 
   addPlays(npid) {
     this._apiService.addPlays(npid).then(result => {
@@ -99,20 +113,46 @@ export class ViewPostComponent implements OnInit {
 
     this.vpflags.submittingComment = true;
     this._apiService.addComment(this.postid, this.comment.substr(0,200)).then(result => {
-      // console.log("comment result => ", result);
+      console.log("comment result => ", result);
       this.getComments(true);
       this.vpflags.submittingComment = false;
       this.comment = '';
+
+      // send new notification request to the user of the pos
+      if(result['message'] === 'passed' && this.currentuserid !== this.postDetails.userid) {
+        this._socketService.pushData('new-notification', {type: 'comment', sentBy: this.currentuserid, targetid: this.postDetails.userid});
+      }
     });
   }
 
-  removeComment(npfeedid, commentid, i) {
+  removeComment(npfeedid?, commentid?, i?) {
+
+    console.log(this.commentToDelete);
+    if(!npfeedid) {
+      npfeedid = this.commentToDelete.npfeedid;
+      commentid = this.commentToDelete.commentid,
+      i = this.commentToDelete.i;
+    }
+
     this._apiService.deleteNpComment(npfeedid, commentid).then( result => {
       // console.log("result = ", result);
       if(result['message'] === 'passed') {
         this.comments.splice(i, 1);
       }
     });
+  }
+
+  modalopen(template) {
+    this._modalService.open(template, {ariaLabelledBy: 'modal-basic-title', size: 'sm'}).result.then((result) => {
+    }, (reason) => {
+    });  
+  }
+
+  
+  confirmDeleteComment(template, npfeedid, commentid, i) {
+    this.modalopen(template);
+    this.commentToDelete = {npfeedid, commentid, i};
+    console.log(this.commentToDelete);
   }
 
 }

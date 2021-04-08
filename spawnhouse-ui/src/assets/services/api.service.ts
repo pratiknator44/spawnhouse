@@ -337,4 +337,8 @@ export class APIservice {
   deleteNpComment(npfeedid, commentid) {
     return this.http.post(APIvars.APIdomain+'/'+APIvars.NP_DELETE_COMMENT, {npfeedid, commentid}).toPromise();
   }
+
+  deleteAccount() {
+    return this.http.post(APIvars.APIdomain+'/'+APIvars.DELETE_ACCOUNT).toPromise();
+  }
 }

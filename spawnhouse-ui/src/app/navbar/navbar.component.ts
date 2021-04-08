@@ -10,11 +10,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SuggestionsComponent } from '../suggestions/suggestions.component';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { GameGenrePipe } from 'src/assets/pipes/gamegenre.pipe';
-import { UserService } from 'src/assets/services/user.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { INavbarMessage } from 'src/assets/interfaces/MsgNotif.interface';
 import { SocketService } from 'src/assets/services/socket.service';
 import { NowplayingService } from 'src/assets/services/now-playing.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'navbar',
@@ -38,7 +38,7 @@ export class NavbarComponent implements OnInit {
   imageSchema: IPictureUploadSchema;
   noUserFound: boolean;
   showUpdateOptions = false;
-  showGameBroadcast = false;
+  // showGameBroadcast = false;
   showConsoleList = false;
   consolePipe;
   selectedConsole: string;
@@ -46,6 +46,7 @@ export class NavbarComponent implements OnInit {
   messages: INavbarMessage[] | any= [];
   notifications = [];  //INotification[] = [];
   pageNo: number = 1;
+  searchedGame = '';
   // dpLinks = []; // cuz sanetized links cant be binded to object properties of messages.dpLink
 
   consoles = [
@@ -68,22 +69,8 @@ export class NavbarComponent implements OnInit {
   nowplayingForm: FormGroup;
   @Input() imageUploadMode: string;
   @Output() onPicUpdate = new EventEmitter(); 
-  @ViewChild('gameSuggestComp') gameSuggestComp: SuggestionsComponent;
-  // @ViewChild('notificationListArea') notificationListArea: ElementRef;
-
-  // @HostListener('window: scroll', ['$event']) onScroll(e: Event): void {
-  //   console.log()
-
-    // if(
-    //   (e.target['scrollingElement'].scrollTop / (e.target['scrollingElement'].scrollHeight
-    //   - e.target['scrollingElement'].clientHeight)) > 0.75) {
-    //     this.getPosts(false);
-    // }
-  // }
-
-
-
-
+  @ViewChild(SuggestionsComponent)  gameSuggestComp: SuggestionsComponent;
+  @ViewChild('nowplayingTemplate', {static: true}) npTemplate; 
 
   constructor(
     private _storageService: StorageService,
@@ -92,7 +79,8 @@ export class NavbarComponent implements OnInit {
     private _notifService: FloatNotificationService,
     private _overlayService: OverlayService,
     private _socketService: SocketService,
-    private _nowplayingService: NowplayingService) { }
+    private _nowplayingService: NowplayingService,
+    private _modalService: NgbModal) { }
 
   ngOnInit(): void {
     this._navbarService.startSocketConnection();
@@ -104,9 +92,7 @@ export class NavbarComponent implements OnInit {
       { name: 'Messages', icon: 'bubbles', alert: 0 }];
      // { name: 'Settings & Privacy', icon: 'cog', alert: 0 }];
       
-    this._navbarService.refreshUnseenMessages.subscribe(res => {
-      this.getUnseenMessageCount();
-    });
+    this._navbarService.refreshUnseenMessages.subscribe(res => {this.getUnseenMessageCount();});
 
 
     this.selectedOption = this.options[0].name;
@@ -142,9 +128,10 @@ export class NavbarComponent implements OnInit {
     }
 
     this._navbarService.npShowSubject.asObservable().subscribe(data => {
-      this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
-      this._overlayService.showSubject.next(true);
-      this.showGameBroadcast = true;
+      // this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
+      // this._overlayService.showSubject.next(true);
+      // this.showGameBroadcast = true;
+      this.gameBroadcast()
     });
   }
 
@@ -198,7 +185,7 @@ export class NavbarComponent implements OnInit {
     if(refresh) this.pageNo = 1;
     this.navbarFlags.notificationsLoading = true;
     this._apiService.getNotifications(this.pageNo).then( result => {
-      console.log("detailed notification ", result);
+      // console.log("detailed notification ", result);
       let temp = result['result'];
       const l = temp.length;
 
@@ -311,9 +298,10 @@ export class NavbarComponent implements OnInit {
   }
 
   gameBroadcast() {
-    this.showGameBroadcast = !this.showGameBroadcast;
+    this.modalOpen(this.npTemplate);
+    // this.showGameBroadcast = !this.showGameBroadcast;
     this.gameSuggestions = [];
-    if(this.showGameBroadcast) {
+    // if(this.showGameBroadcast) {
       
       this.nowplayingForm = new FormGroup({
         game: new FormControl('', Validators.required),
@@ -335,13 +323,13 @@ export class NavbarComponent implements OnInit {
         // privatepassword: true
       });
 
-      this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
-    }
+      // this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
+    // }
   }
 
   saveNowPlaying() {
     console.log(this.nowplayingForm.value);
-    this.showGameBroadcast = false;
+    // this.showGameBroadcast = false;
     this.closeOverlay();
     this._notifService.config.next({text: 'Saving and broadcasting', icon: 'users'});
     this._notifService.progress.next(null);
@@ -371,7 +359,7 @@ export class NavbarComponent implements OnInit {
       console.log("np after update => ", result);
       this._socketService.pushData('new-notification', {type: 'broadcast', sentBy: this.user._id, sentTo: 'follower'});
       this._notifService.closeOn.next(false); // close notification
-      this.showGameBroadcast = false;
+      // this.showGameBroadcast = false;
       setTimeout(() => {
         this._apiService.getNowPlaying();
       },500);
@@ -401,9 +389,9 @@ export class NavbarComponent implements OnInit {
       this.searchingGame = false;
     });
   }
-
   gameSelect(game) {
     this.gameSuggestComp.searchInput = game.label;
+    this.searchedGame = game.label;
     this.nowplayingForm.patchValue({game: game.label});
     this.gameSuggestions = [];
   }
@@ -553,6 +541,12 @@ export class NavbarComponent implements OnInit {
       console.log("notification read success = ", res['message']);
       this.notifications[i].seen = true;
       this.getNotificationCount();
+    });
+  }
+
+  modalOpen(content) {
+    this._modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'lg'}).result.then((result) => {
+    }, (reason) => {
     });
   }
 }

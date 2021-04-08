@@ -305,7 +305,7 @@ export class ProfileComponent implements OnInit {
     }
     // this.showOverlay = true;
     // this.setVisibilityImageOverlay(true);
-    this.modalOpen(template);
+    this.modalOpen(template, 'lg');
   }
 
   setupCoverPhotoUpload() {
@@ -332,7 +332,7 @@ export class ProfileComponent implements OnInit {
 
   openGamingInfo() {
     this._navbarService.showOption.next('gamebroadcast');
-    this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
+    // this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
   }
 
   routeToEditProfile() {
@@ -394,8 +394,8 @@ export class ProfileComponent implements OnInit {
     // }
   }
 
-  modalOpen(content) {
-    this._modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+  modalOpen(content, size?) {
+    this._modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: size || 'md'}).result.then((result) => {
     }, (reason) => {
     });
   }

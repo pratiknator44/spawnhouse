@@ -39,7 +39,7 @@ export class AroundyouComponent implements OnInit {
   }
 
   getSimilarUsers() {
-    console.log("this.loadingUsers ", this.ayFlags.loadingContent);
+    // console.log("this.loadingUsers ", this.ayFlags.loadingContent);
     if(this.ayFlags.noMoreUsers)  return;
     if(this.ayFlags.loadingContent) return;
     // console.log("this.loadingUsers ", this.ayFlags.loadingContent);
@@ -81,7 +81,7 @@ export class AroundyouComponent implements OnInit {
   }
 
   getLocation() {
-    console.log("getLocation called");
+    console.log("getting your location");
     this._floatNotifService.getLocationToast();
     // this.loadingUsers = true;
     this._floatNotifService.getLocationSubject.asObservable().subscribe(data => {
