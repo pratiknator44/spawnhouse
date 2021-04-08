@@ -33,7 +33,7 @@ export class ViewPostComponent implements OnInit {
 
     this._apiService.getPostDetails(this.postid).then( result => {
       this.postDetails = result['result'];
-      console.log("psot details ", this.postDetails);
+      // console.log("psot details ", this.postDetails);
 
       if(!this.postDetails || this.postDetails.length === 0) {
         this._apiService.router.navigate(['/not-found']);
@@ -46,14 +46,12 @@ export class ViewPostComponent implements OnInit {
   }
 
   deleteNpPost() {
-    console.log("delete post init");
     this._apiService.deleteNowPlayingPost(this.postDetails._id).then(result => {
       if(result['message'] === 'passed') {
         this._apiService.router.navigate(['/home']);
       }
     });
   }
-
 
   getComments(refresh?) {
     if(this.postDetails['noOfComments'] > 0 || refresh)
@@ -113,7 +111,7 @@ export class ViewPostComponent implements OnInit {
 
     this.vpflags.submittingComment = true;
     this._apiService.addComment(this.postid, this.comment.substr(0,200)).then(result => {
-      console.log("comment result => ", result);
+      // console.log("comment result => ", result);
       this.getComments(true);
       this.vpflags.submittingComment = false;
       this.comment = '';
@@ -127,7 +125,7 @@ export class ViewPostComponent implements OnInit {
 
   removeComment(npfeedid?, commentid?, i?) {
 
-    console.log(this.commentToDelete);
+    // console.log(this.commentToDelete);
     if(!npfeedid) {
       npfeedid = this.commentToDelete.npfeedid;
       commentid = this.commentToDelete.commentid,
@@ -147,12 +145,11 @@ export class ViewPostComponent implements OnInit {
     }, (reason) => {
     });  
   }
-
   
   confirmDeleteComment(template, npfeedid, commentid, i) {
     this.modalopen(template);
     this.commentToDelete = {npfeedid, commentid, i};
-    console.log(this.commentToDelete);
+    // console.log(this.commentToDelete);
   }
 
 }
