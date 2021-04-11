@@ -1,5 +1,5 @@
 export enum APIvars {
-    APIdomain = 'http://localhost:3000',
+    APIdomain = '',
     APIlogin = 'login',
     CHECK_IF_TAKEN = 'signup/checkiftaken',
     APIemailOTP = 'signup/emailverification',
@@ -79,7 +79,8 @@ export enum APIvars {
     ADD_COMMENT = 'nowplaying/addcomment',
     GET_COMMENTS_ON_NP = 'nowplaying/commentsonnppost',
     NP_DELETE_COMMENT = 'nowplaying/deletecomment',
-    DELETE_ACCOUNT = 'signup/deleteAccount'
+    DELETE_ACCOUNT = 'signup/deleteAccount',
+    GET_EULA = 'signup/geteula'
 }
 
 export enum GlobalContantsEnum {

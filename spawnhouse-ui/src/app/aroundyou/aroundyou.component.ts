@@ -85,7 +85,7 @@ export class AroundyouComponent implements OnInit {
     this._floatNotifService.getLocationToast();
     // this.loadingUsers = true;
     this._floatNotifService.getLocationSubject.asObservable().subscribe(data => {
-      console.log("got data ", data);
+      // console.log("got data ", data);
       this.location = data;
       this.pageNo = 1;
       this.getSimilarUsers();

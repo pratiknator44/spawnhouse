@@ -549,4 +549,15 @@ export class NavbarComponent implements OnInit {
     }, (reason) => {
     });
   }
+
+  eula: String;
+  showEula() {
+    this._apiService.getEula().then(data => {
+      if(data['message'] === 'passed') {
+        this.eula = data['data'];
+      } else {
+        this.eula = data['error'];
+      }
+    });
+  }
 }

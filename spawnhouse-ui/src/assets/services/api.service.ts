@@ -341,4 +341,8 @@ export class APIservice {
   deleteAccount() {
     return this.http.post(APIvars.APIdomain+'/'+APIvars.DELETE_ACCOUNT).toPromise();
   }
+
+  getEula() {
+    return this.http.get(APIvars.APIdomain+'/'+APIvars.GET_EULA).toPromise();
+  }
 }
