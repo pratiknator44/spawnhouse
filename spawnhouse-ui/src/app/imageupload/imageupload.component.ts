@@ -80,7 +80,9 @@ export class ImageuploadComponent implements OnInit {
     }
 
     this._apiService.removeUserImage(this.mode).then(result => {
-      console.log("result = ", result);
+    }).catch(res => {
+      console.log("failed to remove image ", res);
+    }).finally( () => {
       this.onImageRemove.emit();
     });
   }

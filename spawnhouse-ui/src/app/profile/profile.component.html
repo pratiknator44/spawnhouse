@@ -180,7 +180,7 @@
         </div>
         <div class="modal-body text-center p-0 border-none">
             <sh-imageupload [imageSchema]="imageSchema" [isDisabled]="disableImageUpload" [mode]="uploadMode"
-                (close)="setVisibilityImageOverlay(false); modal.close('Save click')" (onImageRemove)="refreshImage()"
+                (close)="setVisibilityImageOverlay(false); modal.close('Save click')" (onImageRemove)="refreshImage(); modal.dismiss('Cross click');"
                 (newsubmit)="submitNewImage($event); modal.close('Save click')"></sh-imageupload>
 
         </div>

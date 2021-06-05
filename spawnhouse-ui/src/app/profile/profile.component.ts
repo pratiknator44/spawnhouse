@@ -272,7 +272,7 @@ export class ProfileComponent implements OnInit {
       this._apiService.getDp();
       this._navbarService.getDpSubject.next(true);
     } else if(this.uploadMode === 'cover') {
-      this.getCoverOfUser(this.user._id);
+      this.getCoverOfUser(this.user._id, true);
     }
     // this.setVisibilityImageOverlay(false);
   }

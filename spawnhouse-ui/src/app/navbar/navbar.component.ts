@@ -231,7 +231,10 @@ export class NavbarComponent implements OnInit {
     this.searchSuggestions = [];
     // this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
     // this._overlayService.showSubject.next(true);
-    if (this.gameApiTimeout) return;
+    
+    if (this.gameApiTimeout){
+      clearTimeout(this.gameApiTimeout);
+    }
 
     this.gameApiTimeout = setTimeout(() => {
       this._apiService.searchUser(this.userSearch).then(res => {
@@ -392,7 +395,9 @@ export class NavbarComponent implements OnInit {
     if (searchword < 2) {
       return;
     }
-    if (this.gameApiTimeout) return;
+    if (this.gameApiTimeout){
+      clearTimeout(this.gameApiTimeout);
+    }
 
     this.gameApiTimeout = setTimeout(() => {
       console.log("Search word = ", this.searchword);
@@ -404,7 +409,7 @@ export class NavbarComponent implements OnInit {
         this.searchingGame = false;
         this.gameApiTimeout = null;
       });
-    }, 2000);
+    }, 1000);
   }
 
   gameSelect(game) {
