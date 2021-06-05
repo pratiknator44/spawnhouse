@@ -175,8 +175,12 @@
 
       <div class="position-absolute bg-white position-relative user-options rounded border-grey"
         *ngIf="activeOption==='userop'">
+        <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('manage')"><span
+          class="iconset icon-cog mr-2"></span>Manage profile</div>
+          <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('feedback')"><span
+            class="iconset2 icon-star mr-2"></span>Feedback</div>
         <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('about')"><span
-            class="iconset icon-bug mr-2"></span>Report a problem</div>
+            class="iconset2 icon-jolly-roger mr-2"></span>About</div>
         <div class="hover-bg-grey p-2 cursor-pointer" (click)="showFeedback(feedbackTemplate)"><span
             class="iconset icon-switch mr-2"></span>Logout</div>
       </div>

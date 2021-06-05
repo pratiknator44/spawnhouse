@@ -193,9 +193,9 @@ export class ProfileComponent implements OnInit {
     this.userdp = this._apiService.getUserImageById('dp', id, true);
   }
 
-  getCoverOfUser(id) {
+  getCoverOfUser(id, refresh?) {
     this.profileFlags.loadingCover = true;
-    this.usercover = this._apiService.getUserImageById('cover', id);
+    this.usercover = this._apiService.getUserImageById('cover', id, refresh);
     this.profileFlags.loadingCover = false;
   }
 
@@ -236,7 +236,7 @@ export class ProfileComponent implements OnInit {
       if((result as HttpResponse<any>).body?.message === 'passed') {
         this.disableImageUpload = false;
         setTimeout(() => {
-          this.uploadMode === 'dp' ? this._navbarService.getDpSubject.next(true) : this.getCoverOfUser(this.user._id);
+          this.uploadMode === 'dp' ? this._navbarService.getDpSubject.next(true) : this.getCoverOfUser(this.user._id, true);
           // this.uploadMode === 'dp' ? this.navbar.getDp() : this._apiService.getImage('cover');;
           // this.setVisibilityImageOverlay(false);
         }, 1000);
