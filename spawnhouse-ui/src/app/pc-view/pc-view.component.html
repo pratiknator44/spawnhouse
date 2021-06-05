@@ -26,31 +26,19 @@
 *ngIf="showOverlay"
 (click)="overlayClicked($event)"
 ></sh-overlay>
-<div class="position-fixed w-100 z-nav"style="bottom:0;">
-    <sh-toast>    <!-- this component communicates via notification service-->
-    </sh-toast>
-</div>
-
-<!-- <div class="position-fixed cursor-pointer bg-theme text-white w-25 h-max-75" style="bottom: 3rem;" [ngClass]="{'h-2rem': !showNpSidedock, 'h-auto': showNpSidedock}" *ngIf="isLoggedIn" style="bottom: 0; right: 0; border-top-left-radius: 0.5rem; z-index: 1;">
-  <div class="h5 ml-3" (click)="showNpSidedock = !showNpSidedock" >Playing ({{totalActiveNowPlayingUsers}})</div>
-  <div style="height: 75vh;" class="position-relative m-1 bg-white" [perfectScrollbar]="{suppressScrollX: true}">
-    <sh-now-playing-side-dock (total)="totalActiveNowPlayingUsers = $event"></sh-now-playing-side-dock>
-  </div>
-</div> -->
 
 <div class="mt-0 ml-auto mr-auto" [ngClass]="{'mt-3rem': isLoggedIn}" style="max-width: 1080px;">
 <router-outlet></router-outlet>
+<!-- <div>(c) BitA Studio Pvt Ltd.</div> -->
 </div>
 
 
 <sh-float-notification
 *ngIf="isNotifVisible"
 [ngClass]="{'float-in': isNotifVisible}"
-[config]="floatNotifConfig"
-></sh-float-notification>
+[config]="floatNotifConfig"></sh-float-notification>
 
-
-
-
-<!--space for lower navbar-->
-<div style="height: 4rem;" class="w-100"></div>
+<div class="position-fixed" style="right: 0; bottom: 0;">
+  <sh-toast>
+  </sh-toast>
+</div>

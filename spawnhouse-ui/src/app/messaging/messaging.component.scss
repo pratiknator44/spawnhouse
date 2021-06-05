@@ -1,5 +1,6 @@
 .message-area {
-    overflow: auto; height: calc(100vh - 10rem); 
+    overflow: auto;
+    max-height: 67vh;
     // border-top-right-radius: 3rem;
 }
 
@@ -21,7 +22,8 @@
 
 .selected-chat {
     background-color: rgb(0, 117, 235);
-    padding: 0; margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 .other-user-bubble {
@@ -32,7 +34,7 @@
     color: white;
 }
 .bg-other-user {
-    background: linear-gradient(90deg,#06F, rgb(139, 1, 194));
+    background: linear-gradient(90deg, #06f, rgb(139, 1, 194));
 }
 
 .other-user-bubble > div {
@@ -59,7 +61,6 @@
     width: 0.5rem;
 }
 
-
 .bg-gray-gradient {
     background: linear-gradient(rgb(245, 245, 245), white);
 }
@@ -76,4 +77,65 @@
 .typing-area {
     height: 4rem;
     border-radius: 3rem;
+}
+
+.typing-area > input {
+    border-radius: 18% !important;
+}
+
+.conversations-container {
+    flex: 0 0 33.33333%;
+}
+
+.chat-thread-container {
+    flex: 0 0 66.66666%;
+}
+
+.back-button {
+    display: none;
+}
+
+@media screen and (max-width: 1000px) {
+    .conversations-container {
+        flex: 0 0 calc(100% - 1rem);
+    }
+
+    .chat-thread-container {
+        flex: 0 0 0;
+    }
+
+    .back-button {
+        display: block;
+    }
+}
+
+@keyframes flex-expand {
+    0% {
+       flex: 0 0 0;
+    }
+    100% {
+        flex: 0 0 calc(100% - 1rem);
+    }
+}
+
+@keyframes flex-expand-reverse {
+
+    0% {
+        flex: 0 0 calc(100% - 1rem);
+    }
+    100% {
+        flex: 0 0 0;
+     }
+}
+
+.flex-expand {
+    animation: flex-expand 0.25s forwards linear;
+}
+
+.flex-expand-reverse {
+    animation: flex-expand-reverse 0.25s forwards linear;
+}
+
+.w-65 {
+    width: 46% !important;
 }

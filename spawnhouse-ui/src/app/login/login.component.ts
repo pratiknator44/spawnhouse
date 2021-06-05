@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   hasLoggedOut: Boolean = false;
   eula = {greetText: 'Hi', eula: String};
   loginFlags = {showAcceptTnCButton: true};
+  errorText = null;
   @ViewChild('eulaTemplate') eulaTemplate;
 
   constructor(private _metaService: Meta,
@@ -63,6 +64,7 @@ export class LoginComponent implements OnInit {
   }
 
   verifyTokenAndSignin(token) {
+    this.errorText = null;
     this._http.get(APIvars.APIdomain+'/signup/verification/'+token).toPromise().then(res => {
       if(this.rememberMe) {
         this._cookieService.set('past_token', token)
@@ -79,6 +81,8 @@ export class LoginComponent implements OnInit {
       }
       else {}
       this._router.navigate(['/home']);
+    }).catch(error => {
+      this.errorText = error['message'];
     });
   }
 
@@ -88,7 +92,7 @@ export class LoginComponent implements OnInit {
     scr.defer = true;
     scr.async = true;
     this._renderer.appendChild(document.body, scr);
-    this._metaService.addTags([{name: 'google-signin-client_id', content: APIvars.GOOGLE_PROVIDER}]);
+    this._metaService.addTags([{name: 'google-signin-client_id', content: APIvars.GOOGLE_0AUTH_CLIENT_ID}]);
   }
 
   routeToProfile() {
@@ -101,6 +105,7 @@ export class LoginComponent implements OnInit {
     });
 
     this._http.get(APIvars.APIdomain+'/'+APIvars.GET_EULA).toPromise().then(data => {
+      console.log("data = ", data);
       if(data['message'] === 'passed') {
         this.eula.eula = data['eula'];
       } else {
@@ -111,6 +116,9 @@ export class LoginComponent implements OnInit {
 
   updateTnCAcceptance() {
     console.log("update TNC acceptance pending");
+    this._http.post(APIvars.APIdomain+'/'+APIvars.EULA_CONFIRM, {tnc: true, cookies: []}).toPromise().then(result => {
+      console.log(result);
+    });
   }
 
 }

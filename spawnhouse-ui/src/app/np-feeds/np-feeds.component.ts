@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { APIservice } from 'src/assets/services/api.service';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { NavbarService } from 'src/assets/services/navbar.service';
+import { SocketService } from 'src/assets/services/socket.service';
 import { StorageService } from 'src/assets/services/storage.service';
 
 @Component({
@@ -34,7 +35,8 @@ export class NpFeedsComponent implements OnInit {
     private _storageService: StorageService,
     private _apiService: APIservice,
     private _navbarService: NavbarService,
-    private _modalService: NgbModal) {
+    private _modalService: NgbModal,
+    private _socketService: SocketService) {
     }
 
 
@@ -84,18 +86,23 @@ export class NpFeedsComponent implements OnInit {
     this.homeflags.loadMoreFeeds = true;
   }
 
-  likeNp(npid, i?) {
+  likeNp(usernp, i?) {
+    const npid = usernp._id;
+    console.log(npid);
     this.np[i].likedByUser = !this.np[i].likedByUser;
     this._apiService.likeNowPlaying(npid).then(res => {
-      // console.log("np like response = ", res);
+      console.log("np like response = ", res.result);
       if(res.result === 1) {
           ++this.np[i].noOfLikes;
           this.np[i].likedByUser = true;
+          this._socketService.pushData("new-np-like", {author: usernp.userid, username: usernp.userdata.username, npid});
+          
       } else {
           --this.np[i].noOfLikes;
           this.np[i].likedByUser = false;
       }
     });
+    // this._notifService.makeToast.next('feedback');
   }
 
 
@@ -111,7 +118,6 @@ export class NpFeedsComponent implements OnInit {
   }
 
   deleteNpPost(npid?, i?) {
-
     if(!npid) {
       npid = this.postToDelete.postid;
       i = this.postToDelete.i;
@@ -119,6 +125,8 @@ export class NpFeedsComponent implements OnInit {
     this._apiService.deleteNowPlayingPost(npid).then(result => {
       this.np.splice(i, 1);
     });
+
+    this._notifService.makeToast.next('feedback');
   }
 
   routeToPost(npid) {
@@ -150,6 +158,7 @@ export class NpFeedsComponent implements OnInit {
   confirmDeletePost(template, postid, i) {
     this.modalopen(template);
     this.postToDelete = {postid, i};
+    this._notifService.makeToast.next('feedback');
   }
 
 }

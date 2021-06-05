@@ -128,7 +128,7 @@ export class FeedsComponent implements OnInit, OnChanges {
     this._apiService.addRemoveLike(postid).then(result => {
       console.log("like result = ", result);
       if(result.liked)    // dont send socket data if disliked
-        this._socketService.pushData("like", {postid, userid: this._storageServer.currentUser._id});
+        this._socketService.pushData('like', {postid, userid: this._storageServer.currentUser._id});
     });
   }
 

@@ -99,7 +99,22 @@
                             <input type="text" formControlName="lname" class="form form-control" />
                         </div>
                     </div>
-                    <div class="row">
+
+
+
+                    <div class="row mt-3">
+                        <div class="col-6">What type of gamer are you?
+                            <span class="text-secondary">
+                                <select class="form form-control" formControlName="gamerType">
+                                    <option [value]="null">Select</option>
+                                    <option [value]="gtype.value" *ngFor="let gtype of gamerTypes">{{gtype.label}}</option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-3">
                         <div class="col-6">Username
                             <span class="text-secondary" style="font-size: 10px;">
                                 will let you access spawnhouse.com/your-username
@@ -176,45 +191,9 @@
                     What is the reason of your exit from Spawnhouse?
                     <br>
                     <ul class="list-group">
-                        <li class="list-group-item">
-                            <input type="checkbox" value="unsafe" id="unsafe" />
-                            <label for="unsafe">I find it unsafe on Spawnhouse</label>
-                        </li>
-
-                        <li class="list-group-item">
-                            <input type="checkbox" value="badperformance" id="badperformance" />
-                            <label for="badperformance">Bad performance of this website or services</label>
-                        </li>
-
-                        <li class="list-group-item">
-                            <input type="checkbox" value="notforme" id="notforme" />
-                            <label for="notforme">This app is not for me</label>
-                        </li>
-
-                        <li class="list-group-item">
-                            <input type="checkbox" value="useless" id="useless" />
-                            <label for="useless">I don't find Spanwhouse useful</label>
-                        </li>
-
-                        <li class="list-group-item">
-                            <input type="checkbox" value="nosupport" id="nosupport" />
-                            <label for="nosupport">I didn't get the requested support</label>
-                        </li>
-
-                        <li class="list-group-item">
-                            <input type="checkbox" value="hardtoget" id="hardtoget" />
-                            <label for="hardtoget">Hard to understand the User Interface</label>
-                        </li>
-
-
-                        <li class="list-group-item">
-                            <input type="checkbox" value="betteroptions" id="betteroptions" />
-                            <label for="betteroptions">Better options available elsewhere</label>
-                        </li>
-
-                        <li class="list-group-item">
-                            <input type="checkbox" value="notime" id="notime" />
-                            <label for="notime">I'm unable to save time for this</label>
+                        <li class="list-group-item" *ngFor="let reason of deleteReasons">
+                            <input type="checkbox" value="{{reason.value}}" id="{{reason.value}}" [(ngModel)]="reason.checked"  />
+                            <label for="{{reason.value}}">{{reason.label}}</label>
                         </li>
 
                         <li class="list-group-item">
@@ -227,7 +206,7 @@
                     <div class="">Out of 10, how likely are you going to recommend Spawnhouse to a friend?</div>
                     <div style="height: 3rem; width: 3rem;"
                         class="circle cursor-pointer d-inline-block m-1 border-grey text-center"
-                        *ngFor="let x of [0,1,2,3,4,5,6,7,8,10]" [ngClass]="{ 'bg-off-black text-white': recommendIndex === x}" (click)="recommendIndex = x">
+                        *ngFor="let x of [0,1,2,3,4,5,6,7,8,9,10]" [ngClass]="{ 'bg-off-black text-white': recommendIndex === x}" (click)="recommendIndex = x">
                         <div class="mt-2">{{ x }}</div>
                     </div>
                     <br>

@@ -12,6 +12,7 @@ import {tap} from 'rxjs/operators';
 import { UserService } from './user.service';
 import { FloatNotificationService } from './float-notification.service';
 import { CookieService } from 'ngx-cookie-service';
+import { DurationsEnum } from '../variables/toasts.enum';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -32,15 +33,8 @@ export class TokenInterceptor implements HttpInterceptor {
         err => {
         if (err instanceof HttpErrorResponse) {
           if (err.status === 401) {
-            this._floatNotifService.configToast('Your session expired, you\'ve been logged out'+ this._cookieService.get('username') ? ' and relogged in' : '', 'Okay');
-            this._floatNotifService.showToastSubject.next(true);
-            this._floatNotifService.toastDismissSubject.asObservable().subscribe(now => 
-              this._floatNotifService.showToastSubject.next(false)) 
-            this._userService.relogin();
+            this._floatNotifService.makeToast.next({heading: 'Logged Out', text:'Your have been logged out due to an authorized activity. If this was mistake, please contact us on help', icon: 'iconset icon-user', type: 'danger', duration: DurationsEnum.VERY_LONG});
           }
-          // else if(err.status === 404) {
-          //   this._router.navigate(['/not-found']);
-          // }
           return;
         }
       }));

@@ -42,14 +42,15 @@ export class ChipsComponent implements OnInit {
     }
   }
 
-  removeItem(item) {
-    let l = this.selected.length;
-    for( let x = 0; x < l; x++) {
-      if(item.value === this.selected[x].value) {
-        this.selected.splice(x, 1);
-        break;
-      }
-    }
+  removeItem(index) {
+    this.selected.splice(index, 1);
+    // for( let x = 0; x < l; x++) {
+    //   if(item.value === this.selected[x].value) {
+    //     console.log(this.selected[x]);
+    //     this.selected.splice(x+1, 1);
+    //     break;
+    //   }
+    // }
     this.selectionChange.emit(this.selected);
   }
 

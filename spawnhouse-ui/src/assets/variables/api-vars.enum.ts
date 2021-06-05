@@ -10,7 +10,7 @@ export enum APIvars {
     APIallowAll = '*',
     APIattemptLogin = 'login/attempt',
     APIattemptLogin2 = 'login/attempt2',
-    GOOGLE_PROVIDER = '206033993886-qqam7i8l0egv1t8iih63hnqiut8c932e.apps.googleusercontent.com',
+    GOOGLE_0AUTH_CLIENT_ID = '1063064480579-4pqt0259eqsu2epkctrchjk31q5j8ani.apps.googleusercontent.com', // '206033993886-qqam7i8l0egv1t8iih63hnqiut8c932e.apps.googleusercontent.com'
     FACEBOOK_APP_ID = '',
     GET_HASHTAGS  = 'mentions',
     GET_DP = 'resources/getdp',
@@ -80,7 +80,11 @@ export enum APIvars {
     GET_COMMENTS_ON_NP = 'nowplaying/commentsonnppost',
     NP_DELETE_COMMENT = 'nowplaying/deletecomment',
     DELETE_ACCOUNT = 'signup/deleteAccount',
-    GET_EULA = 'signup/geteula'
+    GET_EULA = 'signup/geteula',
+    EULA_CONFIRM = 'agreement/confirm-eula',
+    ACTIVE_NOW_PLAYING_USERS = 'nowplaying/activeusers',
+    FEEDBACK = 'feedback',
+    LAST_ACTIVE = 'signup/lastactive'
 }
 
 export enum GlobalContantsEnum {

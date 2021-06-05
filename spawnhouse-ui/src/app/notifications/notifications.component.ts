@@ -37,7 +37,7 @@ export class NotificationsComponent implements AfterViewInit, OnChanges {
     // if notification is not seen, make it seen if the user clicks
     if(!this.notifications[i].seen) this.markAsRead(i);
 
-    if(this.notifications[i].type == 2) {
+    if(this.notifications[i].type === 'FLG') {
       this._router.navigate(['/'+this.notifications[i].userid]);
     }
   }
@@ -47,7 +47,11 @@ export class NotificationsComponent implements AfterViewInit, OnChanges {
   }
 
   markAsRead(i) {
-    this.notificationClicked.emit(i);
+    this._apiService.markNotificationRead(this.notifications[i]._id).then(res => {
+      console.log("notification read success = ", res['message']);
+      this.notifications[i].seen = true;
+      this.notificationClicked.emit(i);
+    });
   }
 
 }

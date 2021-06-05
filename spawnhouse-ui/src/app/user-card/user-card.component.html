@@ -4,10 +4,7 @@
         <div class="text-center">
             <div>
                 <div class="text-white text-center mt-2 default-img cursor-pointer dp-xl ml-auto mr-auto position-relative">
-                    <img [src]="user?.dp | async" class="dp-xl circle" *ngIf="user?.dp | async" />
-                    <div class="dp-xl circle mr-auto ml-auto bg-theme overflow-hidden" *ngIf="!(user?.dp | async)">
-                        <div class="iconset2 icon-jolly-roger text-white text-center" style="opacity: 0.5; font-size: 5rem;"></div>
-                    </div>
+                    <img [src]="user?.dp | async" class="dp-xl circle user-default-img"/>
                     <div class="circle position-absolute h4 bg-white text-danger" title="Nearby" *ngIf="user?.isNearby" style="height: 2rem; width: 2rem; top: 0;">
                         <span class="iconset2 icon-nearby"></span>
                     </div>

@@ -11,7 +11,6 @@ import { ProfileGuardService } from 'src/assets/services/profile-guard.service';
 import { WildcardGuardService } from 'src/assets/services/wildcard-guard.service';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { APIservice } from 'src/assets/services/api.service';
-import { RecaptchaModule } from 'ng-recaptcha';
 import { FloatNotificationComponent } from './float-notification/float-notification.component';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { PcViewComponent } from './pc-view/pc-view.component';
@@ -25,10 +24,8 @@ import { SuggestionsComponent } from './suggestions/suggestions.component';
 import { SharedModule } from './modules/shared.module';
 import { AroundYouModule } from './modules/aroundyou.module';
 import { CookieService } from 'ngx-cookie-service';
-import { ToastComponent } from './toast/toast.component';
 import { UserService } from 'src/assets/services/user.service';
 import { DialogComponent } from './dialog/dialog.component';
-import { NotificationsComponent } from './notifications/notifications.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
@@ -40,6 +37,9 @@ import { ModalComponent } from './modal/modal.component';
 import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalAboutComponent } from './modal-about/modal-about.component';
 import { RedirectComponent } from './redirect/redirect.component';
+import { FeedbackComponent } from './feedback/feedback.component';
+import { ToastComponent } from './toast/toast.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
 
@@ -53,14 +53,15 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     OverlayComponent,
     RecepientComponent,
     SuggestionsComponent,
-    ToastComponent,
     DialogComponent,
-    NotificationsComponent,
     NowPlayingSideDockComponent,
     AboutComponent,
     ModalComponent,
     ModalAboutComponent,
     RedirectComponent,
+    FeedbackComponent,
+    ToastComponent,
+    NotificationsComponent
   ],
   imports: [
     BrowserModule,
@@ -68,8 +69,6 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    RecaptchaModule,  //this is the recaptcha main module
-    // RecaptchaFormsModule, //this is the module for form incase form validation
     AroundYouModule,
     SharedModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

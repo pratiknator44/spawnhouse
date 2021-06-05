@@ -1,7 +1,8 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Type } from "@angular/core";
 import { Title } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { FloatNotificationSchema } from '../interfaces/float-notification-config.interface';
+import { DurationsEnum } from "../variables/toasts.enum";
 import { StorageService } from './storage.service';
 import { UserService } from './user.service';
 @Injectable()
@@ -10,64 +11,76 @@ export class FloatNotificationService {
     config = new Subject<FloatNotificationSchema>();
     progress = new Subject<any>();
     closeOn = new Subject<boolean>();
-    
-    showToastSubject = new Subject<boolean>();
-    showToastOb = this.showToastSubject.asObservable();
-    toastConfigSubject = new Subject();
-    toastOkaySubject = new Subject();
-    toastDismissSubject = new Subject();
+    showToasts = new Subject<boolean>();
+    makeToast = new Subject<any>();
+
     getLocationSubject = new Subject();
     constructor(private _storageService: StorageService,
         private _userService: UserService,
         private _titleService: Title) {}
 
-    createFloat() {
-    }
-
-    configToast(text, dismiss?, okay?) {
-        this.toastConfigSubject.next({
-            text,
-            dismiss,
-            okay
-        });
-    }
      
     checkForLocation() {
+        this.askLocation();
         if(!this._storageService.getSessionData('location')) {
-            this.configToast('Getting your location helps us to find people around with common interests', 'Later', 'Enable Location');
+            this.askLocation();
+            // this.configToast('Getting your location helps us to find people around with common interests', 'Later', 'Enable Location');
         // this.showToastSubject.next(true);
-
-        this.toastOkaySubject.asObservable().subscribe(okay => {
-            this.configToast("Getting Location...", "Dismiss");
-            this.getLocationToast();
-        });
         }
     }
 
-    getLocationToast() {
+    // getLocationToast() {
+    //     if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(location => {
+    //             // console.log("new location: ", location);
+    //             const formattedLocation = [location['coords']['latitude'], location['coords']['longitude'] ];   
+        
+    //             this._storageService.setSessionData('location', JSON.stringify(formattedLocation));
+
+    //             this._userService.saveLocation(formattedLocation);
+    //             // console.log("formattedLocation ", formattedLocation);
+    //             this.getLocationSubject.next(formattedLocation);
+    //             this.configToast("Getting Location... Found you :D", "Dismiss");
+    //             setTimeout( () => {
+    //                 // this.showToastSubject.next(false);
+    //             }, 2000);
+    //         },
+    //         showError => {
+    //             this.configToast("Error getting location.  Some features might not work correctly "+showError, "Dismiss");
+    //         // alert("Error getting location.  Some features might not work correctly");
+    //         });
+    //     } else {
+    //         this.configToast("Error getting location. Some features might not work correctly", "Dismiss");
+    //     }
+    // }
+
+    askLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(location => {
                 // console.log("new location: ", location);
                 const formattedLocation = [location['coords']['latitude'], location['coords']['longitude'] ];   
         
+                // save location in userService and session
                 this._storageService.setSessionData('location', JSON.stringify(formattedLocation));
-
                 this._userService.saveLocation(formattedLocation);
+
+                // broadcast location to needy modules
                 // console.log("formattedLocation ", formattedLocation);
                 this.getLocationSubject.next(formattedLocation);
-                this.configToast("Getting Location... Found you :D", "Dismiss");
+
+                // toast
+                // this.makeToast.next({heading: 'Location', text:'Location updated', icon: 'iconset icon-location', type: 'success', duration: DurationsEnum.SHORT});
                 setTimeout( () => {
-                    this.showToastSubject.next(false);
                 }, 2000);
             },
             showError => {
-                this.configToast("Error getting location.  Some features might not work correctly "+showError, "Dismiss");
-            // alert("Error getting location.  Some features might not work correctly");
+                // this.makeToast.next({heading: "error", text: "Couldn\'t get your location, please Allow"});
             });
         } else {
-            this.configToast("Error getting location. Some features might not work correctly", "Dismiss");
+            this.makeToast.next({heading: "error", text: "Seems your browser doesn\'t support location sharing. Some features might not work"});
         }
     }
+    
 
     setTitle(title: string) {
         this._titleService.setTitle(title);

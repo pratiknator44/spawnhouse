@@ -10,7 +10,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SuggestionsComponent } from '../suggestions/suggestions.component';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { GameGenrePipe } from 'src/assets/pipes/gamegenre.pipe';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { INavbarMessage } from 'src/assets/interfaces/MsgNotif.interface';
 import { SocketService } from 'src/assets/services/socket.service';
 import { NowplayingService } from 'src/assets/services/now-playing.service';
@@ -38,16 +37,17 @@ export class NavbarComponent implements OnInit {
   imageSchema: IPictureUploadSchema;
   noUserFound: boolean;
   showUpdateOptions = false;
-  // showGameBroadcast = false;
   showConsoleList = false;
   consolePipe;
   selectedConsole: string;
-  navbarFlags = { showMessages: false, messagelistLoading: false, showNotification: false, notificationsLoading: false, notificationsEnd: false };
+  navbarFlags = { messagelistLoading: false, notificationsLoading: false, notificationsEnd: false };
+  activeOption: string;
   messages: INavbarMessage[] | any = [];
   notifications = [];  //INotification[] = [];
   pageNo: number = 1;
   searchedGame = '';
-  // dpLinks = []; // cuz sanetized links cant be binded to object properties of messages.dpLink
+  gameApiTimeout;
+  searchword;
 
   consoles = [
     { icon: 'android', id: 'm' },
@@ -67,6 +67,9 @@ export class NavbarComponent implements OnInit {
   ];
   alerts = { notifications: 0, messages: 0 };
   nowplayingForm: FormGroup;
+  gameSuggestions = [];
+  eula: String;
+
   @Input() imageUploadMode: string;
   @Output() onPicUpdate = new EventEmitter();
   @ViewChild(SuggestionsComponent) gameSuggestComp: SuggestionsComponent;
@@ -103,7 +106,7 @@ export class NavbarComponent implements OnInit {
       if (status) this.getDp();
     });
     this._overlayService.closeSubject.asObservable().subscribe(closeOptions => {
-      this.falseAllFlags();
+      this.activeOption = null;
     });
 
     this._navbarService.showOption.asObservable().subscribe(option => {
@@ -157,7 +160,7 @@ export class NavbarComponent implements OnInit {
   startNotificationMessageSockets() {
     // message
     this._socketService.getMessageCountOb().subscribe(count => {
-      console.log("got data => via new-message-count ", count);
+      // console.log("got data => via new-message-count ", count);
       ++this.alerts.messages;
       this.getUnseenMessageCount();
       // console.log("this.alerts.messages = ", this.alerts.messages);
@@ -166,15 +169,20 @@ export class NavbarComponent implements OnInit {
 
     // notification
     this._socketService.getData('new-notification').subscribe(count => {
-      console.log("got new notification ");
+      // console.log("got new notification ");
       this.getNotifications();
       ++this.alerts.notifications;
       this._navbarService.playNotificationSound();
     });
 
-    // like
-    this._socketService.getData('new-like').subscribe(likeData => {
-      // console.log("got a new like data = ", likeData);
+    // like for posts
+    // this._socketService.getData('new-like').subscribe(likeData => {
+    //   console.log("got a new like data = ", likeData);
+    // });
+
+    // like for NP
+    this._socketService.getData('new-np-like').subscribe(likeData => {
+      this._notifService.makeToast.next({ heading: 'like', text: '<strong>' + likeData.authorUsername + '</strong> liked your post' });
     });
   }
 
@@ -209,40 +217,51 @@ export class NavbarComponent implements OnInit {
   }
 
   searchThis(event) {
-    this.showUserSuggestions = true;
-    this.searchSuggestions = [];
-    this.userSearch = event;
-    if (this.userSearch.length < 3) {
+    if (event.length < 3) {
       this._overlayService.showSubject.next(false);
       return;
     }
+
+    this.showUserSuggestions = true;
+    this.searchSuggestions = [];
+    this.userSearch = event;
+
     this.noUserFound = false;
     this.showSuggestions = true;
     this.searchSuggestions = [];
     // this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
     // this._overlayService.showSubject.next(true);
+    if (this.gameApiTimeout) return;
 
-    this._apiService.http.get(APIvars.APIdomain + '/' + APIvars.SEARCH_USER + '/' + this.userSearch).pipe(debounceTime(1000), distinctUntilChanged()).subscribe(res => {
-      if (res['users'].length > 0) {
-        let userid = [];
-        res['users'].forEach(user => {
-          userid.push(user._id);
-        });
-      }
-      this.searchSuggestions = res['users'];
-      // getting user photos
-      const l = this.searchSuggestions.length;
-      if (l > 0) {
-        for (let x = 0; x < l; x++) {
-          if (!this.searchSuggestions[x].dp) continue;
-          this.searchSuggestions[x]['dpaddress'] = this._apiService.getUserImageById('dp', this.searchSuggestions[x]._id);
+    this.gameApiTimeout = setTimeout(() => {
+      this._apiService.searchUser(this.userSearch).then(res => {
+        if (res['users'].length > 0) {
+          let userid = [];
+          res['users'].forEach(user => {
+            userid.push(user._id);
+          });
         }
-      }
+        this.searchSuggestions = res['users'];
+        // getting user photos
+        const l = this.searchSuggestions.length;
+        if (l > 0) {
+          for (let x = 0; x < l; x++) {
+            if (!this.searchSuggestions[x].dp) continue;
+            this.searchSuggestions[x]['dpaddress'] = this._apiService.getUserImageById('dp', this.searchSuggestions[x]._id);
+          }
+        }
 
-      if (this.searchSuggestions.length === 0) {
+        if (this.searchSuggestions.length === 0) {
+          this.noUserFound = true;
+        }
+      }).catch(error => {
+        this._notifService.makeToast.next({ header: 'Something went wrong', text: 'Some error occured while searching' });
+        this.searchSuggestions = [];
         this.noUserFound = true;
-      }
-    });
+      }).finally(() => {this.gameApiTimeout = null;});
+    }, 1500);
+
+
   }
 
   logout() {
@@ -251,11 +270,12 @@ export class NavbarComponent implements OnInit {
   }
 
   getDp() {
-    this._apiService.getPhotos('dp').subscribe(image => {
+    this._apiService.getPhotos('dp').then(image => {
 
       // if image size is less than 30 bytes
       if (image.size < 30) {
         this.onPicUpdate.emit({ type: 'dp', src: null });
+
         // means if dp is null, dissociate from memory as well:
         this._storageService.deleteSessionData(this.user._id);
         this._navbarService.dpUpdated.next({ type: 'dp', src: null });
@@ -277,15 +297,6 @@ export class NavbarComponent implements OnInit {
         reader.readAsDataURL(image);
       }
     });
-  }
-
-  userOptions() {
-    this.showUserOptions = !this.showUserOptions;
-    this.showSuggestions = !this.showSuggestions;
-    this.showUserOptions ?
-      this._overlayService.configSubject.next({ transparent: true, closeOnClick: true })
-      :
-      this.closeOverlay();
   }
 
   updateOptions() {
@@ -317,7 +328,7 @@ export class NavbarComponent implements OnInit {
       maxconnections: new FormControl(0, [Validators.min(0), Validators.max(150)])
     });
     this.nowplayingForm.patchValue({
-      audience: '0',
+      audience: 'PVT',
       console: '',
       hasPrivateRoom: false,
       // privatepassword: true
@@ -356,7 +367,6 @@ export class NavbarComponent implements OnInit {
     this.nowplayingForm.removeControl('hasPrivateRoom');
 
     this._apiService.http.post(APIvars.APIdomain + '/' + APIvars.NOW_PLAYING, this.nowplayingForm.value).subscribe(result => {
-      console.log("np after update => ", result);
       this._socketService.pushData('new-notification', { type: 'broadcast', sentBy: this.user._id, sentTo: 'follower' });
       this._notifService.closeOn.next(false); // close notification
       // this.showGameBroadcast = false;
@@ -376,19 +386,27 @@ export class NavbarComponent implements OnInit {
     this._overlayService.closeSubject.next(true);
   }
 
-  gameSuggestions = [];
-
   searchGame(searchword) {
     this.searchingGame = true;
+    this.searchword = searchword;
     if (searchword < 2) {
       return;
     }
+    if (this.gameApiTimeout) return;
 
-    this._apiService.http.get(APIvars.APIdomain + '/' + APIvars.GET_GAMEDATA + '/' + searchword).pipe(debounceTime(1000)).subscribe(res => {
-      this.gameSuggestions = res['gamedata'];
-      this.searchingGame = false;
-    });
+    this.gameApiTimeout = setTimeout(() => {
+      console.log("Search word = ", this.searchword);
+      this._apiService.getGameName(this.searchword).then(res => {
+        this.gameSuggestions = res['gamedata'];
+      }).catch(e => {
+        this.gameSuggestions = []
+      }).finally(() => {
+        this.searchingGame = false;
+        this.gameApiTimeout = null;
+      });
+    }, 2000);
   }
+
   gameSelect(game) {
     this.gameSuggestComp.searchInput = game.label;
     this.searchedGame = game.label;
@@ -423,20 +441,28 @@ export class NavbarComponent implements OnInit {
   navOptionSelected(option) {
     this._overlayService.showSubject.next(true);
     switch (option) {
-      case 'messages':
-        if (this.navbarFlags.showMessages) { this.navbarFlags.showMessages = false; this.closeOverlay(); return; }
+      case 'msg':
+        if (this.activeOption === 'msg') { this.activeOption = null; this.closeOverlay(); return; }
 
-        this.navbarFlags.showMessages = true;
+        this.activeOption = 'msg';
         this.navbarFlags.messagelistLoading = true;
         this.briefmessages();
         break;
-      case 'notifications':
-        this.navbarFlags.showNotification = !this.navbarFlags.showNotification;
-        if (this.navbarFlags.showNotification) {
-          this._overlayService.showSubject.next();
-          this.getNotifications(true);
-        }
-        else this.falseAllFlags();
+      case 'notif':
+        if (this.activeOption === 'notif') { this.activeOption = null; this.closeOverlay(); return; }
+
+        this.activeOption = 'notif';
+        this.getNotifications(true);
+        break;
+
+      case 'all-notif':
+        this.activeOption = null;
+        this.closeOverlay(); this.closeOverlay();
+        this.routeTo('all-notifications');
+      case 'userop':
+        if (this.activeOption === 'userop') { this.activeOption = null; this.closeOverlay(); return; }
+        this.activeOption = 'userop';
+        break;
     }
     this._overlayService.configSubject.next({ closeOnClick: true, transparent: true });
     this._overlayService.showSubject.next(true);
@@ -464,9 +490,7 @@ export class NavbarComponent implements OnInit {
       this.navbarFlags.messagelistLoading = null;
       return;
     }
-    this.messages = []
-    // this.dpLinks = [];
-    // seen is already sorted
+    this.messages = [];
 
     // trandforming array 
     for (let x = 0; x < l; x++) {
@@ -484,14 +508,12 @@ export class NavbarComponent implements OnInit {
       if (!messages[x]['seen'] && messages[x]['lastSender'] != this.user._id)
         this._navbarService.unseenMessagesRecord.push(this.messages[x]._id);
 
-      // this.getUserImageById(messages[x]['senderid'], 'dp');
     }
 
     this.messages.sort((m1, m2) => {
       return m1.time > m2.time ? -1 : 1;
     });
     this.navbarFlags.messagelistLoading = false;
-    // console.log(this._navbarService.unseenMessagesRecord);
   }
 
   async getUserdataById(userid: string, fields?: string, index?: any) {
@@ -505,14 +527,9 @@ export class NavbarComponent implements OnInit {
     this._apiService.router.navigate(['./messaging']);
   }
 
-  falseAllFlags() {
-    this.showUserOptions = false; this.showSuggestions = false; this.showUpdateOptions = false;
-    this.navbarFlags.showMessages = false; this.navbarFlags.showNotification = false;
-  }
-
   markAllNotificationsRead() {
     this._apiService.markAllNotificationsRead().then(result => {
-      this.navbarFlags.showNotification = false
+      this.activeOption = null;
       if (result['message'] === 'passed') {
         this.getNotifications();
         this.getNotificationCount();
@@ -531,33 +548,37 @@ export class NavbarComponent implements OnInit {
   closeNotificationOverlay(refreshSomething?) {
     // console.log("closing notification overlay ", refreshSomething);
     if (refreshSomething) this.refreshNotification(refreshSomething);
-    this.navbarFlags.showNotification = false;
+    this.activeOption = null;
     this._overlayService.showSubject.next(false);
   }
 
   markAsRead(i) {
     // console.log("event ", this.notifications[i]);
-    this._apiService.markNotificationRead(this.notifications[i]._id).then(res => {
-      console.log("notification read success = ", res['message']);
-      this.notifications[i].seen = true;
-      this.getNotificationCount();
-    });
+    this.getNotificationCount();
+    // this._apiService.markNotificationRead(this.notifications[i]._id).then(res => {
+    //   console.log("notification read success = ", res['message']);
+    //   this.notifications[i].seen = true;
+    //   this.getNotificationCount();
+    // });
   }
 
-  modalOpen(content) {
-    this._modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'lg' }).result.then((result) => {
+  modalOpen(content, size?) {
+    this._modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: size || 'lg' }).result.then((result) => {
     }, (reason) => {
     });
   }
 
-  eula: String;
   showEula() {
     this._apiService.getEula().then(data => {
-      if(data['message'] === 'passed') {
+      if (data['message'] === 'passed') {
         this.eula = data['data'];
       } else {
         this.eula = data['error'];
       }
     });
+  }
+
+  showFeedback(template) {
+    this.modalOpen(template, 'small');
   }
 }

@@ -26,7 +26,7 @@ export class UserService {
 
     saveLocation(location) {
       this._http.post(APIvars.APIdomain+'/'+APIvars.SET_LOCATION,{location: location}).toPromise().then( result => {
-        console.log('location saved', result);
+        // console.log('location saved', result);
       });
     }
 
@@ -51,10 +51,9 @@ export class UserService {
 
   getFollowData(type: string, id?) {
     if(type === 'Followers')
-    return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOWERS+'/'+(id || '')).toPromise();
-
+      return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOWERS+'/'+(id || '')).toPromise();
     else
-    return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOWING+'/'+(id || '')).toPromise();
+      return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOWING+'/'+(id || '')).toPromise();
   }
 
 }

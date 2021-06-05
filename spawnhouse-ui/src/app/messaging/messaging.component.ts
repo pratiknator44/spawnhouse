@@ -22,10 +22,13 @@ export class MessagingComponent implements OnInit {
   user;
   otherUser;
   convoIndex = 0; // used to show dp of user on right
-  messageFlags = { convosLoading: true, msgLoading: false, userdataLoading: false};
+  messageFlags = { convosLoading: true, msgLoading: false, userdataLoading: false, sendingMessage: false};
   message: any;
   unseenConvos = [];
-  quickChats = ['Roger that!', 'To the lobby!', 'Lock & load', 'server password please?', 'Noob!']
+  animate: boolean;
+  isMobile: boolean = false;
+  quickChats = ['Roger that!', 'To the lobby!', 'Lock & load', 'server password please?', 'Noob!'];
+  lastActive;
   @ViewChild('messageArea') messageArea: ElementRef;
 
   constructor(private _notifService: FloatNotificationService,
@@ -37,6 +40,9 @@ export class MessagingComponent implements OnInit {
               private _socketService: SocketService) { }
 
   ngOnInit(): void {
+
+    this.isMobile = window.innerHeight > window.innerWidth;
+
     this._notifService.setTitle('Messages');
     this.user = this._storageService.currentUser;
 
@@ -74,7 +80,7 @@ export class MessagingComponent implements OnInit {
     this.messageFlags.convosLoading = true;
     return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_BRIEF_MESSAGES).toPromise().then(result => {
       this.messageFlags.convosLoading = false;
-      console.log("brief messages = ", result);
+      // console.log("brief messages = ", result);
       this.groupMessages(result['result']);
     });
   }
@@ -123,7 +129,9 @@ export class MessagingComponent implements OnInit {
     this.conversation = [];
     this.messageFlags.msgLoading = true;
     this.messageFlags.userdataLoading = true;
-    this._apiService.getMessagesByChatid(chatid).toPromise().then( res => {
+    
+    this.lastActive = 'getting online status...';
+    this._apiService.getMessagesByChatid(chatid).then( res => {
       this.conversation = res['result'];
       this.messageFlags.msgLoading = false
       if(res['result'].length ===0) {
@@ -132,8 +140,18 @@ export class MessagingComponent implements OnInit {
       }
       // this.setOtherUserInfo();
       this.otherUser = this.chats[this.convoIndex];
+
+      this._apiService.getLastActive(this.otherUser.userid).then( res => {
+        this.lastActive = res['data'];
+      }).catch(() => {
+        this.lastActive = 'status unknown';
+      }); 
+
       this.messageFlags.msgLoading = false;
-      this.scrollDownMessages();
+
+      setTimeout(() => {    // rendering takes time, so delay the scrolldown impact
+        this.scrollDownMessages();
+      }, 1000);
     });
     this._navbarService.refreshUnseenMessages.next(true);
   }
@@ -161,7 +179,8 @@ export class MessagingComponent implements OnInit {
   }
 
   sendMessage() {
-    if(this.messageFlags.msgLoading) return;
+    if(this.messageFlags.msgLoading || this.messageFlags.sendingMessage) return;
+    this.messageFlags.sendingMessage = true;
     if(this.message && this.message.trim() !== '') {
       const sendObject = {_cid: this.selectedChat, sender: this.user._id, text: this.message, time: new Date().getTime(), otheruserid: this.chats[this.convoIndex].otherUser};
       this._socketService.pushData("new-message", sendObject);
@@ -173,18 +192,16 @@ export class MessagingComponent implements OnInit {
           time: new Date().getTime(),
           seen: false,
         });
-        
-        this.chats[this.convoIndex].text = this.message.textl
+        this.messageFlags.sendingMessage = false;
+        this.chats[this.convoIndex].text = this.message.text;
         this.chats[this.convoIndex].time = new Date().getTime();
         this.chats[this.convoIndex].seen = false;
-        // const dpAddress = this.dpLinks[this.convoIndex];
-        // this.dpLinks.splice(this.convoIndex,1); 
-        // this.dpLinks.unshift(dpAddress);
         this.convoIndex = 0;
         this.sortConvo();
-
         this.message = '';
+      setTimeout(()=> {
         this.scrollDownMessages();
+      }, 500)
       });
     }
   }
@@ -195,8 +212,10 @@ export class MessagingComponent implements OnInit {
   }
 
   scrollDownMessages() {
-    console.log("scrolling ", this.messageArea.nativeElement.scrollHeight);
-    this.messageArea.nativeElement.scrollTop = this.messageArea.nativeElement.scrollHeight;
+    // console.log("scrollHeight ", this.messageArea.nativeElement.scrollHeight);
+    this.messageArea.nativeElement.scrollTop = this.messageArea.nativeElement.scrollHeight+175;
+    // console.log("scrollTop ", this.messageArea.nativeElement.scrollTop);
+
   }
 
   convoOptions( action) {

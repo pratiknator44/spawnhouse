@@ -13,6 +13,7 @@ import { take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { SocketService } from 'src/assets/services/socket.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ImageSchemas } from 'src/assets/variables/image-schemas';
 
 @Component({
   selector: 'sh-profile',
@@ -41,7 +42,8 @@ export class ProfileComponent implements OnInit {
   nppwd: String; // password for now playing: if set
   nppwdRequestText: String = 'Send a request to join room';
   nowPlayingFlags = {showDeleteNowPlaying: false, showAddToFavs: false};
-
+  selectedFollowType;
+  followDpLinks = [];
 
   constructor( private _storageService : StorageService,
     private _apiService: APIservice,
@@ -66,16 +68,14 @@ export class ProfileComponent implements OnInit {
     // console.log("current user ", this._storageService.currentUser);
     if(this._activeRoute.snapshot.params.username) {
 
-    // if(this._activeRoute.snapshot.params.username === this._storageService.currentUser._id || this._activeRoute.snapshot.params.username !== this._storageService.currentUser.username) {
-    //   this._apiService.router.navigateByUrl('/profile'); return;
-    // }
-      this.userdp = null; this.usercover = null;
+      this.userdp = null;
+      this.usercover = null;
       this.isUserProfile = false;
-      this._apiService.http.get(APIvars.APIdomain+'/'+APIvars.APIsignup+'/'+this._activeRoute.snapshot.params.username).toPromise().then( result => {
-        console.log("this user ", result);
+      this._apiService.getUserProfileData(this._activeRoute.snapshot.params.username).then( result => {
+        // console.log("this user ", result);
         this._notifService.setTitle(result['user'].username || result['user'].fname + ' ' + result['user'].lname);
         if(!result || result['error']) {
-          console.log('user not found should route');
+          // console.log('user not found should route');
           this._apiService.router.navigate(['../not-found']);
           return;
         }
@@ -114,16 +114,13 @@ export class ProfileComponent implements OnInit {
       this.user = this._storageService.currentUser;
       this.getFollowData();
       // console.log(this.user);
-      this.userdp = this._storageService.dpLink;
-
+      this.userdp = new Promise(resolve => this._storageService.dpLink);
       if(!this._storageService.coverLink) {
         this.getCoverOfUser(this.user._id);
       } else {
         this.usercover = this._storageService.coverLink;
-        this.profileFlags.loadingCover = false;
       }
-
-      // this._navbarService.getDpSubject.next(true);
+     
       this.onlineStatus = 1;
       // this._apiService.dpSubject.subscribe(dpUrl => {
       //   this.userdp = dpUrl.dpUrl;
@@ -161,9 +158,6 @@ export class ProfileComponent implements OnInit {
       if(!result['result']) return;
       this._storageService.setSessionData('gamedata', JSON.stringify(result['result']));
       this.tempFavGamesArray = 'fav' in result['result'] ? result['result']['fav'].slice(0, 5) : [];
-
-
-
     });
   }
 
@@ -176,55 +170,33 @@ export class ProfileComponent implements OnInit {
         this._socketService.pushData('new-notification', {type: 'started following', sentBy: this._storageService.currentUser._id, targetid: this.user._id});
       };
 
-      this.user.followdata.followerCount = resolve['followerCount'];
+      this.followStatus === '+Follow' ? --this.user.followdata.followerCount : ++this.user.followdata.followerCount;
+      // this.user.followdata.followerCount = resolve['followerCount'];
     });
   }
 
   addRemoveFollower(followStatus, userid, i?) {
-    if(i) {
-      console.log("slicing array ", i);
-      this.followUsers.splice(i, 1);
-    }
-    this._apiService.addRemoveFollower(followStatus, userid).then(resolve => {
-      console.log("resolve == ", resolve);
+    this.followUsers = this.followUsers.splice(++i, 1);
+    this._apiService.addRemoveFollower(followStatus, userid).then(resolve => resolve).catch(error => {
+      this._notifService.makeToast.next({heading: 'error', text: 'Unable to change follower list '+error});
     });
   }
 
   removeFollowing(userid, i) {
-    if(i) {
-      console.log('removing a follower', i);
-      this.followUsers.splice(i, 1);
-    }
-    this._apiService.removeFollowing(userid).then(resolve => {
-      console.log('follower removed => ', resolve);
-    })
+    this.followUsers = this.followUsers.splice(++i, 1);
+    this._apiService.removeFollowing(userid).then(resolve => resolve).catch(error => {
+      this._notifService.makeToast.next({heading: 'error', text: 'Unable to remove following user '+error});
+    });
   }
 
   getDpOfUser(id) {
-    this.userdp = this._apiService.getUserImageById('dp', id);
+    this.userdp = this._apiService.getUserImageById('dp', id, true);
   }
 
   getCoverOfUser(id) {
-    id = id ? id : this.user._id;  // for user accessing own profile or not
-    if(!id) return;
-    
-    this._apiService.getImagePromise('cover', id).then( image => {
-      this.profileFlags.loadingCover = false;
-      if(image['type'] === 'application/json')  {
-        this.usercover = null;
-        this._storageService.setCover(null);
-        return;
-      }
-
-      let reader = new FileReader();
-      reader.addEventListener('load', () => {
-        this.usercover = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-        if(this.isUserProfile) this._storageService.setCover(this.usercover);
-      }, false);
-      if (image) {
-         reader.readAsDataURL(image as Blob);
-      }
-    });
+    this.profileFlags.loadingCover = true;
+    this.usercover = this._apiService.getUserImageById('cover', id);
+    this.profileFlags.loadingCover = false;
   }
 
   getFollowData(id?) {
@@ -285,31 +257,14 @@ export class ProfileComponent implements OnInit {
 
   setupImageUpload(isDp?, template?) {
     if( isDp) {
-      this.imageSchema = {
-        aspectRatio: 1/1,
-        format: 'jpg',
-        resizeToWidth: '300',
-        maintainAspectRatio: true
-      }
+      this.imageSchema = ImageSchemas.user_dpimage_schema;
       this.uploadMode = 'dp';
     }
     else {
-      this.imageSchema =
-      {
-        aspectRatio: 4/1,   //4/400,
-        format: 'jpg',
-        resizeToWidth: '1080',
-        maintainAspectRatio: true
-      }
+      this.imageSchema = ImageSchemas.user_coverimage_schema;
       this.uploadMode = 'cover';
     }
-    // this.showOverlay = true;
-    // this.setVisibilityImageOverlay(true);
     this.modalOpen(template, 'lg');
-  }
-
-  setupCoverPhotoUpload() {
-    // this.setVisibilityImageOverlay(true);
   }
 
   refreshImage() {
@@ -333,6 +288,7 @@ export class ProfileComponent implements OnInit {
   openGamingInfo() {
     this._navbarService.showOption.next('gamebroadcast');
     // this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
+    this._notifService.makeToast.next('feedback');
   }
 
   routeToEditProfile() {
@@ -379,19 +335,7 @@ export class ProfileComponent implements OnInit {
   }
 
   showAddToFavWarning(content) {
-    // this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
-    // this.nowPlayingFlags.showAddToFavs = true;
-
-    // this.nowPlayingFlags.showDeleteNowPlaying = false;
-    // open(content) {
-
     this.modalOpen(content);
-     // this._modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-        // this.closeResult = `Closed with: ${result}`;
-     // }, (reason) => {
-        // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-     // }); 
-    // }
   }
 
   modalOpen(content, size?) {
@@ -399,8 +343,6 @@ export class ProfileComponent implements OnInit {
     }, (reason) => {
     });
   }
-
-
 
   showAllFavourites() {
     this.tempFavGamesArray  = this.user.gamedata.fav;
@@ -477,8 +419,6 @@ export class ProfileComponent implements OnInit {
     return [];
 
   }
-  selectedFollowType;
-  followDpLinks = [];
 
   getFollow(type: string, template){
     this.modalOpen(template);
@@ -488,7 +428,7 @@ export class ProfileComponent implements OnInit {
     // this._overlayService.configSubject.next({transparent: false, closeOnClick: false});
     // this._overlayService.showSubject.next(true);
     this._userService.getFollowData(type, this.user._id).then(result => {
-      console.log("followers ", result);
+      // console.log("followers ", result);
       this.followUsers =  result['result'];
       this.profileFlags.loadingFollow = false;
       const l = this.followUsers.length;

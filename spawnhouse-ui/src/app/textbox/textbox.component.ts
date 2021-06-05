@@ -21,7 +21,7 @@ export class TextboxComponent implements OnInit {
   imageChangedEvent;
   imageFlags = {showPreview: false, showCropper: true, ok: false};
   playingFlags = {showSuggestions: false, showTextbox: false, texboxDisabled: false};
-  audience = [{icon: 'public', label: 'Public', value: 2},{icon: 'users', label: 'Whom I follow', value: 1},{icon: 'lock', label: 'Only Me', value: 0}];
+  audience = [{icon: 'public', label: 'Public', value: 'PUB'},{icon: 'users', label: 'Whom I follow', value: 'FLG'},{icon: 'lock', label: 'Only Me', value: "PVT"}];
   keys = ['Enter', 'Alt', 'Shift', 'Control', 'Tab', 'CapsLock', 'Meta', 'ContextMenu', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
   playStatus = 'Playing';
   statusUpdateForm: FormGroup;
@@ -38,7 +38,7 @@ export class TextboxComponent implements OnInit {
       hastags: new FormControl(),
       mentions: new FormControl(),
       location: new FormControl(),
-      audience: new FormControl(2, Validators.required)
+      audience: new FormControl('PVT', Validators.required)
     });
   }
 
@@ -165,7 +165,7 @@ loadImageFailed() {
 }
 
 fileChangeEvent(event) {
-  console.log("file event = ", event);
+  // console.log("file event = ", event);
   this.imageFlags.showPreview = true;
   this.imageFlags.showCropper = true;
   this.imageFlags.ok = false;
@@ -184,7 +184,7 @@ submitStatusUpdate() {
   console.log(this.statusUpdateForm.value);
 }
 
-setAudience(value: number) {
+setAudience(value: String) {
   this.statusUpdateForm.patchValue({
     audience: value
   });

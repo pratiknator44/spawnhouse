@@ -11,46 +11,33 @@
 }
 
 .cover-picture {
-    background-color: #CCC;
-    // height: auto;
+    background-color: #FFF;
     aspect-ratio: 4 / 1;
-}
-
-.cover-picture > img {
-    width: 100vw;
-    height: auto;
 }
 
 .user-dp-info {
     left: 10%;
     bottom: 0;
 }
-.dp-size {
-    height: 9rem; width: 9rem;
-    background-color: #06C;
+.dp {
+    height: 25vw; width: 25vw;
+    min-width: 2rem; min-height: 2rem;
+    max-height: 13rem; max-width: 13rem;
     overflow: hidden;
-    background-size: contain;
-
+    margin-left: 50%; transform: translate(-50%);
+    margin-bottom: -2rem;
+    aspect-ratio: 1;
+    border: solid 0.25rem white;
 }
-.dp-size:hover > .dp-edit {
-    height: 50%;
-    transition: height 0.5s;
+
+.dp:hover > .dp-edit {
+    height: 100%;
+    transition: height 0.25s;
 }
 .dp-edit {
     position: absolute;
-    width: 9rem; height: 0;
-    background-color: black;
-    opacity: 0.75;
-    // height: 50%;
-    border-bottom-left-radius: 6rem;
-    border-bottom-right-radius: 6rem;
-    bottom: 0;
-}
-
-.dp-image {
-    height: 9rem;
-    width: 9rem;
-    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 0;
 }
 
 .user-name {
@@ -168,9 +155,9 @@
     box-shadow: 0 0 5px 0 #000;
 }
 
-.btn {
-    border-radius: 0 !important ;
-}
+// .btn {
+//     border-radius: 0 !important ;
+// }
 
 .medq-np-width {
     width: 30%;
@@ -179,19 +166,6 @@
 .medq-d-block {
     display: none;
 }
-
-
-
-// @media screen and (max-width: 500px) {
-    
-//     .dp-size {
-//         height: 3rem; width: 3rem;
-//         background-color: #06C;
-//         overflow: hidden;
-//         background-size: contain;
-
-//     }
-// }
 
 @media screen and (max-width: 1000px) {
     .medq-np-width {
@@ -211,11 +185,4 @@
         font-size: 2rem;
         top: 4.5rem;
     }
-       
-    // .dp-size {
-    //     height: 5rem; width: 5rem;
-    //     background-color: #06C;
-    //     overflow: hidden;
-    //     background-size: contain;
-    // }
 }

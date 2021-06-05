@@ -29,11 +29,11 @@ export class APIservice {
     private _activeRoute: ActivatedRoute,
     private _storageService: StorageService,
     private _cookieService: CookieService) {
-      this.http = this._http;
-      this.router = this._router;
-      this.dom = this._dom;
-      this.activatedRoute = this._activeRoute;
-    }
+    this.http = this._http;
+    this.router = this._router;
+    this.dom = this._dom;
+    this.activatedRoute = this._activeRoute;
+  }
 
 
   logout() {
@@ -43,58 +43,81 @@ export class APIservice {
 
   relogin() {
     this._storageService.reset();
-    // this._cookieService.deleteAll('');
     this._router.navigate(['./login']);
   }
 
   getPhotos(type?) {
-    if(type === 'dp') {
-        return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_DP,  { responseType: 'blob' });
+    if (type === 'dp') {
+      return this._http.get(APIvars.APIdomain + '/' + APIvars.GET_DP, { responseType: 'blob' }).toPromise();
     }
-    else if(type === 'cover') {
-      return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER,  { responseType: 'blob' });
+    else if (type === 'cover') {
+      return this._http.get(APIvars.APIdomain + '/' + APIvars.GET_COVER, { responseType: 'blob' }).toPromise();
     }
   }
- 
+
   async getCover() {
-    const image =  await this._http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER,  { responseType: 'blob' }).toPromise();
-    if(image['type'] === 'application/json')
+    const image = await this._http.get(APIvars.APIdomain + '/' + APIvars.GET_COVER, { responseType: 'blob' }).toPromise();
+    if (image['type'] === 'application/json')
       return null;
-    
+
     const readerResult: any = await this.readAsDataURL(image);
     return this._dom.bypassSecurityTrustResourceUrl(readerResult);
   }
 
-  async getUserImageById(type: string, id: string) {
+  async getUserImageById(type: string, id: string, refresh?: boolean) {
+    if (!id) return null;
     let image = null;
     // console.log("getting ", type, 'for id ', id);
-    if(type === 'dp'){
-      if(this._storageService.getSessionData(id)) {
-
-        // console.log("dp already present for user", id);
-        return new Promise((resolve, reject) => {
-          setTimeout( () => {
-            const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData(id));
-            resolve(safeLink);
-          },0);
-        });
+    if (type === 'dp') {
+      if (!refresh) {
+        if (this._storageService.getSessionData(id)) {
+          // console.log("dp already present for user", id);
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData(id));
+              resolve(safeLink);
+            }, 0);
+          });
+        }
       }
-      image = await this._http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).toPromise();
+
+      image = await this._http.get(APIvars.APIdomain + '/' + APIvars.GET_DP_OF_USER + '/' + id, { responseType: 'blob' }).toPromise().then(res => res);
     }
-    else if(type === 'cover') {
-      console.log("Calling url ", APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id);
-      image = await this._http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id,  { responseType: 'blob' }).toPromise();
+    else if (type === 'cover') {
+      // console.log("Calling url ", APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id);
+      if (!refresh) {
+        if (this._storageService.getSessionData('cover_'+id)) {
+          // console.log("dp already present for user", id);
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData('cover_'+id));
+              resolve(safeLink);
+            }, 0);
+          });
+        }
+      }
+      image = await this._http.get(APIvars.APIdomain + '/' + APIvars.GET_COVER_OF_USER + '/' + id, { responseType: 'blob' }).toPromise().then(res => res);
     }
-    else return null;
+    // other image categories
+    else {
+      return null;
+    }
 
     // console.log("image =  ",type, image);
-    if(image['type'] === 'application/json') return null;
-    
+    if (image['type'] === 'application/json') {
+      this._storageService.setSessionData(id, null);
+      return null;
+    }
+
     const readerResult: any = await this.readAsDataURL(image);
-    
+
     const domParsed = this._dom.bypassSecurityTrustResourceUrl(readerResult);
+
     // save dp for future references:
-    this._storageService.setSessionData(id, readerResult);
+    if (type === 'dp')
+      this._storageService.setSessionData(id, readerResult);
+    else if (type === "cover")
+      this._storageService.setSessionData('cover_'+id, readerResult);
     return domParsed;
   }
 
@@ -111,40 +134,13 @@ export class APIservice {
     });
   }
 
-  getImagePromise(type, id) {
-
-    if(type === 'dp')
-      return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_DP_OF_USER+'/'+id, { responseType: 'blob' }).toPromise();
-    else if(type === 'cover') {
-      return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id,  { responseType: 'blob' }).toPromise()
-    }
-  }
-
-  async geturl(image) {
-    const reader = new FileReader();
-    return await
-    reader.addEventListener('load', () => {
-      // this.coverUrl = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-      // console.log("image loaded ", this.coverUrl);
-      // this.onPicUpdate.emit({type: 'dp', src: this.dp});
-      // console.log("dp emitted");
-      return this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-      this.coverPictureSubject.next({ coverurl: this.coverUrl});
-      this.coverPictureObservable = this.coverPictureSubject.asObservable();
-    }, false);
-
-    if (image) {
-      reader.readAsDataURL(image);
-    }
-  }
-
-
+  // called after user updates his dp, to reflect changes in navbar as well.
   getDp() {
-    this.getPhotos('dp').subscribe( image => {
+    this.getPhotos('dp').then(image => {
+      this.dpObservable = this.dpSubject.asObservable();
 
-      if(image.size < 30) {
-        this.dpSubject.next( {dpUrl: null});
-        this.dpObservable = this.dpSubject.asObservable();
+      if (image.size < 30) {
+        this.dpSubject.next({ dpUrl: null });
         return;
       }
       // convert raw image to Blob object
@@ -153,196 +149,207 @@ export class APIservice {
         this.dpUrl = this._dom.bypassSecurityTrustResourceUrl(reader.result.toString());
         // this.onPicUpdate.emit({type: 'dp', src: this.dp});
         // console.log("dp emitted");
-        this.dpSubject.next({ dpUrl: this.dpUrl});
-        this.dpObservable = this.dpSubject.asObservable();
+        this.dpSubject.next({ dpUrl: this.dpUrl });
+        // this.dpObservable = this.dpSubject.asObservable();
       }, false);
-  
+
       if (image) {
-         reader.readAsDataURL(image);
+        reader.readAsDataURL(image);
       }
     });
   }
 
-      
+
   getNowPlaying() {
-    this._http.get(APIvars.APIdomain+'/'+APIvars.NOW_PLAYING).subscribe( np => {
+    this._http.get(APIvars.APIdomain + '/' + APIvars.NOW_PLAYING).toPromise().then(np => {
       // console.log('***now playing', np);
       this._storageService.nowplaying = np['np'];
       this._storageService.currentUser['nowplaying'] = np['np'];
     });
   }
 
+  async getNowPlayingOfCurrentUser() {
+    return await this._http.get(APIvars.APIdomain + '/' + APIvars.NOW_PLAYING).toPromise();
+  }
+
   async getGamedata() {
-    return await this._http.get(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA).toPromise();
+    return await this._http.get(APIvars.APIdomain + '/' + APIvars.SET_USER_GAMEDATA).toPromise();
     // .then(resolve => {return resolve['result']});
   }
 
   async addRemoveFollower(currentFollowStatus, userid) {
     const operation = currentFollowStatus === 'Follow' ? 'add' : 'sub';
-    return this._http.get(APIvars.APIdomain+'/'+APIvars.SET_FOLLOWING+'/'+operation+'/'+userid).toPromise();
+    return this._http.get(APIvars.APIdomain + '/' + APIvars.SET_FOLLOWING + '/' + operation + '/' + userid).toPromise();
   }
 
   getMessagesByChatid(chatid) {
-    if(chatid)
-      return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_MESSAGES_BY_ID+'/'+chatid);
+    if (chatid)
+      return this._http.get(APIvars.APIdomain + '/' + APIvars.GET_MESSAGES_BY_ID + '/' + chatid).toPromise();
   }
 
   getFollowDataById(id) {
     // const id = id ? '' : id;
-    return this._http.get(APIvars.APIdomain+'/'+APIvars.GET_FOLLOWDATA+'/'+id).toPromise();
+    return this._http.get(APIvars.APIdomain + '/' + APIvars.GET_FOLLOWDATA + '/' + id).toPromise();
   }
 
   removeNowPlaying() {
-    return this._http.delete(APIvars.APIdomain+'/'+APIvars.REMOVE_NOW_PLAYING).toPromise()
+    return this._http.delete(APIvars.APIdomain + '/' + APIvars.REMOVE_NOW_PLAYING).toPromise()
   }
 
   updatePlayerType(playerType) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.SET_USER_GAMEDATA, {playerType}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.SET_USER_GAMEDATA, { playerType }).toPromise();
   }
-  
+
   getUsersAround(location, distance?: number, page?: number) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_USERS_AROUND, {location, distance, page}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.GET_USERS_AROUND, { location, distance, page }).toPromise();
   }
 
   checkUsername(username: string) {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.GET_USERDATA+'/'+username).toPromise();
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.GET_USERDATA + '/' + username).toPromise();
   }
 
   getNotifications(pageNo?) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.NOTIFICATIONS, {pageNo}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.NOTIFICATIONS, { pageNo }).toPromise();
   }
 
   getNewNotificationCount() {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.NOTIFICATIONS+ '/'+APIvars.NEW_NOTIFICATION_COUNT).toPromise();
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.NOTIFICATIONS + '/' + APIvars.NEW_NOTIFICATION_COUNT).toPromise();
   }
 
   getUserdataById(id, fields?) {
-    return this.http.post(APIvars.APIdomain+"/"+APIvars.GET_USERDATA_BY_ID, {id, fields: fields? fields : null}).toPromise();
+    return this.http.post(APIvars.APIdomain + "/" + APIvars.GET_USERDATA_BY_ID, { id, fields: fields ? fields : null }).toPromise();
   }
 
   exists(field, value) {
-    return this.http.post(APIvars.APIdomain+"/"+APIvars.EXISTS, {field, value}).toPromise();
+    return this.http.post(APIvars.APIdomain + "/" + APIvars.EXISTS, { field, value }).toPromise();
   }
 
   markNotificationRead(id) {
     // const query = typeof id === 'string' ? [id] : id;  
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.SET_NOTIFICATION_SEEN, {notifid: typeof id === 'string' ? [id] : id}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.SET_NOTIFICATION_SEEN, { notifid: typeof id === 'string' ? [id] : id }).toPromise();
   }
 
   markAllNotificationsRead() {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.READ_ALL_NOTIFICATIONS).toPromise();
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.READ_ALL_NOTIFICATIONS).toPromise();
   }
 
   getUserByMention(searchword) {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.SEARCH_USER_FOR_MENTION+'/'+searchword).toPromise();
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.SEARCH_USER_FOR_MENTION + '/' + searchword).toPromise();
   }
 
   savePost(post) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.ADD_POST, {post}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.ADD_POST, { post }).toPromise();
   }
 
   getPosts(pageNo?, author?) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_POSTS, {pageNo, userid: author}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.GET_POSTS, { pageNo, userid: author }).toPromise();
   }
 
   deletePostById(id) {
-    return this.http.delete(APIvars.APIdomain+'/'+APIvars.DELETE_POST_BY_ID+'/'+id).toPromise();
+    return this.http.delete(APIvars.APIdomain + '/' + APIvars.DELETE_POST_BY_ID + '/' + id).toPromise();
   }
 
   addRemoveLike(postid) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.ADD_REMOVE_LIKE, {postid}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.ADD_REMOVE_LIKE, { postid }).toPromise();
   }
 
   setPostImage(encodedImageForm) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.SET_POST_IMAGE, encodedImageForm, {reportProgress: true, observe: 'events'});
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.SET_POST_IMAGE, encodedImageForm, { reportProgress: true, observe: 'events' });
   }
 
   async getMediaFromPostId(postid, imageName?) {
     let image = null;
     // console.log("getting ", type, 'for id ', id);
-    if(postid){
-
-      // not storing in storage since it exceeds quota limit
-
-      // if(this._storageService.getSessionData(postid)) {
-      //   return new Promise((resolve, reject) => {
-      //     setTimeout( () => {
-      //       const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData(postid));
-      //       resolve(safeLink);
-      //     },0);
-      //   });
-      // }
-      image = await this._http.post(APIvars.APIdomain+'/'+APIvars.GET_POST_MEDIA_BY_ID, {postid}, { responseType: 'blob' }).toPromise();
+    if (postid) {
+      image = await this._http.post(APIvars.APIdomain + '/' + APIvars.GET_POST_MEDIA_BY_ID, { postid }, { responseType: 'blob' }).toPromise();
     }
-    // else if(type === 'cover') {
-    //   console.log("Calling url ", APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id);
-    //   image = await this._http.get(APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id,  { responseType: 'blob' }).toPromise();
-    // }
-    // else return null;
 
     // console.log("image =  ",type, image);
-    if(image['type'] === 'application/json') return null;
-    
+    if (image['type'] === 'application/json') return null;
+
     const readerResult: any = await this.readAsDataURL(image);
     const domParsed = this._dom.bypassSecurityTrustResourceUrl(readerResult);
     // save dp for future references:
-    // this._storageService.setSessionData(postid, readerResult); // exceeds quota, throws error
     return domParsed;
   }
 
   removeUserImage(type) {
-    return this.http.get(APIvars.APIdomain+"/"+ APIvars.DELETE_DP_OR_COVER+"/"+type).toPromise();
+    return this.http.get(APIvars.APIdomain + "/" + APIvars.DELETE_DP_OR_COVER + "/" + type).toPromise();
   }
 
   getSimilarUsers(location, attributes?, pageNo?) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_SUGGESTED_USERS, {location, attributes, pageNo}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.GET_SUGGESTED_USERS, { location, attributes, pageNo }).toPromise();
   }
 
   getNowPlayingOfFollowing(pageNo?: Number, userlist?) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_NP_OF_FOLLOWERS, {pageNo, userlist}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.GET_NP_OF_FOLLOWERS, { pageNo, userlist }).toPromise();
   }
 
   removeFollowing(userid) {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.REMOVE_FOLLOWER+'/'+userid).toPromise();
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.REMOVE_FOLLOWER + '/' + userid).toPromise();
   }
 
   likeNowPlaying(npid) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.LIKE_NP, {npid}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.LIKE_NP, { npid }).toPromise();
   }
 
   deleteNowPlayingPost(npid) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.DELETE_NP_POST, {npid}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.DELETE_NP_POST, { npid }).toPromise();
   }
 
   getWhoLiked(npid) {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.GET_WHO_LIKED+'/'+npid).toPromise();
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.GET_WHO_LIKED + '/' + npid).toPromise();
   }
 
   addPlays(npid) {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.ADD_PLAYS+'/'+npid).toPromise();
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.ADD_PLAYS + '/' + npid).toPromise();
   }
 
   getPostDetails(npid) {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.NP_POST_WITH_DETAILS+'/'+npid).toPromise();
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.NP_POST_WITH_DETAILS + '/' + npid).toPromise();
   }
 
   addComment(npfeedid, comment) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.ADD_COMMENT, {npfeedid, comment}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.ADD_COMMENT, { npfeedid, comment }).toPromise();
   }
 
   getCommentsOnNp(npfeedid) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.GET_COMMENTS_ON_NP, {npfeedid}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.GET_COMMENTS_ON_NP, { npfeedid }).toPromise();
   }
 
   deleteNpComment(npfeedid, commentid) {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.NP_DELETE_COMMENT, {npfeedid, commentid}).toPromise();
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.NP_DELETE_COMMENT, { npfeedid, commentid }).toPromise();
   }
 
-  deleteAccount() {
-    return this.http.post(APIvars.APIdomain+'/'+APIvars.DELETE_ACCOUNT).toPromise();
+  deleteAccount(reasonsAndRate) {
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.DELETE_ACCOUNT, reasonsAndRate).toPromise();
   }
 
   getEula() {
-    return this.http.get(APIvars.APIdomain+'/'+APIvars.GET_EULA).toPromise();
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.GET_EULA).toPromise();
+  }
+
+  getActiveNPusers(pageNo?) {
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.ACTIVE_NOW_PLAYING_USERS, { pageNo }).toPromise();
+  }
+
+  saveFeedback(rating, text) {
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.FEEDBACK, { rating, text }).toPromise();
+  }
+
+  getUserProfileData(userid) {
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.APIsignup + '/' + userid).toPromise();
+  }
+
+  getGameName(searchword) {
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.GET_GAMEDATA + '/' + searchword).toPromise();
+  }
+
+  searchUser(searchword) {
+    return this.http.get(APIvars.APIdomain + '/' + APIvars.SEARCH_USER + '/' + searchword).toPromise();
+  }
+
+  getLastActive(userid) {
+    return this._http.get(APIvars.APIdomain + '/' + APIvars.LAST_ACTIVE + '/' + userid).toPromise();
   }
 }

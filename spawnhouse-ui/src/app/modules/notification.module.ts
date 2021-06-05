@@ -1,18 +1,18 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from '@angular/common';
 import { SharedModule } from './shared.module';
-import { AroundyouComponent } from '../aroundyou/aroundyou.component';
-import { FloatNotificationService } from 'src/assets/services/float-notification.service';
+import { AllNotificationsComponent } from "../all-notifications/all-notifications.component";
+import { NotificationsComponent } from "../notifications/notifications.component";
 
 @NgModule({
     declarations: [
-        AroundyouComponent
+        AllNotificationsComponent
     ],
     imports: [
         SharedModule,
         CommonModule,
     ],
-    providers: [FloatNotificationService]
+    providers: []
 })
 
 export class NotificationsModule { }

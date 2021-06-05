@@ -15,3 +15,12 @@ export enum GameConsoleEnum {
     wii = 'Wii',
     ot = 'Other',
 }
+
+export enum GamerTypeEnum {
+    PAS = 'Passionate Gamer',
+    PRO = 'Professional Gamer',
+    CAS = 'Casual Gamer',
+    ABL = 'Adult with Busy Life',
+    HOB = 'Hobbyist',
+    OTH = 'Other'
+}

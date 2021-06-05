@@ -6,7 +6,7 @@
             <div class="circle bg-theme text-center m-2"
                 style="height: 3rem; width: 3rem; transform: translate(-47deg);">
                 <span class="iconset icon-player text-white h4" *ngIf="!(usernp?.dp | async)"></span>
-                <img class="h-100 w-100 circle" [src]="usernp?.dp | async" *ngIf="usernp?.dp | async" />
+                <img class="h-100 w-100 circle user-default-img" [src]="usernp?.dp | async" *ngIf="usernp?.dp | async" />
             </div>
             <div class="" style="width: calc(100% - 4rem);">
                 <h5 class="m-0 text-theme hover-underline">
@@ -87,7 +87,7 @@
         <div class="user-reactions border-top mt-2" style="height: 2rem;">
             <span class="iconset2 text-danger h4 cursor-pointer ml-1 mr-3"
                 [ngClass]="{'icon-heart-o': !usernp.likedByUser, 'icon-heart': usernp.likedByUser}"
-                (click)="likeNp(usernp?._id, i)"></span>
+                (click)="likeNp(usernp, i)"></span>
 
             <span class="iconset icon-bubble2 h4 text-black ml-3 cursor-pointer"
                 (click)="routeToPost(usernp?._id)"></span>

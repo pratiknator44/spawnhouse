@@ -1,1 +1,46 @@
-<p>all-notifications works!</p>
+<div class="display-5">All Notifications</div>
+<div *ngFor="let notification of notifications; let i = index" class="hover-bg-grey cursor-pointer"
+  (click)="onNotificationClick(i)" [ngClass]="{'bg-theme-lite': !notification?.seen}">
+  <div class="row m-1">
+    <div class="col-3 text-center">
+      <img [src]="notification?.dpLink | async " class="dp-big circle mt-3" />
+    </div>
+    <div class="col-9 text-left">
+      <div class="m-2">
+        <span class="text-theme hover-underline font-weight-bold">
+          {{notification?.username}}
+        </span>
+        <!-- sent a notification {{notification?.time | ago}} -->
+        <!-- templates as per the type of notification -->
+        <span *ngIf="notification?.type === 'LIK'"> liked your <span class="text-theme hover-underline"
+            (click)="gotoNPpost(notification?.associatednppostid)">Now Playing post</span> </span>
+
+        <!-- comment on a post -->
+        <span *ngIf="notification?.type === 'COM'"> commented on your <span class="text-theme hover-underline"
+            (click)="gotoNPpost(notification?.associatednppostid)">Now Playing post</span></span>
+
+
+        <span *ngIf="notification?.type === 'FLG'"> started following you</span>
+        <span *ngIf="notification?.type === 'NP'">is {{notification?.extra?.stream ? 'streaming' : 'playing'}}
+          <span class="text-theme">{{ notification?.extra?.game}}</span> <span
+            *ngIf="notification?.extra?.username">&nbsp;as <span class="text-theme">{{ notification?.extra?.username
+              }}</span></span>
+          <span *ngIf="notification?.extra?.roomid">&nbsp; in a perosnal room</span>
+        </span>
+
+        <br>
+        <div class="badge badge-default text-secondary float-right">{{ notification?.time | ago : true : true }}</div>
+        <div class="actions hover-underline" *ngIf="notification?.extra?.stream" title="Watch Stream">
+          <a class="text-black" target="__blank" [href]="notification?.extra?.stream">
+            <span class="badge bg-grey badge-pill"><span
+                class="iconset icon-{{notification?.extra?.stream | streamlink}}"></span>&nbsp; {{
+              notification?.extra?.stream | streamlink: true | titlecase }}</span>
+          </a>
+          <!-- <span class="badge border-grey badge-pill">Get room ID</span> -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<loader2 [type]="2" *ngIf="flags.notificationsLoading"></loader2>

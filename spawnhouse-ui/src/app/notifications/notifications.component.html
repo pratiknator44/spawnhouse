@@ -1,30 +1,29 @@
 <div *ngFor="let notification of notifications; let i = index" class="hover-bg-grey cursor-pointer" (click)="onNotificationClick(i)" [ngClass]="{'bg-theme-lite': !notification?.seen}">
     <div class="row m-1">
       <div class="col-3 text-center">
-        <img [src]="notification?.dpLink | async " *ngIf="notification?.dpLink  | async" class="dp-big circle" />
-        <div class="dp-big circle bg-theme" *ngIf="!(notification?.dpLink  | async)"><h1 class="iconset icon-user text-white"></h1></div>
+        <img [src]="notification?.dpLink | async " class="dp-big circle mt-3" />
       </div>
-      <div class="col-9 text-left border-bottom-thin">
-        <div>
+      <div class="col-9 text-left">
+        <div class="m-2">
             <span class="text-theme hover-underline font-weight-bold">
               {{notification?.username}}
             </span>
             <!-- sent a notification {{notification?.time | ago}} -->
             <!-- templates as per the type of notification -->
-            <span class="text-secondary" *ngIf="notification?.type == 0"> liked your post </span>
+            <span *ngIf="notification?.type === 'LIK'"> liked your <span class="text-theme hover-underline" (click)="gotoNPpost(notification?.associatednppostid)">Now Playing post</span> </span>
 
             <!-- comment on a post -->
-            <span class="text-secondary" *ngIf="notification?.type == 1"> commented on your <span class="text-theme hover-underline" (click)="gotoNPpost(notification?.associatednppostid)">Now Playing post</span></span>
+            <span *ngIf="notification?.type === 'COM'"> commented on your <span class="text-theme hover-underline" (click)="gotoNPpost(notification?.associatednppostid)">Now Playing post</span></span>
             
 
-            <span class="text-secondary" *ngIf="notification?.type == 2"> started following you</span>
-            <span class="text-secondary" *ngIf="notification?.type == 3">is {{notification?.extra?.stream ? 'streaming' : 'playing'}}
+            <span *ngIf="notification?.type === 'FLG'"> started following you</span>
+            <span *ngIf="notification?.type === 'NP'">is {{notification?.extra?.stream ? 'streaming' : 'playing'}}
                 <span class="text-theme">{{ notification?.extra?.game}}</span> <span *ngIf="notification?.extra?.username">&nbsp;as <span class="text-theme">{{ notification?.extra?.username }}</span></span>
                 <span *ngIf="notification?.extra?.roomid">&nbsp; in a perosnal room</span>
             </span>
 
-            
-            <span class="badge badge-secondary float-right">{{ notification?.time | ago }}</span>
+            <br>
+            <div class="badge badge-default text-secondary">{{ notification?.time | ago : true : true }}</div>
             <div class="actions hover-underline" *ngIf="notification?.extra?.stream" title="Watch Stream">
               <a class="text-black" target="__blank" [href]="notification?.extra?.stream">
                 <span class="badge bg-grey badge-pill"><span class="iconset icon-{{notification?.extra?.stream | streamlink}}"></span>&nbsp; {{ notification?.extra?.stream | streamlink: true | titlecase }}</span>

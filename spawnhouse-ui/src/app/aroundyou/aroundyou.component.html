@@ -6,15 +6,16 @@
         </div>
     </div>
     <div *ngIf="!location" class="text-secondary">Showing results of previous location (if any). Please enable current location</div>
-    <h6 class="" *ngIf="!sessionLocation && !location"><span class="text-theme cursor-pointer hover-underline ml-2">Enable location</span> for better results</h6>
+    <h6 *ngIf="!sessionLocation && !location"><span class="text-theme cursor-pointer hover-underline ml-2">Enable location</span> for better results</h6>
+
+    <div class="text-center text-secondary">
+        <span class="iconset2 icon-nearby h3 text-danger"></span> &nbsp; icon indicates user plays who last played near your location
+    </div>
+
 
     <sh-user-card [carddata]="userSuggestions" (loadmore)="loadmore($event)" (userClicked)="routeToProfile($event)"></sh-user-card>
 
     <div class="text-center mt-3 mb-3" *ngIf="ayFlags.loadingContent && (sessionLocation || location) && !ayFlags.noMoreUsers">
-        <div class="text-center text-secondary">
-            <span class="iconset2 icon-nearby h3 text-danger"></span> &nbsp; icon indicates a fellow user plays/last played near your location
-        </div>
-        <br>
         <loader2 [type]="2"></loader2>
         Searching for friendlies
     </div>
@@ -23,4 +24,3 @@
         Nothing more to show for now
     </h6>
 </div>
-<!-- <h3 class="text-secondary">Your global location: {{location?.lat+' , '+location?.long}}</h3> -->

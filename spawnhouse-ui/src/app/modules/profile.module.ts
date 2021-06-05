@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { ImageuploadComponent } from '../imageupload/imageupload.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { SharedModule } from './shared.module';
-import { StorageService } from 'src/assets/services/storage.service';
 import { FeedsModule } from "./feeds.module";
 
 @NgModule({
@@ -19,7 +18,6 @@ import { FeedsModule } from "./feeds.module";
         ImageCropperModule,
         FeedsModule
     ],
-    providers: [StorageService]
 })
 
 export class ProfileModule { }

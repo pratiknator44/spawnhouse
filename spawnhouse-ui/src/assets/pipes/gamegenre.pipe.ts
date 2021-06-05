@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { GameConsoleEnum } from '../variables/game-consoles.enum';
+import { GameConsoleEnum, GamerTypeEnum } from '../variables/game-consoles.enum';
 import { ConsoleIconEnum, GameGenreEnum } from '../variables/gamegenre.enum';
 
 @Pipe({
@@ -132,5 +132,17 @@ export class PLayerTypePipe implements PipeTransform {
             case 'st': full = isIcon ? 'queen iconset2' : 'strategist';
         }
         return full;
+    }
+}
+
+// displays the type of gamer
+@Pipe({
+    name: 'gamerType',
+    pure: true
+})
+export class GamerTypePipe implements PipeTransform {
+
+    transform(str: string) {
+        return GamerTypeEnum[str];
     }
 }

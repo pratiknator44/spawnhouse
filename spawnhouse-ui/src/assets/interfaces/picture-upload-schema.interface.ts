@@ -1,6 +1,6 @@
 export interface IPictureUploadSchema {
     maintainAspectRatio: boolean,
-    aspectRatio: number,
+    aspectRatio: number | Number,
     resizeToWidth: string,
     format: string,
 }

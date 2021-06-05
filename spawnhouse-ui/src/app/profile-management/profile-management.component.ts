@@ -47,8 +47,28 @@ export class ProfileManagementComponent implements OnInit {
     {id: 'fr', checked: false},
     {id: 'co', checked: false},
   ];
+
+  gamerTypes = [{value: 'CAS', label: 'Casual'},
+  {value: 'HOB', label: 'Hobbyist'},
+  {value: 'PAS', label: 'Passionate'},
+  {value: 'PRO', label: 'Professional'},
+  {value: 'ABL', label: 'Adult with busy life'},
+  {value: 'OTH', label: 'Other'}];
+
   customcomment;
   recommendIndex;
+
+  deleteReasons = [
+    {label: 'I find it unsafe on Spawnhouse', value: 'unsafe', checked: false},
+    {label: 'Bad performance of this website or services', value: 'badPerformance', checked: false},
+    {label: 'This app is not for me', value: 'notForMe', checked: false},
+    {label: 'I don\'t find Spanwhouse useful', value: 'useless', checked: false},
+    {label: 'I didn\'t get the requested support', value: 'noHelp', checked: false},
+    {label: 'Better options available elsewhere', value: 'otherOp', checked: false},
+    {label: 'I\'m unable to save time for this', value: 'noTime', checked: false},
+    {label: 'I\'d rather prefer a Mobile App', value: 'mobileApp', checked: false},
+
+  ];
   
   constructor(
     private _storageService: StorageService,
@@ -69,6 +89,7 @@ export class ProfileManagementComponent implements OnInit {
     this.userinfoForm = new FormGroup( {
       fname: new FormControl(this.user.fname, [Validators.required, Validators.pattern(/^[a-zA-Z]+ [a-zA-Z]+$/)]),
       lname: new FormControl(this.user.lname, [Validators.required, Validators.pattern(/^[a-zA-Z]+ [a-zA-Z]+$/)]),
+      gamerType:new FormControl('gamerType' in this.user ? this.user.gamerType : null),
       username: new FormControl(this.user.username || ''),
       website: new FormControl(this.user.website || ''),
       bio: new FormControl(this.user.bio || ''),
@@ -101,7 +122,7 @@ export class ProfileManagementComponent implements OnInit {
             });
 
           } catch(e) {
-            console.error("found error ", e);
+            console.error("found and caught error ", e);
             this.gamedataForm.patchValue({
               genres: []
             });  
@@ -178,8 +199,6 @@ export class ProfileManagementComponent implements OnInit {
     this.gamedataForm.patchValue({
       genres: ar
     });
-
-    console.log("genre checked ", ar);
   }
 
   submitUserdata() {
@@ -236,7 +255,20 @@ export class ProfileManagementComponent implements OnInit {
   }
   
   initiateAccountDelete() {    
-    this._apiService.deleteAccount().then(response => {
+
+
+    // setup reasons for deletions
+    const l = this.deleteReasons.length;
+    let reasons = "";
+    for(let x=0; x<l; x++) {
+      if(this.deleteReasons[x].checked) {
+        reasons = reasons+this.deleteReasons[x].value+" ";
+      }
+    }
+
+    this.customcomment = this.customcomment+" "+reasons;
+
+    this._apiService.deleteAccount({reasons: this.customcomment, recomRate: this.recommendIndex}).then(response => {
       if(response['message'] === 'passed') {
         this._apiService.logout();
       }

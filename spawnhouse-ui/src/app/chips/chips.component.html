@@ -1,7 +1,7 @@
 <div class="position-relative">
     <div class="border-grey" style="min-height: 2.5rem; background-color:whitesmoke;">
         <div class="btn ml-1 bg-white cursor-pointer mt-1" *ngFor="let item of selected; let i = index">
-            <div (click)="removeItem(item)" class="float-left">{{ item.label }}</div>
+            <div (click)="removeItem(i)" class="float-left">{{ item.label }}</div>
             <div class="float-right text-center pl-2" (click)="setFavoriteByIndex(i)" *ngIf="config?.showFav">
                 <span class="iconset h5 text-danger" [ngClass]="{'icon-favorite_outline': item.value !== 'fav',  'icon-favorite': item.value === 'fav'}"></span>
             </div>

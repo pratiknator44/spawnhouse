@@ -11,9 +11,10 @@ import { PasswordresetComponent } from './passwordreset/passwordreset.component'
 import { AroundyouComponent } from './aroundyou/aroundyou.component';
 import { MessagingComponent } from './messaging/messaging.component';
 import { AboutComponent } from './about/about.component';
-import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
 import { ViewPostComponent } from './view-post/view-post.component';
 import { RedirectComponent } from './redirect/redirect.component';
+import { FeedbackComponent } from './feedback/feedback.component';
+import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,12 @@ const routes: Routes = [
     canActivate: [ProfileGuardService],
     loadChildren: () => import('./modules/home.module').then( m=> m.HomeModule),
     component: HomeComponent
+  },
+  {
+    path: 'feedback',
+    canActivate: [ProfileGuardService],
+    loadChildren: () => import('./modules/home.module').then( m=> m.HomeModule),
+    component: FeedbackComponent
   },
   {
     path: 'login',
@@ -75,6 +82,8 @@ const routes: Routes = [
   },
   {
     path: 'all-notifications',
+    canActivate: [ProfileGuardService],
+    loadChildren: () => import('./modules/notification.module').then(m=> m.NotificationsModule),
     component: AllNotificationsComponent
   },
   

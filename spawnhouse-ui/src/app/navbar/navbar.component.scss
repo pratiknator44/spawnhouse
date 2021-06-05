@@ -1,4 +1,4 @@
-@import '../../assets/variables/variables.scss';
+@import "../../assets/variables/variables.scss";
 
 nav {
     padding: 0;
@@ -51,11 +51,11 @@ nav {
 }
 
 .setting-op:hover {
-    background-color: #CCC;
+    background-color: #ccc;
 }
 
 .nav-shadow {
-    box-shadow: 0 0 0.5rem 0 #CCC;
+    box-shadow: 0 0 0.5rem 0 #ccc;
     z-index: 4;
 }
 
@@ -80,7 +80,8 @@ nav {
 }
 
 .audience > label {
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
     cursor: pointer;
 }
 
@@ -95,11 +96,9 @@ nav {
     padding-right: 1rem;
 }
 
-
 .mob-search-flex {
     flex: 45%;
 }
-
 
 .navbar-item-responsive {
     display: block;
@@ -107,13 +106,14 @@ nav {
 
 .mob-navbar-display {
     display: none;
-    height: 0; width: 0;
+    height: 0;
+    width: 0;
     overflow: hidden;
 }
 
 .notifications-container {
     width: 20rem;
-    left: -5rem;
+    right: -6rem;
 }
 
 .notifications-container-responsive {
@@ -122,17 +122,12 @@ nav {
     bottom: 5rem;
 }
 
-
 .message-container {
     width: 20rem;
-    left: -7rem;
+    right: -3rem;
 }
 
-// .mob-d-block {
-//     display: block;
-// }
-
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 800px) {
     .mob-search-flex {
         flex: 2%;
     }
@@ -140,42 +135,38 @@ nav {
         display: none;
     }
 
-    // .navbar-item-responsive, .message-container::before, .notifications-container::before  {
-    //     display: none;
-    // }
+    .mobile-view-only {
+        display: block !important;
+    }
 
-    // .notifications-container {
-    //     width: 100vw;
-    //     top: 5rem;
-    //     left: 0;
-    // }
+    .pc-view-only {
+        display: none !important;
+    }
+}
 
-    // .message-container {
-    //     width: 100vw;
-    //     left: -72vw;
-    //     top: 2rem;
-    // }
+@media only screen and (min-width: 800px) {
+    .mobile-view-only {
+        display: none !important;
+    }
 
-    // .mob-navbar-display {
-    //     display: block;
-    //     top: 92vh;
-    //     height: 5rem;
-    //     overflow: visible;
-    // }
-} 
+    .pc-view-only {
+        display: block !important;
+    }
+}
 
 .navbar-item {
     flex: 5%;
 }
 
-.message-container::before, .notifications-container::before {
-    content: '';
+.message-container::before,
+.notifications-container::before {
+    content: "";
     position: absolute;
     background-color: $litegrey;
-    width: 1rem; 
+    width: 1rem;
     height: 1rem;
     top: -0.5rem;
-    left: 40%;
+    right: 40%;
     transform: rotate(45deg);
 }
 
@@ -183,23 +174,23 @@ nav {
     height: auto;
 }
 
-// .save-password-qtip:hover > .save-password-qtip-text {
-//     display: block;
-// }
 .save-password-qtip-text {
     word-wrap: break-word;
     display: none;
-    top: calc(-100% - 5rem); right: 0;
+    top: calc(-100% - 5rem);
+    right: 0;
     opacity: 0.85;
 }
 
 .save-password-qtip-text::after {
-    content: '';
+    content: "";
     position: absolute;
     background-color: black;
-    height: 1rem; width: 1rem;
+    height: 1rem;
+    width: 1rem;
     transform: rotate(45deg);
-    right: 1rem; bottom: -0.5rem;
+    right: 1rem;
+    bottom: -0.5rem;
 }
 
 .password-box:focus + .save-password-qtip-text {
@@ -207,6 +198,26 @@ nav {
 }
 
 .min-width-flex {
-    min-width: 300px;   // 448 px
+    min-width: 300px; // 448 px
     // margin: 0.5rem;
+}
+
+.user-options {
+    width: 20rem;
+    z-index: 4;
+    top: calc(100% + 0.5rem);
+    right: 0.5rem;
+    width: 12rem;
+}
+
+.user-options::before {
+    content: "";
+    height: 1rem;
+    width: 1rem;
+    background-color: white;
+    position: absolute;
+    transform: rotate(45deg);
+    right: 0.5rem;
+    top: -0.5rem;
+    z-index: -1;
 }

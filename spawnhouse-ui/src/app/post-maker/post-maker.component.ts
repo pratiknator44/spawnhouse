@@ -106,7 +106,7 @@ export class PostMakerComponent implements OnInit {
     this.pmFlags.uploadingStatus = true;
     let postOb = {
       desc: this.postArea.nativeElement.innerHTML,
-      audience: 0,
+      audience: 'PVT',
       location: null,
       type: this.pmFlags.statusHasImage ? 2 : 1
     }
@@ -172,7 +172,7 @@ export class PostMakerComponent implements OnInit {
 
   
   fileChangeEvent(event): void {
-    console.log("file event = ", event);
+    // console.log("file event = ", event);
       this.imageChangedEvent = event;
       this.imageFile = event.target.files[0];
   }

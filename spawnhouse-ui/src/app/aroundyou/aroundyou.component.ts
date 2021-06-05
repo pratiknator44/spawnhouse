@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { StorageService } from 'src/assets/services/storage.service';
+import { DurationsEnum } from 'src/assets/variables/toasts.enum';
 
 @Component({
   selector: 'sh-aroundyou',
@@ -28,14 +29,10 @@ export class AroundyouComponent implements OnInit {
   ngOnInit(): void {
 
     this.userSuggestions = [];
-    this.location = JSON.parse(this._storageService.getSessionData('location'));
-    console.log("session location = ", this.sessionLocation);
-    
-    if(!this.location) {
-      this.getLocation();
-      return;
-    }
-    this.getSimilarUsers();
+    // this.location = JSON.parse(this._storageService.getSessionData('location'));  
+    this.getLocation();
+     
+    // this.getSimilarUsers();
   }
 
   getSimilarUsers() {
@@ -48,19 +45,23 @@ export class AroundyouComponent implements OnInit {
     // console.log("pageNo = ", this.pageNo, " locatin = ", this.location);
     this._apiService.getSimilarUsers(this.sessionLocation || this.location, null, this.pageNo).then(result => {
       // console.log("suggested users => ", result);
-      const l = result.result.length;
-      if( l === 0) { this.ayFlags.noMoreUsers = true; return }
-      // this.pageNo === 1 ? this.userSuggestions = result.result : this.userSuggestions.;
-      for(let x=0; x<l; x++) {
-        result.result[x]['dp'] = this._apiService.getUserImageById('dp', result.result[x]._id);
-        result.result[x]['distance'] = this.location && result.result[x].location ? this.getDistance(this.location, result.result[x].location) : null;
+      try {
+          const l = result.result.length;
+          if( l === 0) { this.ayFlags.noMoreUsers = true; return }
+          // this.pageNo === 1 ? this.userSuggestions = result.result : this.userSuggestions.;
+          for(let x=0; x<l; x++) {
+            result.result[x]['dp'] = this._apiService.getUserImageById('dp', result.result[x]._id);
+            result.result[x]['distance'] = this.location && result.result[x].location ? this.getDistance(this.location, result.result[x].location) : null;
+          }
+          this.pageNo === 1 ? this.userSuggestions = result.result : this.userSuggestions.push(...result.result);
+          // this.userSuggestions.push(...result.result, ...result.result, ...result.result, ...result.result);
+          
+          
+          if(result.result.length > 0) this.pageNo++;
+          this.ayFlags.loadingContent = false;
+      } catch (e) {
+        this._floatNotifService.makeToast.next({heading: 'error', text: 'Something went wrong '+e});
       }
-      this.pageNo === 1 ? this.userSuggestions = result.result : this.userSuggestions.push(...result.result);
-      // this.userSuggestions.push(...result.result, ...result.result, ...result.result, ...result.result);
-      
-      
-      if(result.result.length > 0) this.pageNo++;
-      this.ayFlags.loadingContent = false;
     });
   }
 
@@ -82,14 +83,17 @@ export class AroundyouComponent implements OnInit {
 
   getLocation() {
     console.log("getting your location");
-    this._floatNotifService.getLocationToast();
     // this.loadingUsers = true;
+    if(!this.location)
+      this._floatNotifService.makeToast.next({heading: 'Location', type: 'info', icon: 'iconset icon-location2', text: 'Please allow location permission', duration: DurationsEnum.SHORT });
+
     this._floatNotifService.getLocationSubject.asObservable().subscribe(data => {
       // console.log("got data ", data);
       this.location = data;
       this.pageNo = 1;
       this.getSimilarUsers();
     });
+    this._floatNotifService.askLocation();
     this.location = this._storageService.currentUser.location;
     // this.getUsers(this.location);
 

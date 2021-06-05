@@ -3,7 +3,7 @@
 <div class="d-flex d-wrap-flex m-2">
     <div class="circle bg-theme text-center m-2" style="height: 3rem; width: 3rem; transform: translate(-47deg);">
         <span class="iconset icon-player text-white h4" *ngIf="!(postDetails?.userdata?.dpLink | async)"></span>
-        <img class="h-100 w-100 circle" [src]="postDetails?.userdata?.dpLink | async" *ngIf="postDetails?.userdata?.dpLink | async" />
+        <img class="h-100 w-100 circle user-default-img" [src]="postDetails?.userdata?.dpLink | async" *ngIf="postDetails?.userdata?.dpLink | async" />
     </div>
     <div class="" style="width: calc(100% - 4rem);">
         <h5 class="m-0 text-theme hover-underline">
@@ -97,7 +97,7 @@
         <div class="d-flex d-wrap-flex">
             <div class="m-2">
                 <div class="circle bg-theme text-center text-white" style="height: 3rem; width: 3rem;">
-                    <img [src]="comment?.commenterdata?.dpLink | async" class="h-100 w-100" *ngIf="comment?.commenterdata?.dpLink | async" />
+                    <img [src]="comment?.commenterdata?.dpLink | async" class="h-100 w-100 user-default-img" *ngIf="comment?.commenterdata?.dpLink | async" />
                     <div *ngIf="!(comment?.commenterdata?.dpLink | async)">
                         <span class="iconset icon-player h2"></span>
                     </div>

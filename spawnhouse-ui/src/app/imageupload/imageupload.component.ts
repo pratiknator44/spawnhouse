@@ -34,7 +34,7 @@ export class ImageuploadComponent implements OnInit {
   }
 
   fileChangeEvent(event): void {
-    console.log("file event = ", event);
+    // console.log("file event = ", event);
       this.imageChangedEvent = event;
       this.temp = event.target.files[0];
   }
