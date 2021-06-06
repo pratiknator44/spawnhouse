@@ -167,13 +167,17 @@
     display: none;
 }
 
+.medq-d-none {
+    display: block ;
+}
+
 @media screen and (max-width: 1000px) {
     .medq-np-width {
         width: 100%;
     }
 
     .medq-d-none {
-        display: none;
+        display: none !important;
     }
 
     .medq-d-block {

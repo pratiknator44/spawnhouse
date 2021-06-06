@@ -1,5 +1,5 @@
 export enum APIvars {
-    APIdomain = 'http://localhost:3000',
+    APIdomain = '',
     APIlogin = 'login',
     CHECK_IF_TAKEN = 'signup/checkiftaken',
     APIemailOTP = 'signup/emailverification',

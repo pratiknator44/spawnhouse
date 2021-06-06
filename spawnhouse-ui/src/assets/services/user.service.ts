@@ -11,9 +11,6 @@ import { StorageService } from './storage.service';
 })
 export class UserService {
 
-    minimessageConfigSubject = new Subject();
-    minimessageFiredSubject = new Subject<any>();
-
     bg = ['primary', 'warning', 'success', 'theme', 'danger'];  
 
     // used to display feedback feature in case user logs out ONLY!
@@ -41,12 +38,6 @@ export class UserService {
     this._storageService.reset();
     // this._cookieService.deleteAll('');
     this._router.navigate(['./login']);
-  }
-
-  sendMessage(targetUser, message) {
-    this._http.post(APIvars.APIdomain+'/'+APIvars.SEND_MESSAGE, {targetUser, message}).subscribe( result => {
-      // console.log(result);
-    });
   }
 
   getFollowData(type: string, id?) {

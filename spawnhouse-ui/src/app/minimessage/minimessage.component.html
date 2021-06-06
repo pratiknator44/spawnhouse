@@ -1,34 +1,29 @@
-<div class="bg-white position-fixed z-nav minimessage-container rounded">
-    <div>
-    <h4 class="p-2 bg-theme text-white">Mini Message <span class="iconset2 icon-cross text-white float-right h6 cursor-pointer mt-1" (click)="closeOverlay();"></span></h4>
-
-    <div class="user-info d-flex text-center" *ngIf="user || true">
-        <img class="circle border-grey" [src]="user?.dpLink | async" *ngIf="user?.dpLink | async" style="height: 5rem; width: 5rem;" />
-        <div class="dp-big circle m-2" *ngIf="!(user?.dpLink | async)">
-            <div class="cursor-pointer text-center iconset2 icon-jolly-roger text-theme" style="font-size: 3rem; margin-top:-1rem;"></div>       
-        </div>
-        <div class="ml-2 text-left">
-            <div class="h4 m-0">{{user?.fname + ' '+ user?.lname }}</div> 
-            <div class="text-secondary d-flex">
-                <div *ngIf="user?.gamedata?.fav?.length > 0 && user?.gamedata?.fav[0]?.label">
-                    Also plays
-                    <h6>{{user?.gamedata?.fav[0]?.label}}</h6>
-                </div>
-                <div class="ml-3" *ngIf="user?.gamedata?.genres?.length > 0 && user?.gamedata?.genres[0]">
-                    Also Likes
-                    <h6>{{user?.gamedata?.genres[0] | gameGenre }}</h6>
-                </div>
-                
+<div class="user-info d-flex text-center m-2">
+    <img class="circle border-grey user-default-img" [src]="user?.dpLink | async" style="height: 5rem; width: 5rem;" />
+    <div class="ml-2 text-left">
+        <div class="h4 m-0">{{user?.fname + ' '+ user?.lname }}</div>
+        <div class="text-secondary d-flex">
+            <div *ngIf="user?.gamedata?.fav?.length > 0 && user?.gamedata?.fav[0]?.label">
+                Also plays
+                <h6>{{user?.gamedata?.fav[0]?.label}}</h6>
             </div>
+            <div class="ml-3" *ngIf="user?.gamedata?.genres?.length > 0 && user?.gamedata?.genres[0]">
+                Also Likes
+                <h6>{{user?.gamedata?.genres[0] | gameGenre }}</h6>
+            </div>
+
         </div>
     </div>
-    <div class="m-1">
-        <textarea class="form form-control outline-none corners-sharp" [(ngModel)]="message" placeholder="Type something..." style="resize: none; height: 10rem;"></textarea>
-        <!-- <div class="message-container m-3 border-none outline-none" contenteditable="true" ></div> -->
-    </div>
-    <div class="btn bg-theme text-white float-right w-100 mt-1" [ngClass]="{'bg-secondary': sendingStatus === 'Sending...', 'bg-white text-success': sendingStatus === 'sent'}" (click)="emitMessage()">
-        <span class="iconset icon-checkmark mr-3" *ngIf="sendingStatus === 'sent'"></span> {{sendingStatus}}
-        <span class="iconset icon-paper-plane mr-3" *ngIf="!sendingStatus"></span>
-    </div>
-    
 </div>
+<div class="m-1">
+    <textarea class="form form-control outline-none corners-sharp" [(ngModel)]="message" placeholder="Type something..."
+        style="resize: none; height: 10rem;"></textarea>
+</div>
+<div class="btn bg-theme text-white float-right m-2"
+    [ngClass]="{'bg-secondary': sendingStatus === 'Sending...', 'bg-white text-success': sendingStatus === 'sent'}"
+    (click)="emitMessage()">
+    Send &nbsp;<span class="iconset icon-checkmark mr-3" *ngIf="sendingStatus === 'sent'"></span> {{sendingStatus}}
+    <span class="iconset icon-paper-plane mr-3" *ngIf="!sendingStatus"></span>
+</div>
+
+<div class="btn btn-default float-right m-2" (click)="closeOverlay()">Cancel</div>

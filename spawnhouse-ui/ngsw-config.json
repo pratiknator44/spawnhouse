@@ -32,7 +32,6 @@
       "name": "responses",
       "urls": [
         "/resources/getfollowdata",
-        "/resources/dpofuser/*",
         "/signup",
         "/gamedata/*",
         "/*"],

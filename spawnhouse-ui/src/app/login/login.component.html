@@ -1,7 +1,7 @@
 <div class="position-absolute h-100 overflow-hidden bg-white login-container" style="width: 100vw; top:0; left:0;">
     <div class="position-relative h-100" style="top:0; left:0">
         <div class="text-theme mt-1 ml-3" style="font-size: 5vw;"><span
-                class="iconset2 icon-jolly-roger mr-2"></span>Spawnhouse<sup class="display-5 text-grey">beta</sup></div>
+                class="iconset2 icon-jolly-roger mr-2"></span>Spawnhouse <span class="display-5 text-grey">beta</span></div>
 
         <div class="text-center">
             <h3>Find and connect with gamers around you</h3>
@@ -32,8 +32,11 @@
 <ng-template #eulaTemplate let-dismiss="dismiss">
     <div class="display-2 text-center text-secondary float-animation-class">{{eula.greetText}}</div>
     <div class="display-4 text-center text-secondary float-animation-class" style="font-size: 2rem;">It's great to have you onboard :)</div>
+    
+    <div class="text-center mt-3 bg-black text-white" *ngIf="!eula.eula">Getting EULA, Please Wait...</div>
+    
     <div class="p-3 overflow-y-auto mt-3" style="word-wrap: break-word; word-break: break-all; max-height: 50vh;"
-        [innerHTML]="eula.eula"></div>
+        [innerHTML]="eula?.eula"></div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" *ngIf="loginFlags.showAcceptTnCButton"
             (click)="dismiss('Save click'); updateTnCAcceptance(); routeToProfile();">I Accept the Terms, Conditions and

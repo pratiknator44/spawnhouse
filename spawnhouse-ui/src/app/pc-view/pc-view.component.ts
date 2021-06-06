@@ -27,8 +27,7 @@ export class PcViewComponent implements AfterViewInit, AfterContentInit {
 
   constructor(private _floatNoteService: FloatNotificationService,
     private _overlayService: OverlayService,
-    private _navbarService: NavbarService,
-    private _userService: UserService)
+    private _navbarService: NavbarService)
   {}
   
   // make this true for all routes except login
@@ -56,19 +55,10 @@ export class PcViewComponent implements AfterViewInit, AfterContentInit {
     
     this._floatNoteService.config.asObservable().subscribe(config => {
       this.floatNotifConfig = config;
-      // console.log('got config as ', config);
     });
-
-    // this._floatNoteService.showToastOb.subscribe( show => {
-    //   this.showToast = show;
-    // });
 
     this._overlayService.showSubject.asObservable().subscribe( show => {
       this.showOverlay = show;
-    });
-
-    this._userService.minimessageConfigSubject.asObservable().subscribe( result => {
-      this.minimessage = result;
     });
 
   }
@@ -77,14 +67,5 @@ export class PcViewComponent implements AfterViewInit, AfterContentInit {
     this._overlayService.closeSubject.next();
   }
 
-  sendMessage(event) {
-    console.log("inside pc view ", event);
-    this._userService.minimessageFiredSubject.next(event);
-  }
-
-  closeMinimessage(status) {
-    this.minimessage = {show: false, userdata: null};
-    this._overlayService.showSubject.next(false);
-  }
 
 }

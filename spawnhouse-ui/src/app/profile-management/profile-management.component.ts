@@ -210,7 +210,7 @@ export class ProfileManagementComponent implements OnInit {
 
         // get fresh user data from api
         this._http.post(APIvars.APIdomain+'/'+APIvars.GET_USERDATA, {properties: 'personal'}).subscribe( result => {
-          console.log("get userdata ", result);
+          // console.log("get userdata ", result);
           sessionStorage.setItem('user', JSON.stringify(result['result']));
           this._navbarService.refreshUser.next();
         });

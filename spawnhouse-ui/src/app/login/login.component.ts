@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   verficationProgress: Boolean = false;
   rememberMe: Boolean = false;
   hasLoggedOut: Boolean = false;
-  eula = {greetText: 'Hi', eula: String};
+  eula = {greetText: 'Hi', eula: ''};
   loginFlags = {showAcceptTnCButton: true};
   errorText = null;
   @ViewChild('eulaTemplate') eulaTemplate;

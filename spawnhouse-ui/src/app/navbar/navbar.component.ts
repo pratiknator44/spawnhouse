@@ -182,7 +182,7 @@ export class NavbarComponent implements OnInit {
 
     // like for NP
     this._socketService.getData('new-np-like').subscribe(likeData => {
-      this._notifService.makeToast.next({ heading: 'like', text: '<strong>' + likeData.authorUsername + '</strong> liked your post' });
+      this._notifService.makeToast.next({ heading: 'like', text: '<strong>' + likeData.likerUsername + '</strong> liked your post' });
     });
   }
 
@@ -206,6 +206,7 @@ export class NavbarComponent implements OnInit {
       for (let x = 0; x < l; x++) {
         temp[x].dp = this._apiService.getUserImageById('dp', temp[x].userid);
       }
+
       this.navbarFlags.notificationsLoading = false;
       if (refresh) {
         this.notifications = temp;
@@ -231,8 +232,8 @@ export class NavbarComponent implements OnInit {
     this.searchSuggestions = [];
     // this._overlayService.configSubject.next({transparent: true, closeOnClick: true });
     // this._overlayService.showSubject.next(true);
-    
-    if (this.gameApiTimeout){
+
+    if (this.gameApiTimeout) {
       clearTimeout(this.gameApiTimeout);
     }
 
@@ -261,7 +262,7 @@ export class NavbarComponent implements OnInit {
         this._notifService.makeToast.next({ header: 'Something went wrong', text: 'Some error occured while searching' });
         this.searchSuggestions = [];
         this.noUserFound = true;
-      }).finally(() => {this.gameApiTimeout = null;});
+      }).finally(() => { this.gameApiTimeout = null; });
     }, 1500);
 
 
@@ -395,7 +396,7 @@ export class NavbarComponent implements OnInit {
     if (searchword < 2) {
       return;
     }
-    if (this.gameApiTimeout){
+    if (this.gameApiTimeout) {
       clearTimeout(this.gameApiTimeout);
     }
 
@@ -462,8 +463,9 @@ export class NavbarComponent implements OnInit {
 
       case 'all-notif':
         this.activeOption = null;
-        this.closeOverlay(); this.closeOverlay();
         this.routeTo('all-notifications');
+        break;
+        
       case 'userop':
         if (this.activeOption === 'userop') { this.activeOption = null; this.closeOverlay(); return; }
         this.activeOption = 'userop';

@@ -35,10 +35,10 @@
                 <div class="p-2 back-button cursor-pointer bg-lite" (click)="animate = false;">
                     <span class="iconset icon-chevron-left" style="font-size: 2rem;"></span>
                 </div>
-                <div class="p-2">
+                <div class="p-2 cursor-pointer" (click)="routeToProfile()">
                     <img [src]="chats[convoIndex]?.dpLink | async" class="dp-big circle" />
                 </div>
-                <div class="p-2 rounded">
+                <div class="p-2 rounded cursor-pointer"(click)="routeToProfile()">
                     <h6 class="text-truncate m-0 p-0">
                         {{(chats[convoIndex]?.username | async ) || 'spawnhouser'}}
                     </h6>
@@ -96,7 +96,7 @@
                 <div class="col-10 bg-theme">
                     <input type="text" class="form form-control m-1" [(ngModel)]="message"
                         [disabled]="messageFlags.sendingMessage" (keydown)="keyPressedInMessageBox($event)"
-                        placeholder="Write something..." />
+                        placeholder="Write something..." #messageTextbox />
                 </div>
                 <div class="col-2 bg-theme cursor-pointer" (click)="sendMessage()">
                     <div class="iconset icon-paper-plane text-white mt-1 text-center mt-2"></div>

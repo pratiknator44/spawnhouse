@@ -88,14 +88,15 @@ export class NpFeedsComponent implements OnInit {
 
   likeNp(usernp, i?) {
     const npid = usernp._id;
-    console.log(npid);
+    // console.log(npid);
     this.np[i].likedByUser = !this.np[i].likedByUser;
     this._apiService.likeNowPlaying(npid).then(res => {
-      console.log("np like response = ", res.result);
+      // console.log("np like response = ", res.result);
       if(res.result === 1) {
           ++this.np[i].noOfLikes;
           this.np[i].likedByUser = true;
-          this._socketService.pushData("new-np-like", {author: usernp.userid, username: usernp.userdata.username, npid});
+
+          this._socketService.pushData("new-np-like", {author: usernp.userid, likerUsername: this._storageService.currentUser.username, npid, likerid: this._storageService.currentUser._id});
           
       } else {
           --this.np[i].noOfLikes;

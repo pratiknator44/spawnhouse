@@ -29,6 +29,7 @@ export class MessagingComponent implements OnInit {
   isMobile: boolean = false;
   quickChats = ['Roger that!', 'To the lobby!', 'Lock & load', 'server password please?', 'Noob!'];
   lastActive;
+  @ViewChild('messageTextbox') messageElement: ElementRef;
   @ViewChild('messageArea') messageArea: ElementRef;
 
   constructor(private _notifService: FloatNotificationService,
@@ -174,7 +175,6 @@ export class MessagingComponent implements OnInit {
   }
 
   routeToProfile() {
-    console.log(this.otherUser);
     this._router.navigate(['/'+this.otherUser.userid]);
   }
 
@@ -201,6 +201,7 @@ export class MessagingComponent implements OnInit {
         this.message = '';
       setTimeout(()=> {
         this.scrollDownMessages();
+        this.messageElement.nativeElement.focus();
       }, 500)
       });
     }

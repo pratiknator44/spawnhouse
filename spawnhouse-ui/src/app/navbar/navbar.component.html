@@ -5,7 +5,7 @@
     <div class="navbar-item navbar-item-responsive text-black overflow-none" title="{{user.username}}"
       (click)="routeTo('profile')" (click)="selectedOption = user.username">
       <div class="text-center overflow-hidden" style="height: 100%;">
-        
+
         <img [src]="dp" class="cursor-pointer dp circle user-default-img"
           [ngClass]="{'filter-greyscale': selectedOption !== user.username}" />
         <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label"
@@ -91,7 +91,7 @@
         *ngIf="activeOption==='notif'">
 
         <div class="bg-lite text-bold" style="height: 3rem;">
-          <label style="line-height: 3;">Notifications
+          <label style="line-height: 3;">New Notifications
             <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span>
           </label>
           <div class="btn btn-default h-100 float-right border-gray" (click)="markAllNotificationsRead()"
@@ -108,9 +108,9 @@
             (notificationClicked)="markAsRead($event)">
           </sh-notifications>
         </div>
-        <div class="bg-lite font-0-5-rem text-theme text-bold hover-underline cursor-pointer"
+        <div class="bg-lite font-0-5-rem text-theme text-bold hover-underline cursor-pointer p-2"
           (click)="navOptionSelected('all-notif')"
-          style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px; height: 1rem;"> See All
+          style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;"> Show All
         </div>
       </div>
 
@@ -129,7 +129,7 @@
       <div class="message-container bg-white position-absolute mt-3 std-box-shadow rounded"
         *ngIf="activeOption==='msg'">
         <div class="bg-lite text-bold" style="height: 3rem;">
-          <label style="line-height: 3;">Messages <span
+          <label style="line-height: 3;">New Messages <span
               class="badge badge-pill badge-danger">{{alerts.messages}}</span></label>
         </div>
 
@@ -162,8 +162,10 @@
           </div>
         </div>
 
-        <div class="bg-lite text-bold cursor-pointer text-center mt-3" *ngIf="!navbarFlags.messagelistLoading || true"
-          (click)="routeToMessaging()">show more</div>
+
+        <div class="bg-lite font-0-5-rem text-theme text-bold hover-underline cursor-pointer p-2"
+          (click)="routeToMessaging()" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;"> Show All
+        </div>
       </div>
 
     </div>
@@ -176,8 +178,8 @@
       <div class="position-absolute bg-white position-relative user-options rounded border-grey"
         *ngIf="activeOption==='userop'">
         <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('manage')"><span
-          class="iconset icon-cog mr-2"></span>Manage profile</div>
-          <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('feedback')"><span
+            class="iconset icon-cog mr-2"></span>Manage profile</div>
+        <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('feedback')"><span
             class="iconset2 icon-star mr-2"></span>Feedback</div>
         <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('about')"><span
             class="iconset2 icon-jolly-roger mr-2"></span>About</div>
@@ -219,8 +221,7 @@
   <div class="navbar-item text-black overflow-none" title="{{user.fname}}" (click)="routeTo('profile')"
     (click)="selectedOption = user.fname">
     <div class="text-center overflow-hidden" style="height: 100%;">
-      <div class="cursor-pointer text-center iconset icon-size icon-player text-theme" *ngIf="!dp"></div>
-      <img [src]="dp" *ngIf="dp" class="cursor-pointer dp circle"
+      <img [src]="dp" class="cursor-pointer dp circle user-default-img" 
         [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
       <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div> -->
     </div>
@@ -438,7 +439,8 @@
     </div>
 
     <!-- data sub-template -->
-    <div class="hover-bg-grey p-3" *ngFor="let suggestion of searchSuggestions" (click)="gotoProfile(suggestion); dismiss('close')">
+    <div class="hover-bg-grey p-3" *ngFor="let suggestion of searchSuggestions"
+      (click)="gotoProfile(suggestion); dismiss('close')">
       <div class="d-flex">
         <img class="m-1 circle user-default-img" [src]="suggestion?.dpaddress | async"
           style="width: 2.5rem; height: 2.5rem;" />

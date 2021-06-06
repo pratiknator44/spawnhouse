@@ -36,7 +36,6 @@ export class HomeComponent implements OnInit {
 
     this._apiService.getActiveNPusers().then(data => {
       this.activeUsers.push(...data['result']);
-
       this.getDp();
     });
   }

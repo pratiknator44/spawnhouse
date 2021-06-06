@@ -2,24 +2,6 @@
     <navbar *ngIf="isLoggedIn" #navbar></navbar>
 </div>
 
-<!-- <nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex p-0" *ngIf="showLoginStrip">
-    <div class="w-100" style="height: auto; flex-wrap: wrap;">
-      <div class="text-white navbar-item text-center bg-theme d-inline-block w-75" style="font-size: 2rem;">
-        <span class="cursor-pointer iconset icon-sh font-lg">
-        </span> Spawnhouse <span class="h6 font-italic text-info" style="font-family: Arial, Helvetica, sans-serif;">Regroup Team!</span>
-      </div>
-      <div class="navbar-item text-center w-25 d-inline-block float-right m-0">
-        <div class="btn bg-theme text-white mt-1"><span class="iconset icon-user"></span> Login</div>
-        <div class="btn btn-success text-white mt-1 ml-2"><span class="iconset icon-user-plus"></span> Signup</div>
-      </div>
-    </div>
-</nav>   -->
-
-
-<div class="position-absolute" style="top: 10%; left: calc(50% - 12.5vw);" *ngIf="minimessage?.show">
-    <sh-minimessage (fireMessage)="sendMessage($event)" [user]="minimessage?.userdata" (close)="closeMinimessage($event)"></sh-minimessage>
-</div>
-
 <sh-overlay 
 [closeOnClick]="config.closeOnClick"
 [transparent]="config.transparent"

@@ -18,24 +18,16 @@ export class MinimessageComponent {
     this.close = new EventEmitter();
   }
 
-  // ngOnInit(): void {
-  //   // this.user['dpLink'] = 
-  // }
-
   closeOverlay() {
     this.close.emit(false);
   }
 
   emitMessage() {
-    // console.log(this.user);
-    if(this.message.trim().length === 0)  return;
+    if(this.message.trim().length === 0 || !this.message)  return;
     let emitob = this.user._id ? {id: this.user._id, message: this.message} : {id: null, message: this.message};
     this.fireMessage.emit(emitob);
     this.sendingStatus = 'sent';
     this.close.emit(false);
-    // setTimeout(()=> {
-    //   this.close.emit(false);
-    // }, 1000)
   }
 
 }

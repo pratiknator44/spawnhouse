@@ -68,44 +68,30 @@ export class APIservice {
     if (!id) return null;
     let image = null;
     // console.log("getting ", type, 'for id ', id);
-    if (type === 'dp') {
-      if (!refresh) {
-        if (this._storageService.getSessionData(id)) {
-          // console.log("dp already present for user", id);
-          return new Promise((resolve, reject) => {
-            setTimeout(() => {
-              const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData(id));
-              resolve(safeLink);
-            }, 0);
-          });
-        }
+    if (!refresh) {
+      if (this._storageService.getSessionData(type+'_'+id)) {
+        // console.log("dp already present for user", id);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData(type+'_'+id));
+            resolve(safeLink);
+          }, 0);
+        });
       }
-
+    }
+    if (type === 'dp') {
       image = await this._http.get(APIvars.APIdomain + '/' + APIvars.GET_DP_OF_USER + '/' + id, { responseType: 'blob' }).toPromise().then(res => res);
     }
     else if (type === 'cover') {
-      // console.log("Calling url ", APIvars.APIdomain+'/'+APIvars.GET_COVER_OF_USER+'/'+id);
-      if (!refresh) {
-        if (this._storageService.getSessionData('cover_'+id)) {
-          // console.log("dp already present for user", id);
-          return new Promise((resolve, reject) => {
-            setTimeout(() => {
-              const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData('cover_'+id));
-              resolve(safeLink);
-            }, 0);
-          });
-        }
-      }
       image = await this._http.get(APIvars.APIdomain + '/' + APIvars.GET_COVER_OF_USER + '/' + id, { responseType: 'blob' }).toPromise().then(res => res);
     }
-    // other image categories
     else {
       return null;
     }
 
     // console.log("image =  ",type, image);
     if (image['type'] === 'application/json') {
-      this._storageService.setSessionData(id, null);
+      this._storageService.setSessionData(type + '_' + id, null);
       return null;
     }
 
@@ -113,11 +99,8 @@ export class APIservice {
 
     const domParsed = this._dom.bypassSecurityTrustResourceUrl(readerResult);
 
-    // save dp for future references:
-    if (type === 'dp')
-      this._storageService.setSessionData(id, readerResult);
-    else if (type === "cover")
-      this._storageService.setSessionData('cover_'+id, readerResult);
+    // save image for future references:
+    this._storageService.setSessionData(type + '_' + id, readerResult);
     return domParsed;
   }
 
@@ -351,5 +334,23 @@ export class APIservice {
 
   getLastActive(userid) {
     return this._http.get(APIvars.APIdomain + '/' + APIvars.LAST_ACTIVE + '/' + userid).toPromise();
+  }
+
+  // minimessage api
+  sendMiniMessage(targetUser, message) {
+    return this._http.post(APIvars.APIdomain+'/'+APIvars.SEND_MESSAGE, {targetUser, message}).toPromise();
+  }
+
+  getOrCreateChatroom(otherUserId, currentUserId) {
+    return this._http.post(APIvars.APIdomain + '/' + APIvars.GET_CHATROOM_ID_BY_USERS, 
+    {users: [otherUserId, currentUserId]}).toPromise();
+  }
+
+  saveMiniMessage(receiverid, message, convoId) {
+    const resbody = convoId ? 
+    { _cid: convoId, receiverid, text: message } :
+    { receiverid, text: message };
+
+    return this._http.post(APIvars.APIdomain + '/' + APIvars.SAVE_MESSAGE, resbody).toPromise();
   }
 }

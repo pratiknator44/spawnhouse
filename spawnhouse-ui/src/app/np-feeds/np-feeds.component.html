@@ -5,8 +5,7 @@
         <div class="d-flex d-wrap-flex m-2">
             <div class="circle bg-theme text-center m-2"
                 style="height: 3rem; width: 3rem; transform: translate(-47deg);">
-                <span class="iconset icon-player text-white h4" *ngIf="!(usernp?.dp | async)"></span>
-                <img class="h-100 w-100 circle user-default-img" [src]="usernp?.dp | async" *ngIf="usernp?.dp | async" />
+                <img class="h-100 w-100 circle user-default-img" [src]="usernp?.dp | async" />
             </div>
             <div class="" style="width: calc(100% - 4rem);">
                 <h5 class="m-0 text-theme hover-underline">
@@ -21,7 +20,7 @@
                         *ngIf="usernp?.userid === currentuserid" (dblclick)="deleteNpPost(usernp._id, i)" (click)="confirmDeletePost(confirmDeletePostTemplate, usernp._id, i)">
                         <span class="iconset2 icon-cross delete-desc text-small"></span>
                         <div class="delete-desc-notice rounded text-center position-absolute p-1 bg-black text-white">
-                            Double-click to permanently delete this post
+                            Click to permanently delete this post
                         </div>
                         <!-- <span class="iconset icon-dots-horizontal-triple text-secondary"></span>
                             <div class="bg-white bg-hover-lite border-grey text-small p-1 hover-bg-lite position-absolute" style="width: 5rem; right: 0;">
