@@ -312,9 +312,6 @@
 label {
     margin: 0 !important;
 }
-.btn {
-    border-radius: 0;
-}
 
 // emojione classes do not touch
 .emojione{font-size:inherit;height:3ex;width:3.1ex;min-height:20px;min-width:20px;display:inline-block;margin:-.2ex .15em .2ex;line-height:normal;vertical-align:middle}img.emojione{width:auto}
@@ -337,7 +334,7 @@ label {
 }
 
 .default-cover {
-    background-image: url('./assets/images/default-cover.jpg    ');
+    background-image: url('./assets/images/default-cover.jpg');
     background-position: center;
     border:0; text-decoration:none; outline:none;
     background-size: cover;

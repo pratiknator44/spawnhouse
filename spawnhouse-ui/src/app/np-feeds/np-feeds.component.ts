@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { APIservice } from 'src/assets/services/api.service';
@@ -9,7 +10,26 @@ import { StorageService } from 'src/assets/services/storage.service';
 @Component({
   selector: 'sh-np-feeds',
   templateUrl: './np-feeds.component.html',
-  styleUrls: ['./np-feeds.component.scss']
+  styleUrls: ['./np-feeds.component.scss'],
+  animations: [trigger('fade', [
+    transition('void => active', [ // using status here for transition
+      style({ opacity: 0 }),
+      animate(250, style({ opacity: 1 }))
+    ]),
+    transition('* => void', [
+      animate(500, style({ height: 0 }))
+    ])
+  ]),
+  trigger('like', [
+    transition('unlike => like', [ // using status here for transition
+      style({ opacity: 0 }),
+      animate(500, style({ opacity: 1 }))
+    ]),
+    transition('like => unlike', [
+      animate(250, style({ opacity: 0.25 }))
+    ])
+  ])
+  ]
 })
 export class NpFeedsComponent implements OnInit {
 
@@ -30,7 +50,6 @@ export class NpFeedsComponent implements OnInit {
     }
   }
 
-
   constructor(private _notifService: FloatNotificationService,
     private _storageService: StorageService,
     private _apiService: APIservice,
@@ -38,7 +57,6 @@ export class NpFeedsComponent implements OnInit {
     private _modalService: NgbModal,
     private _socketService: SocketService) {
     }
-
 
   ngOnInit(): void {
     this._notifService.checkForLocation();
@@ -123,9 +141,8 @@ export class NpFeedsComponent implements OnInit {
       npid = this.postToDelete.postid;
       i = this.postToDelete.i;
     }
-    this._apiService.deleteNowPlayingPost(npid).then(result => {
-      this.np.splice(i, 1);
-    });
+    this.np.splice(i, 1);
+    this._apiService.deleteNowPlayingPost(npid).then(result => {});
 
     this._notifService.makeToast.next('feedback');
   }

@@ -24,7 +24,8 @@
         <div class="position-absolute message-add-container medq-d-none">
 
             <div class="btn btn-default cursor-pointer bg-white d-inline m-1 border-grey float-right mt-3"
-                (click)="initMinimessage(); modalOpen(minimessageTemplate)" *ngIf="!isUserProfile"><span class="iconset icon-bubbles3"></span> Message
+                (click)="initMinimessage(); modalOpen(minimessageTemplate)" *ngIf="!isUserProfile"><span
+                    class="iconset icon-bubbles3"></span> Message
             </div>
 
             <div class="btn cursor-pointer d-inline m-1 border-grey float-right mt-3"
@@ -50,8 +51,9 @@
                 <h6 class="d-inline display-6" *ngIf="user?.gamerType">, {{ user?.gamerType | gamerType }}</h6>
                 <!-- {{ usercover | json }} -->
                 <div class="h6 medq-d-block">
-                    <div class="badge badge-default cursor-pointer bg-white d-inline" (click)="initMinimessage(); modalOpen(minimessageTemplate)"
-                        *ngIf="!isUserProfile"><span class="iconset icon-bubbles3"></span> Message</div>
+                    <div class="badge badge-default cursor-pointer bg-white d-inline"
+                        (click)="initMinimessage(); modalOpen(minimessageTemplate)" *ngIf="!isUserProfile"><span
+                            class="iconset icon-bubbles3"></span> Message</div>
 
                     <div class="badge cursor-pointer"
                         [ngClass]="{'btn-danger': followStatus === 'Unfollow', 'bg-white': followStatus !== 'Unfollow'}"
@@ -202,14 +204,12 @@
         <div class="modal-body text-center">
             Would you like to add <div class="h6">{{user?.nowplaying?.game}}</div> in your favourite games list? </div>
         <div class="modal-footer p-0 border-none">
-            <div class="w-100 m-0">
-                <div class="btn btn-default w-50"
-                    (click)="removeNowPlaying(); addFavgame(user?.nowplaying, false); modal.close('Save click')">No,
-                    just remove</div>
-                <div class="btn bg-theme text-white w-50"
-                    (click)="removeNowPlaying(); addFavgame(user?.nowplaying, true); modal.close('Save click')">Yes, add
-                    it to <span class="iconset icon-favorite"></span> list
-                </div>
+            <div class="btn btn-lite"
+                (click)="removeNowPlaying(); addFavgame(user?.nowplaying, false); modal.close('Save click')">No,
+                just remove</div>
+            <div class="btn bg-theme text-white"
+                (click)="removeNowPlaying(); addFavgame(user?.nowplaying, true); modal.close('Save click')">Yes, add
+                it to <span class="iconset icon-favorite"></span> list
             </div>
         </div>
     </ng-template>
@@ -282,11 +282,10 @@
 <ng-template #minimessageTemplate let-modal>
     <div class="modal-header bg-theme">
         <h4 class="modal-title text-white" id="modal-basic-title">Mini Message</h4>
-        <button type="button" class="close border-none text-white" aria-label="Close"
-            (click)="modal.dismiss('a')">
+        <button type="button" class="close border-none text-white" aria-label="Close" (click)="modal.dismiss('a')">
             <span aria-hidden="true">×</span>
         </button>
     </div>
-    <sh-minimessage (fireMessage)="sendMessage($event)" [user]="minimessage?.userdata"
-        (close)="modal.dismiss('a')"></sh-minimessage>
+    <sh-minimessage (fireMessage)="sendMessage($event)" [user]="minimessage?.userdata" (close)="modal.dismiss('a')">
+    </sh-minimessage>
 </ng-template>

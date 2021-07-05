@@ -1,5 +1,5 @@
 <div class="d-flex d-wrap-flex" style="justify-content: space-evenly;">
-    <div class="user-card std-box-shadow rounded bg-white text-center m-1 p-3 position-relative rounded" *ngFor="let user of carddata; let i = index">
+    <div class="user-card std-box-shadow rounded bg-white text-center m-1 p-3 position-relative rounded" @fade *ngFor="let user of carddata; let i = index">
         <span class="text-grey position-absolute m-1 cursor-pointer z-nav iconset2 icon-cross" style="top:0; right:0; font-size: 1rem;" (click)="removeByIndex(i)"></span>
         <div class="text-center">
             <div>

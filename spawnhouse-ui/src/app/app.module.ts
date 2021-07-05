@@ -40,6 +40,7 @@ import { RedirectComponent } from './redirect/redirect.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { ToastComponent } from './toast/toast.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
 
@@ -74,7 +75,8 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     SocketIoModule.forRoot(config),
     NgbTooltipModule,
-    NgbModule
+    NgbModule,
+    BrowserAnimationsModule
 ],
   exports: [
   ],

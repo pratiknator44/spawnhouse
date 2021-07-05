@@ -14,11 +14,12 @@ import { INavbarMessage } from 'src/assets/interfaces/MsgNotif.interface';
 import { SocketService } from 'src/assets/services/socket.service';
 import { NowplayingService } from 'src/assets/services/now-playing.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
   elongate: boolean;
@@ -390,18 +391,17 @@ export class NavbarComponent implements OnInit {
     this._overlayService.closeSubject.next(true);
   }
 
-  searchGame(searchword) {
+  searchGame() {
+    if(this.nowplayingForm.get('game').value.length < 3 || this.nowplayingForm.get('game').value.trim() === '') return;
     this.searchingGame = true;
-    this.searchword = searchword;
-    if (searchword < 2) {
-      return;
-    }
+    this.searchword = this.nowplayingForm.get('game').value;
+
     if (this.gameApiTimeout) {
       clearTimeout(this.gameApiTimeout);
     }
 
     this.gameApiTimeout = setTimeout(() => {
-      console.log("Search word = ", this.searchword);
+      // console.log("Search word = ", this.searchword);
       this._apiService.getGameName(this.searchword).then(res => {
         this.gameSuggestions = res['gamedata'];
       }).catch(e => {
@@ -587,5 +587,12 @@ export class NavbarComponent implements OnInit {
 
   showFeedback(template) {
     this.modalOpen(template, 'small');
+  }
+
+  async pasteLink() {
+    const text = await navigator.clipboard.readText().then(text => text); 
+    this.nowplayingForm.patchValue({
+      stream: text
+    });
   }
 }

@@ -48,8 +48,10 @@ export class MessagingComponent implements OnInit {
     this.user = this._storageService.currentUser;
 
     this._socketService.getData('new-message').subscribe( data => {
-      console.log("message = ", data);
+      // console.log("message = ", data);
       this.addToConversation(data);
+
+      setTimeout(() => this.scrollDownMessages(), 500);
     });
 
     this.unseenConvos = this._navbarService.unseenMessagesRecord;
@@ -70,12 +72,7 @@ export class MessagingComponent implements OnInit {
     }
   }
 
-  sendSocketMessage() {}
-
-
-  getAllMessages() {
-    
-  }
+  getAllMessages() {}
 
   briefmessages() {
     this.messageFlags.convosLoading = true;

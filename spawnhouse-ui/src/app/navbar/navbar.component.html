@@ -1,7 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex sh-nav">
   <div class="w-100 d-flex" style="height: auto; flex-wrap: wrap;">
 
-
     <div class="navbar-item navbar-item-responsive text-black overflow-none" title="{{user.username}}"
       (click)="routeTo('profile')" (click)="selectedOption = user.username">
       <div class="text-center overflow-hidden" style="height: 100%;">
@@ -11,7 +10,6 @@
         <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label"
           [ngClass]="{'text-theme': selectedOption === user.username}">{{ user?.username }}</div>
       </div>
-
     </div>
 
     <div class="navbar-item navbar-item-responsive text-black" title="Home"
@@ -216,12 +214,10 @@
   </div>
 
 
-
-
   <div class="navbar-item text-black overflow-none" title="{{user.fname}}" (click)="routeTo('profile')"
     (click)="selectedOption = user.fname">
     <div class="text-center overflow-hidden" style="height: 100%;">
-      <img [src]="dp" class="cursor-pointer dp circle user-default-img" 
+      <img [src]="dp" class="cursor-pointer dp circle user-default-img"
         [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
       <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div> -->
     </div>
@@ -259,16 +255,24 @@
               <div class="m-1">
                 What are you playing today?<span class="text-danger">*</span>
               </div>
-
               <div class="m-1">
-                <sh-suggestions [icon]="'search'" [placeholder]="'Type a game name...'"
+
+                <input list="gamenames" class="form form-control" placeholder="Type a game name" formControlName="game" (keyup)="searchGame()" />
+
+                <div class="bg-secondary text-white text-center" *ngIf="searchingGame">Searching...</div>
+
+                <datalist id="gamenames">
+                  <option [value]="game.label" *ngFor="let game of gameSuggestions">{{game.label}}</option>
+                </datalist>
+
+                <!-- <sh-suggestions [icon]="'search'" [placeholder]="'Type a game name...'"
                   (inputChanged)="searchGame($event)" [inProgress]="searchingGame" [template]="gameTemplate"
                   [searchInput]="searchedGame" #gameSuggestComp></sh-suggestions>
 
                 <ng-template class="border-grey bg-white border-grey" #gameTemplate>
                   <div class="text-truncate hover-bg-grey p-2 cursor-pointer" *ngFor="let game of gameSuggestions"
                     (click)="gameSelect(game)">{{ game.label }}</div>
-                </ng-template>
+                </ng-template> -->
               </div>
             </div>
 
@@ -290,7 +294,7 @@
               Share the above information with: <br>
               <input type="radio" id="all" name="audience" formControlName="audience" value="0" checked disabled />
               &nbsp;
-              <label for="all"> Everyone</label><br>
+              <label for="all">Everyone</label><br>
               <input type="radio" id="following" name="audience" formControlName="audience" value="1" disabled /> &nbsp;
               <label for="following">Who I follow</label><br>
               <input type="radio" id="followers" name="audience" formControlName="audience" value="2" disabled /> &nbsp;
@@ -341,7 +345,7 @@
               </div>
             </div>
             <div class="min-width-flex flex-6">
-              <div>Stream Link:</div>
+              <div (click)="pasteLink()" class="text-theme hover-underline cursor-pointer">Paste a stream link:</div>
               <div>
                 <input type="text" class="form form-control" formControlName="stream"
                   placeholder="http://www.youtube.com/some-stream-url" />
@@ -396,13 +400,11 @@
           </div>
 
           <div class="mt-3">
-            <button type="submit" class="btn bg-theme text-white float-right"
-              style="margin-right: -1rem; border-radius: 0;" (click)="dismiss('Cross click');">Save &
-              Broadcast</button>
+            <button type="submit" class="btn bg-theme text-white float-right m-1" (click)="dismiss('Cross click');">Broadcast &nbsp;<span class="iconset icon-paper-plane"></span></button>
           </div>
         </div>
       </form>
-      <button class="btn float-right border-grey float-right" (click)="dismiss('Cross click');">Cancel</button>
+      <button class="btn float-right border-grey float-right m-1" (click)="dismiss('Cross click');">Cancel</button>
     </div>
   </div>
 </ng-template>

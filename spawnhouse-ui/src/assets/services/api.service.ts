@@ -67,7 +67,6 @@ export class APIservice {
   async getUserImageById(type: string, id: string, refresh?: boolean) {
     if (!id) return null;
     let image = null;
-    // console.log("getting ", type, 'for id ', id);
     if (!refresh) {
       if (this._storageService.getSessionData(type+'_'+id)) {
         // console.log("dp already present for user", id);

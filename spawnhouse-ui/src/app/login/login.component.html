@@ -1,19 +1,20 @@
 <div class="position-absolute h-100 overflow-hidden bg-white login-container" style="width: 100vw; top:0; left:0;">
     <div class="position-relative h-100" style="top:0; left:0">
-        <div class="text-theme mt-1 ml-3" style="font-size: 5vw;"><span
-                class="iconset2 icon-jolly-roger mr-2"></span>Spawnhouse <span class="display-5 text-grey">beta</span></div>
+        <h3 class="text-theme mt-3 text-center"><span
+                class="iconset2 icon-jolly-roger mr-2"></span>Spawnhouse <span class="text-grey">beta</span></h3>
 
         <div class="text-center">
-            <h3>Find and connect with gamers around you</h3>
+            <h5>Find and connect with gamers around you</h5>
             <div class="mt-3 w-50 ml-auto mr-auto">Spawnhouse is the place to find like minded gamers around you.
                 Nothing is more fun than relations with common interests</div>
         </div>
+        <br><br><br>
         <!-- login signup module-->
         <div class="rounded text-center" style="padding: 3rem; padding-top: 0;">
-            <div class="iconset2 icon-jolly-roger text-theme p-0 m-0" style="font-size: 2rem;"></div>
+            <!-- <div class="iconset2 icon-jolly-roger text-theme p-0 m-0" style="font-size: 2rem;"></div> -->
 
             <div *ngIf="!verficationProgress">
-                <h6 class="text-secondary">sign up or</h6>
+                <!-- <h6 class="text-secondary">sign up or</h6> -->
                 <div class="d-inline-block ml-auto mr-auto">
                     <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
                     <input type="checkbox" [(ngModel)]="rememberMe" id="remember-me"> &nbsp; <label class="m-0 p-0"

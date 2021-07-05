@@ -12,7 +12,7 @@ declare var gapi: any;
 @Component({
   selector: 'sh-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   verficationProgress: Boolean = false;
@@ -120,5 +120,4 @@ export class LoginComponent implements OnInit {
       console.log(result);
     });
   }
-
 }

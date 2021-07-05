@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -8,13 +9,32 @@ import { StorageService } from 'src/assets/services/storage.service';
 @Component({
   selector: 'sh-view-post',
   templateUrl: './view-post.component.html',
-  styleUrls: ['./view-post.component.scss']
+  styleUrls: ['./view-post.component.scss'],
+  animations: [trigger('fade', [
+    transition('void => active', [ // using status here for transition
+      style({ opacity: 0 }),
+      animate(250, style({ opacity: 1 }))
+    ]),
+    transition('* => void', [
+      animate(250, style({ height: 0 }))
+    ])
+  ]),
+  trigger('like', [
+    transition('unlike => like', [ // using status here for transition
+      style({ opacity: 0 }),
+      animate(500, style({ opacity: 1 }))
+    ]),
+    transition('like => unlike', [
+      animate(250, style({ opacity: 0.25 }))
+    ])
+  ])
+  ]
 })
 export class ViewPostComponent implements OnInit {
 
   postid: String;
   postDetails: any;
-  vpflags = {loadingPost: false, loadingWhoLiked: false, mouseOverNp: false, submittingComment: false, loadingComments: false}
+  vpflags = { loadingPost: false, loadingWhoLiked: false, mouseOverNp: false, submittingComment: false, loadingComments: false }
   currentuserid: String;
   currentusername: String;
   comment: String = '';
@@ -31,38 +51,37 @@ export class ViewPostComponent implements OnInit {
     this.currentusername = this._storageService.currentUser.username;
     this.currentuserid = this._storageService.currentUser._id;
 
-    this._apiService.getPostDetails(this.postid).then( result => {
+    this._apiService.getPostDetails(this.postid).then(result => {
       this.postDetails = result['result'];
       // console.log("psot details ", this.postDetails);
 
-      if(!this.postDetails || this.postDetails.length === 0) {
+      if (!this.postDetails || this.postDetails.length === 0) {
         this._apiService.router.navigate(['/not-found']);
       }
       this.postDetails.userdata['dpLink'] = this._apiService.getUserImageById('dp', this.postDetails.userdata._id);
       this.getComments();
-    }).catch( error => {
+    }).catch(error => {
       this.postDetails = error;
     });
   }
 
   deleteNpPost() {
     this._apiService.deleteNowPlayingPost(this.postDetails._id).then(result => {
-      if(result['message'] === 'passed') {
+      if (result['message'] === 'passed') {
         this._apiService.router.navigate(['/home']);
       }
     });
   }
 
   getComments(refresh?) {
-    if(this.postDetails['noOfComments'] > 0 || refresh)
-    {
+    if (this.postDetails['noOfComments'] > 0 || refresh) {
       this.vpflags.loadingComments = true;
-      this._apiService.getCommentsOnNp(this.postid).then( result => {
+      this._apiService.getCommentsOnNp(this.postid).then(result => {
         this.comments = result['result'];
         // console.log("comments = ", this.comments);
         const l = this.comments.length;
-        
-        for(let x=0; x<l; x++) {
+
+        for (let x = 0; x < l; x++) {
           this.comments[x]['commenterdata']['dpLink'] = this._apiService.getUserImageById('dp', this.comments[x]['commenterdata']._id);
         }
         this.vpflags.loadingComments = false;
@@ -72,7 +91,7 @@ export class ViewPostComponent implements OnInit {
   }
 
   routeToProfile(_id) {
-    this._apiService.router.navigate(['/'+_id]);
+    this._apiService.router.navigate(['/' + _id]);
   }
 
   addPlays(npid) {
@@ -83,7 +102,7 @@ export class ViewPostComponent implements OnInit {
 
   getWhoLiked(npid) {
     this.vpflags.mouseOverNp = true;
-    if('likerusers' in this.postDetails)  return;
+    if ('likerusers' in this.postDetails) return;
     this.vpflags.loadingWhoLiked = true;
     this._apiService.getWhoLiked(npid).then(result => {
       // console.log("people who liked pos id ", npid, " ", result);
@@ -96,29 +115,29 @@ export class ViewPostComponent implements OnInit {
     this.postDetails.likedByUser = !this.postDetails.likedByUser;
     this._apiService.likeNowPlaying(npid).then(res => {
       // console.log("np like response = ", res);
-      if(res.result === 1) {
-          ++this.postDetails.noOfLikes;
-          this.postDetails.likedByUser = true;
+      if (res.result === 1) {
+        ++this.postDetails.noOfLikes;
+        this.postDetails.likedByUser = true;
       } else {
-          --this.postDetails.noOfLikes;
-          this.postDetails.likedByUser = false;
+        --this.postDetails.noOfLikes;
+        this.postDetails.likedByUser = false;
       }
     });
   }
 
   addComment() {
-    if(this.comment.trim().length === 0 || this.vpflags.submittingComment) return;
+    if (this.comment.trim().length === 0 || this.vpflags.submittingComment) return;
 
     this.vpflags.submittingComment = true;
-    this._apiService.addComment(this.postid, this.comment.substr(0,200)).then(result => {
+    this._apiService.addComment(this.postid, this.comment.substr(0, 200)).then(result => {
       // console.log("comment result => ", result);
       this.getComments(true);
       this.vpflags.submittingComment = false;
       this.comment = '';
 
       // send new notification request to the user of the pos
-      if(result['message'] === 'passed' && this.currentuserid !== this.postDetails.userid) {
-        this._socketService.pushData('new-notification', {type: 'comment', sentBy: this.currentuserid, targetid: this.postDetails.userid});
+      if (result['message'] === 'passed' && this.currentuserid !== this.postDetails.userid) {
+        this._socketService.pushData('new-notification', { type: 'comment', sentBy: this.currentuserid, targetid: this.postDetails.userid });
       }
     });
   }
@@ -126,29 +145,29 @@ export class ViewPostComponent implements OnInit {
   removeComment(npfeedid?, commentid?, i?) {
 
     // console.log(this.commentToDelete);
-    if(!npfeedid) {
+    if (!npfeedid) {
       npfeedid = this.commentToDelete.npfeedid;
       commentid = this.commentToDelete.commentid,
-      i = this.commentToDelete.i;
+        i = this.commentToDelete.i;
     }
 
-    this._apiService.deleteNpComment(npfeedid, commentid).then( result => {
+    this._apiService.deleteNpComment(npfeedid, commentid).then(result => {
       // console.log("result = ", result);
-      if(result['message'] === 'passed') {
+      if (result['message'] === 'passed') {
         this.comments.splice(i, 1);
       }
     });
   }
 
   modalopen(template) {
-    this._modalService.open(template, {ariaLabelledBy: 'modal-basic-title', size: 'sm'}).result.then((result) => {
+    this._modalService.open(template, { ariaLabelledBy: 'modal-basic-title', size: 'sm' }).result.then((result) => {
     }, (reason) => {
-    });  
+    });
   }
-  
+
   confirmDeleteComment(template, npfeedid, commentid, i) {
     this.modalopen(template);
-    this.commentToDelete = {npfeedid, commentid, i};
+    this.commentToDelete = { npfeedid, commentid, i };
     // console.log(this.commentToDelete);
   }
 
