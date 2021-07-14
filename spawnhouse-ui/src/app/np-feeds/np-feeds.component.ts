@@ -17,7 +17,7 @@ import { StorageService } from 'src/assets/services/storage.service';
       animate(250, style({ opacity: 1 }))
     ]),
     transition('* => void', [
-      animate(500, style({ height: 0 }))
+      animate(500, style({ width: 0, height: 0, opacity: 0 }))
     ])
   ]),
   trigger('like', [
@@ -142,6 +142,7 @@ export class NpFeedsComponent implements OnInit {
       i = this.postToDelete.i;
     }
     this.np.splice(i, 1);
+    return;
     this._apiService.deleteNowPlayingPost(npid).then(result => {});
 
     this._notifService.makeToast.next('feedback');

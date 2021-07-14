@@ -41,6 +41,7 @@ import { FeedbackComponent } from './feedback/feedback.component';
 import { ToastComponent } from './toast/toast.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ViewProfileComponent } from './view-profile/view-profile.component';
 
 const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
 
@@ -62,7 +63,8 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     RedirectComponent,
     FeedbackComponent,
     ToastComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    ViewProfileComponent
   ],
   imports: [
     BrowserModule,

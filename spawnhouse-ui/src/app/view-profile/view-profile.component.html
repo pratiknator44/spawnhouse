@@ -1,0 +1,245 @@
+<div (click)="routeTo('login')" class="mt-1" style="height: 3.25rem;">
+    <div class="ml-2 text-bold text-theme d-inline-block display-5" style="font-size: 1.75rem;">
+        <img rel="prefetch" src="../../assets/images/nocommentsyet.jpg" style="height: 2rem;" /> SpawnHouse &nbsp;<span class="display-6 text-black">Connect and organize with people around you</span>
+    </div>
+
+    <div class="display-5 btn btn-primary float-right">Sign Up/In</div>
+</div>
+<div class="cover-picture position-relative std-box-shadow">
+    <img [src]="usercover | async" class="w-100 h-100 default-cover" style="left:0;" />
+
+    <div *ngIf="profileFlags.loadingCover" class="bg-white text-black position-absolute t-0" style="left:50%">
+        Loading...
+    </div>
+    <div class="w-100 h-100 position-absolute t-0">
+        <div style="right: 0; top:0; height: 1.5rem; width: 1.5rem;"
+            class="position-absolute bg-white circle cursor-pointer" (click)="copyProfileUrl()">&nbsp;<span
+                class="iconset icon-share2"></span></div>
+
+
+        <div class="dp circle position-absolute b-0 overflow-hidden">
+            <img [src]="userdp | async" class="w-100 h-100 user-default-img" />
+        </div>
+    </div>
+</div>
+
+<div class="mt-3 flex-container">
+    <div class="side-info bg-white flex-4">
+        <div class="follow-list border-none text-black m-3">
+            <h3 class="text-secondary text-center"><strong>{{user?.username || ''}}</strong></h3>
+            <h4 class="text-secondary text-center display-6"><strong>{{(user?.fname || '')+ ' '+(user?.lname ||
+                    '')}}</strong>
+                <h6 class="d-inline display-6" *ngIf="user?.gamerType">, {{ user?.gamerType | gamerType }}</h6>
+            </h4>
+
+            <h4 class="medq-d-block">
+                <div class="text-secondary text-center mt-1 cursor-pointer cursor-pointer">
+                    <h4 class="hover-underline w-50 float-right">
+                        {{user?.followdata?.followerCount || 0}} Followers </h4>
+                    <h4 class="hover-underline">
+                        {{user?.followdata?.followingCount || 0}}
+                        Following</h4>
+                </div>
+            </h4>
+            <hr>
+            <div class="text-center text-secondary text-bold font-italic" *ngIf="profileFlags.loadingGamingInfo">
+                <loader2 [type]="0"></loader2>
+                <br>
+                Loading Gamedata
+            </div>
+
+            <div class="rounded border-grey text-center"
+                *ngIf="!user.nowplaying && isUserProfile && !profileFlags.loadingGamingInfo" (click)="openGamingInfo()">
+                <div class="p-1 hover-bg cursor-pointer"><span class="iconset2 icon-add h1 text-theme"></span> <span
+                        class="position-relative ml-2" style="top: -0.65rem;">Now Playing</span></div>
+            </div>
+
+
+            <div class="rounded border-grey text-center mt-1"
+                *ngIf="(!user?.gamedata || (user?.gamedata?.fav?.length === 0 && user?.gamedata?.genres?.length === 0)) && isUserProfile">
+                <div class="p-2 hover-bg cursor-pointer"><span class="iconset2 icon-heart-o h2 text-theme"></span> <span
+                        class="position-relative ml-2" style="top: -0.55rem;">My Preferences</span></div>
+            </div>
+
+            <div class="d-flex mt-3" style="font-size: 3rem;" *ngIf="user?.gamedata?.playerType">
+                <div class="ml-auto text-center mr-auto iconset icon-{{type | playertype: true}} text-{{type | playertype : false : true}}"
+                    *ngFor="let type of user?.gamedata?.playerType"
+                    title="{{type | playertype : false : false : true}}">
+                    <div style="line-height: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
+                        class="text-small">{{ type | playertype | titlecase }}</div>
+                </div>
+            </div>
+            <div class="p-2"></div>
+            <div class="mt-3" *ngIf="user?.gamedata">
+                <div *ngIf="user?.gamedata?.fav?.length > 0">
+                    <div>
+                        <div style="font-size: 1.5rem;" class="d-inline-block"><span
+                                class="iconset icon-favorite text-secondary mr-1"></span></div>
+                        <h4 class="text-secondary d-inline-block">Favourites</h4>
+                    </div>
+                    <div class="text-theme cursor-pointer" style="word-wrap: break-word;"
+                        [title]="'See who all are playing '+fav.label " [ngClass]="{'d-inline mr-2': fav.value === ''}"
+                        *ngFor="let fav of tempFavGamesArray">
+                        <span *ngIf="fav.value !== ''" class="iconset icon-favorite"></span>
+                        {{ fav.label }}
+                        <span *ngIf="fav.value === ''" class="text-black">,</span>
+                    </div>
+                    <label class="text-theme hover-underline cursor-pointer badge"
+                        *ngIf="user?.gamedata?.fav?.length > 5 && tempFavGamesArray.length === 5"
+                        (click)="showAllFavourites();"> +{{ user?.gamedata?.fav?.length - 5}} more</label>
+                </div>
+
+                <div *ngIf="user?.gamedata?.genres?.length > 0" class="mt-3">
+                    <div style="font-size: 1.5rem;" class="d-inline-block"><span
+                            class="iconset icon-tree text-secondary mr-1"></span></div>
+                    <h4 class="text-secondary d-inline-block">Genres</h4>
+
+                    <h5>
+                        <span class="badge text-white bg-{{bg[i]}} mr-1"
+                            *ngFor="let genre of user?.gamedata?.genres; let i = index"> {{ genre | gameGenre }}</span>
+                    </h5>
+                </div>
+            </div>
+
+            <div class="mt-3" *ngIf="user?.bio || user?.quote || user?.website">
+                <h4 class="text-secondary d-inline-block"><span class="iconset icon-user"></span>&nbsp;About</h4>
+                <div>{{user?.bio}}</div>
+                <div class="text-primary hover-underline cursor-pointer" (click)="gotoWebsite(user?.website)">
+                    {{user?.website}}</div>
+                <label class="font-italic text-secondary mt-3">{{ user?.quote }}</label>
+            </div>
+        </div>
+
+        <hr *ngIf="user?.gamedata">
+    </div>
+
+    <div class="bg-white ml-1 flex-8 mt-3">
+        <div class="text-secondary text-center mt-1 cursor-pointer cursor-pointer medq-d-none d-flex"
+            style="justify-content: space-evenly;">
+            <h3 class="hover-bg d-inline-block rounded">
+                {{user?.followdata?.followingCount}} Following
+            </h3>
+
+            <h3 class="hover-bg d-inline-block">
+                {{user?.followdata?.followerCount}} Followers
+            </h3>
+        </div>
+
+
+
+
+
+        <!-- <sh-np-feeds [userlist]="[user._id]" *ngIf="user._id"></sh-np-feeds> -->
+        <div class="ml-auto mr-auto" style="max-width: 800px;">
+            <div class="border-bottom mt-2 bg-white m-2 overflow-hidden" *ngFor="let usernp of np; let i = index">
+                <div class="d-flex d-wrap-flex m-2">
+                    <div class="circle bg-theme text-center m-2"
+                        style="height: 3rem; width: 3rem; transform: translate(-47deg);">
+                        <img class="h-100 w-100 circle user-default-img" [src]="usernp?.dp | async" />
+                    </div>
+                    <div class="" style="width: calc(100% - 4rem);">
+                        <h5 class="m-0 text-theme hover-underline">
+                            <span class="iconset2 icon-live text-danger" title="still playing"
+                                *ngIf="usernp?.stillplaying"></span>
+                            <span class="cursor-pointer" (click)="routeToProfile(usernp?.userid)">{{
+                                usernp?.userdata?.username
+                                }}</span>
+                            <span class="text-secondary text-small" *ngIf="!usernp?.stillplaying"> was playing</span>
+
+                        </h5>
+                        <div class="m-0 overflow-hidden" style="text-overflow: ellipsis; white-space: nowrap;">
+                            {{ usernp?.game }}
+                            <span class="text-secondary font-italic">
+                                <span class="iconset2 icon-live text-small"></span> &nbsp;
+                                <span class="font-italic">started {{usernp?.time | ago: true }}</span>
+                            </span>
+                        </div>
+                        <!-- icons options -->
+                        <div class="m-0">
+                            <a class="text-theme m-1" target="__blank" [href]="usernp?.stream" *ngIf="usernp?.stream"
+                                title="Goto Stream">
+                                <div class="circle bg-danger text-white d-inline-block text-center icons-container">
+                                    <div class="iconset icon-tv mt-1"></div>
+                                </div>
+                            </a>
+
+                            <div class="circle bg-success d-inline-block icons-container text-center m-1"
+                                *ngIf="usernp?.maxconnections">
+                                <div class="iconset2 icon-game-server text-white mt-1"
+                                    title="accepting players on server">
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- icons options ends -->
+                    </div>
+                </div>
+
+                <div class="text-center overflow-hidden" style="height: 10rem;" *ngIf="usernp?.imageLink?.length > 0">
+                    <img [src]="usernp?.imageLink" alt="Selected game has no image" class="w-100"
+                        style="margin-top:-5%;" />
+                </div>
+                <div class="mb-2 text-secondary display-5 mt-1" *ngIf="usernp?.desc"> {{(usernp?.desc | slice:0:75)}}
+                    <span class="text-theme hover-underline cursor-pointer" *ngIf="usernp?.desc?.length > 75">...
+                        more</span>
+                </div>
+
+
+                <div class="text-secondary">
+                    <div class="d-inline-block ml-2" [title]="usernp?.plays+' users played your stream'"
+                        *ngIf="usernp?.plays">
+                        <span class="iconset icon-tv"></span> {{usernp?.plays}}
+                    </div>
+
+                    <!-- <div class="d-inline-block ml-2 position-relative" *ngIf="usernp?.noOfLikes"><span
+                            class="iconset2 icon-heart"></span> <span class="cursor-pointer hover-underline ml-1"
+                            (click)="getWhoLiked(usernp?._id, i)">{{ usernp?.noOfLikes || '' }}</span>
+
+                        <div class="position-absolute overflow-hidden p-1 bg-black text-white text-small"
+                            [perfectScrollbar]="{suppressScrollX: true}" style="max-height: 12rem;"
+                            *ngIf="mouseOverNp === i">
+                            Likers: <span class="iconset2 icon-cross float-right mr-3 cursor-pointer"
+                                (click)="mouseOverNp=-1"></span>
+                            <loader2 [type]="2" *ngIf="homeflags.loadingWhoLiked"></loader2>
+                            <div class="p-2" style="width: 12rem; text-overflow: ellipsis;"
+                                *ngFor="let likeruser of usernp?.likerusers">
+                                <div class="text-bold">{{ likeruser?.username }}</div>
+                                <div>{{ likeruser?.fname+ ' '+likeruser?.lname }}</div>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="d-inline-block ml-2" *ngIf="usernp?.noOfComments"><span
+                            class="iconset icon-bubble2"></span>
+                        {{usernp?.noOfComments}}</div>
+                </div>
+                <div class="user-reactions border-top mt-2" style="height: 2rem;">
+                    <span class="iconset2 text-danger h4 cursor-pointer ml-1 mr-3"
+                        [ngClass]="{'icon-heart-o': !usernp.likedByUser, 'icon-heart': usernp.likedByUser}"></span>
+
+                    <span class="iconset icon-bubble2 h4 text-black ml-3 cursor-pointer"></span>
+
+                </div>
+            </div>
+
+            <!-- <loader2 [type]="2" *ngIf="!homeflags.feedsEnd && !homeflags.loadMoreFeeds"></loader2> -->
+        </div>
+
+        <!---------------------------------------------------------------------------->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+</div>

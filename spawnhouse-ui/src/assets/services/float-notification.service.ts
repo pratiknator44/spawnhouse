@@ -29,31 +29,6 @@ export class FloatNotificationService {
         }
     }
 
-    // getLocationToast() {
-    //     if (navigator.geolocation) {
-    //         navigator.geolocation.getCurrentPosition(location => {
-    //             // console.log("new location: ", location);
-    //             const formattedLocation = [location['coords']['latitude'], location['coords']['longitude'] ];   
-        
-    //             this._storageService.setSessionData('location', JSON.stringify(formattedLocation));
-
-    //             this._userService.saveLocation(formattedLocation);
-    //             // console.log("formattedLocation ", formattedLocation);
-    //             this.getLocationSubject.next(formattedLocation);
-    //             this.configToast("Getting Location... Found you :D", "Dismiss");
-    //             setTimeout( () => {
-    //                 // this.showToastSubject.next(false);
-    //             }, 2000);
-    //         },
-    //         showError => {
-    //             this.configToast("Error getting location.  Some features might not work correctly "+showError, "Dismiss");
-    //         // alert("Error getting location.  Some features might not work correctly");
-    //         });
-    //     } else {
-    //         this.configToast("Error getting location. Some features might not work correctly", "Dismiss");
-    //     }
-    // }
-
     askLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(location => {

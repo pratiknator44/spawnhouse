@@ -83,9 +83,9 @@ export class MessagingComponent implements OnInit {
     });
   }
 
-  groupMessages(messages) {
+  groupMessages(convos) {
     // console.log("got messages", messages);
-    const l = messages.length;
+    const l = convos.length;
     // this.dpLinks = [];
     this.chats = []
 
@@ -93,14 +93,15 @@ export class MessagingComponent implements OnInit {
     // seen is already sorted
     for(let x=0; x<l; x++) {
       this.chats.push({
-        id: messages[x].id,
-        userid: messages[x]['senderid'],
-        username: this.getUserdataById(messages[x]['senderid'], 'username fname lname').then(res => {return (res['result']['username'] || res['result']['fname']+' '+res['result']['lname']);}),
-        text: messages[x]['text'],
-        time: messages[x]['time'],
-        seen: messages[x]['seen'],
-        otherUser: messages[x]['senderid'],
-        dpLink: this._apiService.getUserImageById('dp', messages[x]['senderid'])
+        id: convos[x].id,
+        userid: convos[x]['senderid'],
+        username: this.getUserdataById(convos[x]['senderid'], 'username fname lname').then(res => {return (res['result']['username'] || res['result']['fname']+' '+res['result']['lname']);}),
+        text: convos[x]['text'],
+        time: convos[x]['time'],
+        seen: convos[x]['seen'],
+        otherUser: convos[x]['senderid'],
+        lastSender: convos[x].lastSender,
+        dpLink: this._apiService.getUserImageById('dp', convos[x]['senderid'])
       });
       // this.getUserImageById(messages[x]['senderid'], 'dp');
     }

@@ -69,7 +69,6 @@ export class APIservice {
     let image = null;
     if (!refresh) {
       if (this._storageService.getSessionData(type+'_'+id)) {
-        // console.log("dp already present for user", id);
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             const safeLink = this.dom.bypassSecurityTrustResourceUrl(this._storageService.getSessionData(type+'_'+id));
@@ -265,6 +264,10 @@ export class APIservice {
 
   getNowPlayingOfFollowing(pageNo?: Number, userlist?) {
     return this.http.post(APIvars.APIdomain + '/' + APIvars.GET_NP_OF_FOLLOWERS, { pageNo, userlist }).toPromise();
+  }
+
+  getNowPlayingOfUser(userid, pageNo?: Number) {
+    return this.http.post(APIvars.APIdomain + '/' + APIvars.GET_NP_OF_FOLLOWERS, { pageNo, userid }).toPromise();
   }
 
   removeFollowing(userid) {

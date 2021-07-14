@@ -1,12 +1,10 @@
-<!-- {{ postDetails | json }} -->
 <br>
 <div class="d-flex d-wrap-flex m-2">
     <div class="circle bg-theme text-center m-2" style="height: 3rem; width: 3rem; transform: translate(-47deg);">
-        <span class="iconset icon-player text-white h4" *ngIf="!(postDetails?.userdata?.dpLink | async)"></span>
         <img class="h-100 w-100 circle user-default-img" [src]="postDetails?.userdata?.dpLink | async"
             *ngIf="postDetails?.userdata?.dpLink | async" />
     </div>
-    <div class="" style="width: calc(100% - 4rem);">
+    <div style="width: calc(100% - 4rem);">
         <h5 class="m-0 text-theme hover-underline">
             <span class="iconset2 icon-live text-danger" title="still playing" *ngIf="postDetails?.stillplaying"></span>
             <span class="cursor-pointer" (click)="routeToProfile(postDetails?.userid)">{{
@@ -28,10 +26,6 @@
         </h5>
         <div class="m-0 overflow-hidden" style="text-overflow: ellipsis; white-space: nowrap;">
             {{ postDetails?.game }}
-            <span class="text-secondary font-italic">
-                <span class="iconset2 icon-live text-small"></span> &nbsp;
-                <span class="font-italic">started {{postDetails?.time | ago: true }}</span>
-            </span>
         </div>
         <!-- icons options -->
         <div class="m-0">
@@ -45,23 +39,21 @@
             <div class="circle bg-success d-inline-block icons-container text-center m-1"
                 *ngIf="postDetails?.maxconnections">
                 <div class="iconset2 icon-game-server text-white mt-1" title="accepting players on server"></div>
-
             </div>
         </div>
         <!-- icons options ends -->
     </div>
 </div>
 
-<div class="mb-2 display-4" style="margin-left: 4rem; font-size: 2rem;" *ngIf="postDetails?.desc"> {{postDetails?.desc}}
+<div class="mb-2 m-3 " style="font-size: 1.25rem;" *ngIf="postDetails?.desc"> {{postDetails?.desc}}
 </div>
-
-<div class="text-secondary">
+<div class="text-secondary ml-2">
     <div class="d-inline-block ml-2" [title]="postDetails?.plays+' users played this stream'"
         *ngIf="postDetails?.plays"><span class="iconset icon-tv"></span> {{postDetails?.plays}}</div>
 
-    <div class="d-inline-block ml-2 position-relative" *ngIf="postDetails?.noOfLikes"><span
-            class="iconset2 icon-heart"></span> <span class="cursor-pointer hover-underline ml-1"
-            (click)="getWhoLiked(postDetails?._id)">{{ postDetails?.noOfLikes || '' }}</span>
+    <div class="d-inline-block ml-2 position-relative" *ngIf="postDetails?.noOfLikes">
+        <span class="cursor-pointer hover-underline ml-1 badge badge-default"
+            (click)="getWhoLiked(postDetails?._id)">{{ postDetails?.noOfLikes || '' }} Likes</span>
 
         <div class="position-absolute overflow-hidden p-1 bg-black text-white text-small"
             [perfectScrollbar]="{suppressScrollX: true}" style="max-height: 12rem;" *ngIf="vpflags.mouseOverNp">
@@ -77,18 +69,20 @@
     </div>
 
 
-    <div class="d-inline-block ml-2" *ngIf="postDetails?.noOfComments"><span class="iconset icon-bubble2"></span> {{
-        postDetails?.noOfComments }}</div>
+    <div class="d-inline-block ml-2" *ngIf="postDetails?.noOfComments"><span class="cursor-pointer hover-underline ml-1 badge badge-default">
+        {{ postDetails?.noOfComments }} Comments</span> </div>
 
 </div>
 
-<div class="user-reactions border-top mt-2" style="height: 2rem;">
+<div class="user-reactions border-top mt-2 ml-3" style="height: 2rem;">
     <span class="iconset2 text-danger h4 cursor-pointer ml-1 mr-3"
         [@like]="postDetails?.likedByUser ? 'like' : 'unlike'"
         [ngClass]="{'icon-heart-o': !postDetails?.likedByUser, 'icon-heart': postDetails?.likedByUser}"
         (click)="likeNp(postDetails?._id)"></span>
     <!-- <span class="iconset icon-bubble2 h4 text-theme ml-3 cursor-pointer"></span> -->
 </div>
+<span class="text-secondary text-small ml-3">started {{postDetails?.time | ago : true : true }}</span>
+
 
 <div class="add-comments-area m-3">
     <textarea class="w-100 rounded m-1 outline-none border-grey" [(ngModel)]="comment" cols=10
@@ -112,15 +106,15 @@
 
     <div style="margin-top: 5rem;" *ngIf="comments?.length === 0 && !vpflags.loadingComments">
         <img src="../../assets/images/nocommentsyet.jpg" class="d-block mr-auto ml-auto"
-        style="height: 20vh; opacity: 0.75;" />
-        <div class="text-center text-secondary display-5">Be the first one to comment</div>
+            style="height: 20vh;" />
+        <div class="text-center text-secondary display-6 text-bold">Be the first one to comment</div>
     </div>
 
     <div class="m-1 bg-theme-lite overflow-hidden" @fade *ngFor="let comment of comments; let i = index">
         <div class="d-flex d-wrap-flex">
             <div class="m-2">
                 <div class="circle bg-theme text-center text-white" style="height: 3rem; width: 3rem;">
-                    <img [src]="comment?.commenterdata?.dpLink | async" class="h-100 w-100 user-default-img"
+                    <img [src]="comment?.commenterdata?.dpLink | async" class="h-100 w-100 user-default-img circle"
                         *ngIf="comment?.commenterdata?.dpLink | async" />
                     <div *ngIf="!(comment?.commenterdata?.dpLink | async)">
                         <span class="iconset icon-player h2"></span>
@@ -130,10 +124,10 @@
             <div style="width: calc(100% - 4rem);">
                 <h6 class="text-theme cursor-pointer hover-underline ml-2 p-0 mb-0">{{
                     comment?.commenterdata?.username}}:
-                    <div class="iconset2 icon-cross float-right d-inline-block text-secondary"
+                    <div class="float-right d-inline-block text-secondary p-1"
                         title="Double click to permanently remove this comment"
                         (click)="confirmDeleteComment(confirmDeleteCommentTemplate, postDetails?._id, comment?.time, i)"
-                        *ngIf="comment.commenter === currentuserid || postDetails?.userid === currentuserid"></div>
+                        *ngIf="comment.commenter === currentuserid || postDetails?.userid === currentuserid">×</div>
                 </h6>
                 <div class="text-secondary text-small ml-2"> {{comment.time | ago }} ago</div>
                 <div class="ml-2">{{comment?.comment}}</div>

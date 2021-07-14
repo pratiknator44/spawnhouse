@@ -70,6 +70,7 @@ export enum APIvars {
     DELETE_DP_OR_COVER = 'resources/deleteuserimage',
     GET_SUGGESTED_USERS = 'search/suggestedusers',
     GET_NP_OF_FOLLOWERS = 'nowplaying/nplistoffollowers',
+    GET_NP_OF_USER = 'nowplaying/nplistofuser',
     REMOVE_FOLLOWER = 'follow/removefollower',
     LIKE_NP = 'nowplaying/likenp',
     DELETE_NP_POST = 'nowplaying/deletenppost',

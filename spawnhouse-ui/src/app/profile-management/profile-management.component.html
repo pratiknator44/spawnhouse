@@ -107,7 +107,8 @@
                             <span class="text-secondary">
                                 <select class="form form-control" formControlName="gamerType">
                                     <option [value]="null">Select</option>
-                                    <option [value]="gtype.value" *ngFor="let gtype of gamerTypes">{{gtype.label}}</option>
+                                    <option [value]="gtype.value" *ngFor="let gtype of gamerTypes">{{gtype.label}}
+                                    </option>
                                 </select>
                             </span>
                         </div>
@@ -116,21 +117,23 @@
 
                     <div class="row mt-3">
                         <div class="col-6">Username
-                            <span class="text-secondary" style="font-size: 10px;">
+                            <!-- <span class="text-secondary" style="font-size: 10px;">
                                 will let you access spawnhouse.com/your-username
-                            </span>
+                            </span> -->
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
                             <input type="text" class="form form-control" formControlName="username"
-                                (focusout)="checkUsername()" />
+                                (focusout)="checkUsername()" pattern="[a-z0-9_.]{3,20}" />
+                            <div class="text-danger" *ngIf="userinfoForm.get('username').errors"> Should contain 3-20
+                                chartacters, alpha numeric, '_' and '.' accepted</div>
                         </div>
                         <div class="col-4">
                             <label class="btn text-primary cursor-pointer hover-underline"
                                 *ngIf="mgtFlags.checkingUsername" (click)="checkUsername()">checking...</label>
                             <span class="text-danger" *ngIf="mgtFlags.usernameExists && !mgtFlags.checkingUsername">is
-                                taken, try another {{mgtFlags.usernameExists}}</span>
+                                taken, try another</span>
                             <span class="text-success"
                                 *ngIf="!mgtFlags.usernameExists && !mgtFlags.checkingUsername">available</span>
                         </div>
@@ -192,7 +195,8 @@
                     <br>
                     <ul class="list-group">
                         <li class="list-group-item" *ngFor="let reason of deleteReasons">
-                            <input type="checkbox" value="{{reason.value}}" id="{{reason.value}}" [(ngModel)]="reason.checked"  />
+                            <input type="checkbox" value="{{reason.value}}" id="{{reason.value}}"
+                                [(ngModel)]="reason.checked" />
                             <label for="{{reason.value}}">{{reason.label}}</label>
                         </li>
 
@@ -206,11 +210,14 @@
                     <div class="">Out of 10, how likely are you going to recommend Spawnhouse to a friend?</div>
                     <div style="height: 3rem; width: 3rem;"
                         class="circle cursor-pointer d-inline-block m-1 border-grey text-center"
-                        *ngFor="let x of [0,1,2,3,4,5,6,7,8,9,10]" [ngClass]="{ 'bg-off-black text-white': recommendIndex === x}" (click)="recommendIndex = x">
+                        *ngFor="let x of [0,1,2,3,4,5,6,7,8,9,10]"
+                        [ngClass]="{ 'bg-off-black text-white': recommendIndex === x}" (click)="recommendIndex = x">
                         <div class="mt-2">{{ x }}</div>
                     </div>
                     <br>
-                    <button class="btn btn-danger ml-auto mr-auto mt-3 float-right" (click)="confirmDelete(confirmdeleteTemplate)"><span class="iconset2 icon-jolly-roger"></span>&nbsp; Pemanantly Delete my Account</button>
+                    <button class="btn btn-danger ml-auto mr-auto mt-3 float-right"
+                        (click)="confirmDelete(confirmdeleteTemplate)"><span
+                            class="iconset2 icon-jolly-roger"></span>&nbsp; Pemanantly Delete my Account</button>
                     <!-- <div class="text-small text-secondary">Please Note: Your messages to other users might still exist after account deletion.</div> -->
                 </div>
             </div>
@@ -225,8 +232,7 @@
 <ng-template #confirmdeleteTemplate let-dismiss="dismiss">
     <div class="modal-header bg-theme">
         <h4 class="modal-title text-white" id="modal-basic-title">It's hard to let you go...</h4>
-        <button type="button" class="close border-none text-white" aria-label="Close"
-            (click)="dismiss('Cross click')">
+        <button type="button" class="close border-none text-white" aria-label="Close" (click)="dismiss('Cross click')">
             <span aria-hidden="true">×</span>
         </button>
     </div>

@@ -1,0 +1,177 @@
+@import '../../assets/variables/variables.scss';
+
+.loader {
+    height: 100vh;
+    overflow: none;
+}
+
+.loader-center {
+    top:calc(50% - 3rem); left: calc(50% - 3rem);
+    
+}
+
+.cover-picture {
+    background-color: #FFF;
+    aspect-ratio: 4 / 1;
+}
+
+.user-dp-info {
+    left: 10%;
+    bottom: 0;
+}
+.dp {
+    height: 25vw; width: 25vw;
+    min-width: 2rem; min-height: 2rem;
+    max-height: 13rem; max-width: 13rem;
+    overflow: hidden;
+    margin-left: 50%; transform: translate(-50%);
+    margin-bottom: -2rem;
+    aspect-ratio: 1;
+    border: solid 0.25rem white;
+}
+
+.dp:hover > .dp-edit {
+    height: 100%;
+    transition: height 0.25s;
+}
+.dp-edit {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 0;
+}
+
+.user-name {
+    top: -3.2rem;
+    text-shadow: 2px 2px 2px black;
+}
+.user-name > label {
+    font-size: 3rem;
+    top: 4.5rem;
+}
+.user-name > label:hover {
+    text-decoration: underline;
+}
+
+// loader classes
+.div-center {
+    transform: translate(-50%, -50%);
+    top: 50%; left: 50%;
+    position: absolute;
+}
+
+.media-category {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.media-category-selected {
+    background-color: $theme-color;
+    color: white;
+}
+
+.online-dot {
+    height: 0.75rem; width: 0.75rem;
+    border-radius: 50%;
+    bottom: 1.75rem; right: -2rem;
+    position: absolute;
+}
+
+.add-media {
+    height: 7rem;
+    width: 7rem;
+    border-radius: 1rem;
+    font-size: 5rem;
+    color: rgb(253, 200, 200);
+    font-weight: 900;
+    border: none;
+    background-color: transparent;
+    outline: none ;
+}
+
+.media-content {
+    height: 112px;
+    width: 112px;
+    border: solid 1px grey;
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: calc( 100vh - 3.5rem); width: 100vw;
+    top: 3.5rem;
+}
+
+.recent-followers {
+    height: 3rem; width: 3rem;
+    border-radius: 50%;
+    border: solid 1px black;
+}
+
+.recent-followers-container {
+    flex-wrap: wrap;
+}
+
+.edit-cover-photo {
+}
+
+.message-add-container {
+    height: 3rem;
+    width: 20rem;
+    bottom: 1rem; right: 0;
+}
+
+.font-2rem {
+    font-size: 2rem;
+}
+.t-0-5rem {
+    top: 0.5rem;
+}
+.animate-width {
+    animation: anim-width-auto 0.25s forwards linear;
+}
+@keyframes anim-width-auto {
+    0% { width: 0px;}
+    100% {width: 7rem;}
+}
+
+.edit-game-container {
+    margin-left: 18.75%;
+    top: 10%;
+    box-shadow: 0 0 5px 0 #000;
+}
+
+// .btn {
+//     border-radius: 0 !important ;
+// }
+
+.medq-np-width {
+    width: 30%;
+}
+
+.medq-d-block {
+    display: none;
+}
+
+.medq-d-none {
+    display: block ;
+}
+
+@media screen and (max-width: 1000px) {
+    .medq-np-width {
+        width: 100%;
+    }
+
+    .medq-d-none {
+        display: none !important;
+    }
+
+    .medq-d-block {
+        display: block;
+    }
+
+    
+    .user-name > label {
+        font-size: 2rem;
+        top: 4.5rem;
+    }
+}

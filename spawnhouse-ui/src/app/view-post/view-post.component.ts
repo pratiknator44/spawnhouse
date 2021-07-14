@@ -61,7 +61,6 @@ export class ViewPostComponent implements OnInit {
       this.postDetails.userdata['dpLink'] = this._apiService.getUserImageById('dp', this.postDetails.userdata._id);
       this.getComments();
     }).catch(error => {
-      this.postDetails = error;
     });
   }
 

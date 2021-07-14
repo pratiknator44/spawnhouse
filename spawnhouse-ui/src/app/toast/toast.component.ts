@@ -18,7 +18,7 @@ export class ToastComponent implements OnInit {
     private _cookieService: CookieService) { }
 
   ngOnInit(): void {
-    this.setToasts();
+    // this.setToasts();
 
     this._notifService.showToasts.asObservable().subscribe( status => {
       this.showing = status;
@@ -34,14 +34,15 @@ export class ToastComponent implements OnInit {
     });
   }
 
-  setToasts() {
+  // test function
+  // setToasts() {
     // this.addFeedbackToast();
     // this.make({heading:'comment', text:'Someone commented on your post'});
     // this.make({heading:'error', text:'something went wrong'});
     // this.make({heading:'like', text:'Someone liked on your post'});
     // this.make({heading:'comment', text:'Someone commented on your post'});
     // this.make({heading:'follow', text: '<strong>accesspragya</strong> started following you'});
-  }
+  // }
 
   async make(toastOb) {
     let toast;

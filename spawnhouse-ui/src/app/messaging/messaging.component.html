@@ -7,10 +7,8 @@
             <br>
             Loading Conversations
         </div>
-
-
-        <div class="rounded border-bottom hover-bg cursor-pointer d-flex m-1" *ngFor="let chat of chats; let i = index"
-            (click)="getMessagesFromId(chat.id); convoIndex = i; isMobile ? animate = true : ''">
+        <div class="rounded border-bottom hover-bg cursor-pointer d-flex m-1" [ngClass]="{'bg-lite': !chat?.seen && chat?.lastSender!==user._id}" *ngFor="let chat of chats; let i = index"
+            (click)="getMessagesFromId(chat.id); convoIndex = i; isMobile ? animate = true : ''; chat.seen = true">
             <div class="p-2">
                 <img [src]="chat?.dpLink | async" class="dp-big circle" />
             </div>
@@ -20,7 +18,6 @@
                     {{(chat?.username | async ) || 'spawnhouser'}}
                 </h6>
                 <div class="display-6 text-truncate">{{chat?.text}}</div>
-                <!-- <div class="display-6 text-truncate">blablablablablablablablablablablablablablabla   !</div> -->
             </div>
         </div>
     </div>

@@ -15,6 +15,7 @@ import { ViewPostComponent } from './view-post/view-post.component';
 import { RedirectComponent } from './redirect/redirect.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
+import { ViewProfileComponent } from './view-profile/view-profile.component';
 
 const routes: Routes = [
   {
@@ -44,6 +45,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/profile.module').then( m=> m.ProfileModule),
     component: ProfileComponent
   },
+  {
+    path: 'user/:username',
+    component: ViewProfileComponent
+  }, 
   {
     path: 'manage',
     canActivate: [ProfileGuardService],

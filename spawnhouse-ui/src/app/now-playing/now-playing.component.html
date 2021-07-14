@@ -39,8 +39,8 @@
     <span class="iconset icon-{{ npdata?.stream | streamlink }} mr-2 text-black"></span>
     <a class="text-theme" target="__blank" [href]="npdata?.stream">Watch on {{ npdata?.stream | streamlink: true | titlecase }} </a>
 </div>
-<div *ngIf="npdata?.desc">
-    <label class="text-secondary m-0 pt-1 pb-1">{{ npdata?.desc }}</label>
+<div *ngIf="npdata?.desc" title="{{npdata?.desc}}">
+    <label class="text-secondary m-0 pt-1 pb-1">{{ npdata?.desc | slice : 0 : 75 }} {{ npdata?.desc?.length > 75  ? ' ...' : ''}}</label>
 </div>
 
 <div *ngIf="npdata?.roomid">

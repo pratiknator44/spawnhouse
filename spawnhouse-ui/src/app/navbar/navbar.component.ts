@@ -15,6 +15,7 @@ import { SocketService } from 'src/assets/services/socket.service';
 import { NowplayingService } from 'src/assets/services/now-playing.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'navbar',
@@ -41,7 +42,7 @@ export class NavbarComponent implements OnInit {
   showConsoleList = false;
   consolePipe;
   selectedConsole: string;
-  navbarFlags = { messagelistLoading: false, notificationsLoading: false, notificationsEnd: false };
+  navbarFlags = { messagelistLoading: false, notificationsLoading: false, notificationsEnd: false, lockGameName: false };
   activeOption: string;
   messages: INavbarMessage[] | any = [];
   notifications = [];  //INotification[] = [];
@@ -49,7 +50,7 @@ export class NavbarComponent implements OnInit {
   searchedGame = '';
   gameApiTimeout;
   searchword;
-
+  gameImage: string = '';
   consoles = [
     { icon: 'android', id: 'm' },
     { icon: 'windows8', id: 'pc' },
@@ -84,7 +85,8 @@ export class NavbarComponent implements OnInit {
     private _overlayService: OverlayService,
     private _socketService: SocketService,
     private _nowplayingService: NowplayingService,
-    private _modalService: NgbModal) { }
+    private _modalService: NgbModal,
+    private _titleService: Title) { }
 
   ngOnInit(): void {
     this._navbarService.startSocketConnection();
@@ -324,6 +326,7 @@ export class NavbarComponent implements OnInit {
       username: new FormControl(),
       audience: new FormControl(),
       stream: new FormControl(),
+      imageLink: new FormControl(),
       console: new FormControl(),
       estplaytime: new FormControl(1, [Validators.min(1), Validators.max(12)]),
       desc: new FormControl(),
@@ -371,6 +374,10 @@ export class NavbarComponent implements OnInit {
     if (nppw === ':o:') this.nowplayingForm.patchValue({ password: ':o:' });  // server is open
     this.nowplayingForm.removeControl('hasPrivateRoom');
 
+    this.nowplayingForm.patchValue({
+      imageLink: this.gameImage
+    });
+
     this._apiService.http.post(APIvars.APIdomain + '/' + APIvars.NOW_PLAYING, this.nowplayingForm.value).subscribe(result => {
       this._socketService.pushData('new-notification', { type: 'broadcast', sentBy: this.user._id, sentTo: 'follower' });
       this._notifService.closeOn.next(false); // close notification
@@ -391,10 +398,10 @@ export class NavbarComponent implements OnInit {
     this._overlayService.closeSubject.next(true);
   }
 
-  searchGame() {
-    if(this.nowplayingForm.get('game').value.length < 3 || this.nowplayingForm.get('game').value.trim() === '') return;
+  searchGame(searchword) {
+    if(searchword.length < 3 || searchword.trim() === '') return;
     this.searchingGame = true;
-    this.searchword = this.nowplayingForm.get('game').value;
+    this.searchword = searchword;
 
     if (this.gameApiTimeout) {
       clearTimeout(this.gameApiTimeout);
@@ -418,6 +425,7 @@ export class NavbarComponent implements OnInit {
     this.searchedGame = game.label;
     this.nowplayingForm.patchValue({ game: game.label });
     this.gameSuggestions = [];
+    this.navbarFlags.lockGameName = true;
   }
 
   routeTo(place) {

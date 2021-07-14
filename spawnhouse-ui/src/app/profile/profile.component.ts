@@ -71,7 +71,8 @@ export class ProfileComponent implements OnInit {
     let addusername;
     // console.log("current user ", this._storageService.currentUser);
     if (this._activeRoute.snapshot.params.username) {
-
+      if (this._activeRoute.snapshot.params.username === this._storageService.currentUser._id)
+        this._apiService.router.navigate(['/profile']);
       this.isUserProfile = false;
       this._apiService.getUserProfileData(this._activeRoute.snapshot.params.username).then(result => {
         // console.log("this user ", result);
@@ -108,6 +109,7 @@ export class ProfileComponent implements OnInit {
       this.getDpOfUser(this._activeRoute.snapshot.params.username);
 
       this.getCoverOfUser(this._activeRoute.snapshot.params.username);
+
       this.getFollowStatus(this._activeRoute.snapshot.params.username);
       // this.getGamedata()
       addusername = this._activeRoute.snapshot.params.username;
@@ -366,7 +368,7 @@ export class ProfileComponent implements OnInit {
 
     userdata.gamedata.fav = this.getCommonFavs();
     userdata.gamedata.genres = this.getCommonGenres();
-    this.minimessage = {userdata};
+    this.minimessage = { userdata };
   }
 
   getCommonFavs() {
@@ -441,7 +443,7 @@ export class ProfileComponent implements OnInit {
     //getting previous convo id, if not, create new.
 
     this._apiService.getOrCreateChatroom(this.user._id, JSON.parse(this._storageService.getSessionData('user'))['_id']).then(result => {
-      
+
       // get response on chat room creation
       const resbody = result['id'] ? { _cid: result['id'], receiverid: this.user._id, text: event.message } :
         { receiverid: this.user._id, text: event.message };
@@ -450,15 +452,27 @@ export class ProfileComponent implements OnInit {
       this._apiService.saveMiniMessage(this.user._id, event.message, result['id'] || null).then(response => {
 
 
-        const sendObject = {_cid: result['id'], sender: JSON.parse(this._storageService.getSessionData('user'))['_id'], text: event.message, time: new Date().getTime(), otheruserid: this.user._id };
-      this._socketService.pushData("new-message", sendObject);
+        const sendObject = { _cid: result['id'], sender: JSON.parse(this._storageService.getSessionData('user'))['_id'], text: event.message, time: new Date().getTime(), otheruserid: this.user._id };
+        this._socketService.pushData("new-message", sendObject);
 
 
 
-        this._notifService.makeToast.next({type: "success", text: "message sent", duration: DurationsEnum.SHORT});
-      }).catch (error => {
-        this._notifService.makeToast.next({type: "danger", text: "failed to send message :", error, duration: DurationsEnum.SHORT});
+        this._notifService.makeToast.next({ type: "success", text: "message sent", duration: DurationsEnum.SHORT });
+      }).catch(error => {
+        this._notifService.makeToast.next({ type: "danger", text: "failed to send message :", error, duration: DurationsEnum.SHORT });
       })
     });
   }
+
+  copyProfileUrl() {
+    const el = document.createElement('textarea');
+    el.value = "https://www.thespawnhouse.com/#/user/" + this.user._id;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    this._notifService.makeToast.next({ type: 'success', text: 'Profile link copied', duration: DurationsEnum.SHORT });
+  }
+
+
 }

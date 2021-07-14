@@ -11,6 +11,12 @@
             <span class="iconset icon-edit-pencil"></span> cover
         </div>
 
+        <div style="right: 0; top:0; height: 1.5rem; width: 1.5rem;" class="position-absolute bg-white circle cursor-pointer" (click)="copyProfileUrl()">&nbsp;<span class="iconset icon-share2"></span></div>
+
+
+
+
+
         <div class="dp circle position-absolute b-0">
             <img [src]="userdp | async" class="w-100 h-100 user-default-img" />
             <div class="dp-edit w-100 position-absolute t-0 cursor-pointer overflow-hidden" *ngIf="isUserProfile"
@@ -262,8 +268,7 @@
                                         class="iconset icon-user-minus"></span> &nbsp; Unfollow</div>
                             </div>
                             <div class="col-4" *ngIf="selectedFollowType === 'Followers' && isUserProfile">
-                                <div class="btn btn-light cursor-pointer" (click)="removeFollowing(user._id, i)"><span
-                                        class="iconset icon-user-minus"></span> &nbsp; Remove</div>
+                                <div class="btn btn-light cursor-pointer" (click)="removeFollowing(user._id, i)">Remove</div>
                             </div>
                         </div>
                     </div>

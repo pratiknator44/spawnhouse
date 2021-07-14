@@ -20,12 +20,7 @@ export class NotificationsComponent implements OnChanges {
     this.notifications = changes['notifications']['currentValue'];
   }
 
-  getUserdata() {
-    console.log(this.notifications);
-  }
-
   onNotificationClick(i) {
-
     // if notification is not seen, make it seen if the user clicks
     if (!this.notifications[i].seen) this.markAsRead(i);
 
