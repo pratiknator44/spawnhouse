@@ -466,7 +466,7 @@ export class ProfileComponent implements OnInit {
 
   copyProfileUrl() {
     const el = document.createElement('textarea');
-    el.value = "https://www.thespawnhouse.com/#/user/" + this.user._id;
+    el.value = "https://www.thespawnhouse.com/#/" + this.user._id;
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');

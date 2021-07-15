@@ -32,7 +32,7 @@ export class TokenInterceptor implements HttpInterceptor {
         err => {
         if (err instanceof HttpErrorResponse) {
           if (err.status === 401) {
-            this._floatNotifService.makeToast.next({heading: 'Logged Out', text:'Your have been logged out due to an authorized activity. If this was mistake, please contact us on help', icon: 'iconset icon-user', type: 'danger', duration: DurationsEnum.VERY_LONG});
+            this._floatNotifService.makeToast.next({heading: 'Guest Viewer', text:'You\'re not logged in', icon: 'iconset icon-user', type: 'info', duration: DurationsEnum.VERY_LONG});
           }
 
           else if (err.status === 404) {

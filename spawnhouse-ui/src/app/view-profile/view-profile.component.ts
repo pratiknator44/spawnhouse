@@ -31,7 +31,6 @@ export class ViewProfileComponent implements OnInit {
   tempFavGamesArray = []; // used to show before user clicks 'show all' option
   profileFlags = { loadingCover: true, loadingGamingInfo: true, showFeeds: false};
   homeflags = {loadMoreFeeds: true, feedsEnd: false, loadingWhoLiked: false};
-  npListPageNo = 1; np = [];
   constructor(private _storageService: StorageService,
     private _apiService: APIservice,
     private _notifService: FloatNotificationService,
@@ -84,7 +83,6 @@ export class ViewProfileComponent implements OnInit {
     }
     this._notifService.setTitle(this.user.username || this.user.fname + ' ' + this.user.lname);
     this.getCoverOfUser(this.user._id);
-    this.loadMore(true);
 
   }
 
@@ -156,7 +154,7 @@ export class ViewProfileComponent implements OnInit {
 
   copyProfileUrl() {
     const el = document.createElement('textarea');
-    el.value = "https://www.thespawnhouse.com/#/user/" + this.user._id;
+    el.value = "https://www.thespawnhouse.com/#/" + this.user._id;
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
@@ -165,44 +163,44 @@ export class ViewProfileComponent implements OnInit {
   }
 
 
-  loadMore(refresh?) {
-    if(this.homeflags.feedsEnd) return;
+  // loadMore(refresh?) {
+  //   if(this.homeflags.feedsEnd) return;
 
-    if(!this.homeflags.loadMoreFeeds) return;
+  //   if(!this.homeflags.loadMoreFeeds) return;
 
-    if(refresh) {
-      this.npListPageNo = 1;
-      this.np = [];
-    }
-    this.homeflags.loadMoreFeeds = false;
-    this._apiService.getNowPlayingOfFollowing(this.npListPageNo,['60bb308ec612912464891645']).then(nowplayings => {
-      this.np = nowplayings['result'] || [];
-      if(nowplayings['result'].length === 0)  this.homeflags.feedsEnd = true;   // permanant stop to feel load more
-      //getting dp of updated entries
-      this.getDpOfEntries(nowplayings['result']);
-      this.npListPageNo++;
-      // this.total.emit(this.np.length);
-    });
-  }
+  //   if(refresh) {
+  //     this.npListPageNo = 1;
+  //     this.np = [];
+  //   }
+  //   this.homeflags.loadMoreFeeds = false;
+  //   this._apiService.getNowPlayingOfFollowing(this.npListPageNo,['60bb308ec612912464891645']).then(nowplayings => {
+  //     this.np = nowplayings['result'] || [];
+  //     if(nowplayings['result'].length === 0)  this.homeflags.feedsEnd = true;   // permanant stop to feel load more
+  //     //getting dp of updated entries
+  //     this.getDpOfEntries(nowplayings['result']);
+  //     this.npListPageNo++;
+  //     // this.total.emit(this.np.length);
+  //   });
+  // }
 
-  getDpOfEntries(nowplayings) {
-    const l = nowplayings.length;
-    for(let x=0; x < l; x++) {
-      if(!nowplayings[x]['isDead']) {
-        try {
-          nowplayings[x]['stillplaying'] = (3600000 * nowplayings[x]['nowplaying']['estplaytime']) > (new Date().getTime() - nowplayings[x]['nowplaying']['time']);
-        } catch(e) {
-          nowplayings[x]['stillplaying'] = true;
-        }
-      } else {
-        nowplayings[x]['stillplaying'] = false;
-      }
-      nowplayings[x]['dp'] = this._apiService.getUserImageById('dp', nowplayings[x].userid);
-    }
-    this.np.push(...nowplayings);
-    this.np.sort( (a, b) => b.stillplaying ?  1 : -1);
-    this.homeflags.loadMoreFeeds = true;
-  }
+  // getDpOfEntries(nowplayings) {
+  //   const l = nowplayings.length;
+  //   for(let x=0; x < l; x++) {
+  //     if(!nowplayings[x]['isDead']) {
+  //       try {
+  //         nowplayings[x]['stillplaying'] = (3600000 * nowplayings[x]['nowplaying']['estplaytime']) > (new Date().getTime() - nowplayings[x]['nowplaying']['time']);
+  //       } catch(e) {
+  //         nowplayings[x]['stillplaying'] = true;
+  //       }
+  //     } else {
+  //       nowplayings[x]['stillplaying'] = false;
+  //     }
+  //     nowplayings[x]['dp'] = this._apiService.getUserImageById('dp', nowplayings[x].userid);
+  //   }
+  //   this.np.push(...nowplayings);
+  //   this.np.sort( (a, b) => b.stillplaying ?  1 : -1);
+  //   this.homeflags.loadMoreFeeds = true;
+  // }
 
   routeTo(url) {
     this._apiService.router.navigate(['/login']);

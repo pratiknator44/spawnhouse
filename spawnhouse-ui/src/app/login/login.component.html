@@ -1,31 +1,33 @@
 <div class="position-absolute h-100 overflow-hidden bg-white login-container" style="width: 100vw; top:0; left:0;">
     <div class="position-relative h-100" style="top:0; left:0">
-        
-        <h3 class="text-theme mt-3 text-center"><span
-                class="iconset2 icon-jolly-roger mr-2"></span>Spawnhouse <span class="text-grey">beta</span></h3>
+
+        <h3 class="text-theme mt-3 text-center"><span class="iconset2 icon-jolly-roger mr-2"></span>Spawnhouse <span
+                class="text-grey">beta</span></h3>
 
         <div class="text-center">
-            <h5>Find and connect with gamers around you</h5>
-            <div class="mt-3 w-50 ml-auto mr-auto">Spawnhouse is the place to find like minded gamers around you.
-                Nothing is more fun than relations with common interests</div>
+            <h5>Find and Team up with co-players around you</h5>
         </div>
-        <br><br><br>
+        <br /><br />
         <!-- login signup module-->
         <div class="rounded text-center" style="padding: 3rem; padding-top: 0;">
             <!-- <div class="iconset2 icon-jolly-roger text-theme p-0 m-0" style="font-size: 2rem;"></div> -->
 
             <div *ngIf="!verficationProgress">
-                <!-- <h6 class="text-secondary">sign up or</h6> -->
+                <!-- <h6 class="text-secondary">Use your Google account to sign up or sign in</h6> -->
                 <div class="d-inline-block ml-auto mr-auto">
-                    <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
                     <input type="checkbox" [(ngModel)]="rememberMe" id="remember-me"> &nbsp; <label class="m-0 p-0"
                         for="remember-me">Remember Me</label>
+                    <br />
+                    <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
                 </div>
             </div>
-            <div class="hover-underline text-theme cursor-pointer text-small"
-                (click)="showEula();loginFlags.showAcceptTnCButton = false;">Terms & Conditions</div>
+            <div class="hover-underline text-theme cursor-pointer"
+                (click)="showEula();loginFlags.showAcceptTnCButton = false;">Terms & Conditions of Service</div>
+            <div class="text-small badge badge-success" (click)="showWhyGoogle(whyGoogleTemplate)">Why only Google
+                account?</div>
             <div *ngIf="verficationProgress">Loading... Please wait</div>
-            <div *ngIf="errorText" class="bg-danger text-white">Something went wrong... {{ errorText | slice: 0:20 }}... Please try again after sometime</div>
+            <div *ngIf="errorText" class="bg-danger text-white">Something went wrong... {{ errorText | slice: 0:20 }}...
+                Please try again after sometime</div>
         </div>
     </div>
 </div>
@@ -33,10 +35,11 @@
 
 <ng-template #eulaTemplate let-dismiss="dismiss">
     <div class="display-2 text-center text-secondary float-animation-class">{{eula.greetText}}</div>
-    <div class="display-4 text-center text-secondary float-animation-class" style="font-size: 2rem;">It's great to have you onboard :)</div>
-    
+    <div class="display-4 text-center text-secondary float-animation-class" style="font-size: 2rem;">It's great to have
+        you onboard :)</div>
+
     <div class="text-center mt-3 bg-black text-white" *ngIf="!eula.eula">Getting EULA, Please Wait...</div>
-    
+
     <div class="p-3 overflow-y-auto mt-3" style="word-wrap: break-word; word-break: break-all; max-height: 50vh;"
         [innerHTML]="eula?.eula"></div>
     <div class="modal-footer">
@@ -46,4 +49,21 @@
         <button type="button" class="btn btn-outline-dark" *ngIf="!loginFlags.showAcceptTnCButton"
             (click)="dismiss('Save click')">Dimiss</button>
     </div>
+</ng-template>
+
+<ng-template #whyGoogleTemplate let-dismiss="dismiss">
+    <div>
+        <div class="display-5 text-secondary text-center">Why only a Google account?</div>
+        <div class="mt-3 m-1">
+            Hello user! It's great to have you here. Here's what we do with your Google account:<br>
+            <ul>
+                <li>Get email id, first name, middle name (if any), and last name ONLY</li>
+                <li>You DO NOT subscribe to any of our service except sign-in / sign-up by doing this</li>
+                <li>We WON'T SENT any emails, OTPs, or newsletters regarding anything, unless you lose keys to your Google account and contact us for Spawnhouse account recovery </li>
+                <li>We do not intend to share any of your data with Google</li>
+            </ul>
+        </div>
+        <button type="button" class="btn btn-outline-dark float-right m-3" (click)="dismiss('Save click')">Dimiss</button>
+    </div>
+   
 </ng-template>

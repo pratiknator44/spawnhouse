@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
     this.errorText = null;
     this._http.get(APIvars.APIdomain+'/signup/verification/'+token).toPromise().then(res => {
       if(this.rememberMe) {
-        this._cookieService.set('past_token', token)
+        this._cookieService.set('past_token', token);
       }
       this._storageService.setSessionData('sh_auth_token', res['auth_token']);
       this._storageService.currentUser = res['user'];
@@ -118,6 +118,12 @@ export class LoginComponent implements OnInit {
     console.log("update TNC acceptance pending");
     this._http.post(APIvars.APIdomain+'/'+APIvars.EULA_CONFIRM, {tnc: true, cookies: []}).toPromise().then(result => {
       console.log(result);
+    });
+  }
+
+  showWhyGoogle(template) {
+    this._modalService.open(template, { ariaLabelledBy: 'modal-basic-title', size: 'md'}).result.then((result) => {
+    }, (reason) => {
     });
   }
 }
