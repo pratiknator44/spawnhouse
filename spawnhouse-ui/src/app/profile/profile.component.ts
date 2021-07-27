@@ -9,7 +9,6 @@ import { FloatNotificationService } from 'src/assets/services/float-notification
 import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
 import { UserService } from 'src/assets/services/user.service';
-import { take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { SocketService } from 'src/assets/services/socket.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -44,7 +43,8 @@ export class ProfileComponent implements OnInit {
   nppwdRequestText: String = 'Send a request to join room';
   nowPlayingFlags = { showDeleteNowPlaying: false, showAddToFavs: false };
   selectedFollowType;
-  followDpLinks = [];
+  minimessage;
+  domain = {dp: APIvars.DP_DOMAIN, cover: APIvars.COVER_DOMAIN};
 
   constructor(private _storageService: StorageService,
     private _apiService: APIservice,
@@ -66,7 +66,6 @@ export class ProfileComponent implements OnInit {
     this.user = {};
     this.userdp = null;
     this.usercover = null;
-
     this.profileFlags.showFeeds = false;
     let addusername;
     // console.log("current user ", this._storageService.currentUser);
@@ -240,9 +239,17 @@ export class ProfileComponent implements OnInit {
       if ((result as HttpResponse<any>).body?.message === 'passed') {
         this.disableImageUpload = false;
         setTimeout(() => {
-          this.uploadMode === 'dp' ? this._navbarService.getDpSubject.next(true) : this.getCoverOfUser(this.user._id);
-          // this.uploadMode === 'dp' ? this.navbar.getDp() : this._apiService.getImage('cover');;
-          // this.setVisibilityImageOverlay(false);
+          if(this.uploadMode === 'dp') {
+            this._navbarService.getDpSubject.next(true);
+          } else {
+          this.getCoverOfUser(this.user._id);
+          // change cover of user
+          this.user.cover = result.body.newcover || '';
+          this._storageService.currentUser.cover = result.body.newcover || '';
+
+          // save data to session memory
+          this._storageService.setSessionData('user', JSON.stringify(this._storageService.currentUser));
+          }
         }, 1000);
       }
       // console.log(result);
@@ -413,32 +420,26 @@ export class ProfileComponent implements OnInit {
       // console.log("followers ", result);
       this.followUsers = result['result'];
       this.profileFlags.loadingFollow = false;
-      const l = this.followUsers.length;
-      for (let x = 0; x < l; x++) {
-        // this.getDpById(this.followUsers[x]._id, x);
-        this.followDpLinks[x] = this._apiService.getUserImageById('dp', this.followUsers[x]._id);
-      }
     });
 
   }
 
-  getDpById(id, x) {
-    this._apiService.http.get(APIvars.APIdomain + '/' + APIvars.GET_DP_OF_USER + '/' + id, { responseType: 'blob' }).subscribe(image => {
-      if (image['type'] === 'application/json') {
-        this.followDpLinks[x] = null;
-        return;
-      }
-      let reader = new FileReader();
-      reader.addEventListener('load', () => {
-        this.followDpLinks[x] = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
-      }, false);
-      if (image) {
-        reader.readAsDataURL(image as Blob);
-      }
-    });
-  }
+  // getDpById(id, x) {
+  //   this._apiService.http.get(APIvars.APIdomain + '/' + APIvars.GET_DP_OF_USER + '/' + id, { responseType: 'blob' }).subscribe(image => {
+  //     if (image['type'] === 'application/json') {
+  //       this.followDpLinks[x] = null;
+  //       return;
+  //     }
+  //     let reader = new FileReader();
+  //     reader.addEventListener('load', () => {
+  //       this.followDpLinks[x] = this._apiService.dom.bypassSecurityTrustResourceUrl(reader.result.toString());
+  //     }, false);
+  //     if (image) {
+  //       reader.readAsDataURL(image as Blob);
+  //     }
+  //   });
+  // }
 
-  minimessage;
   sendMessage(event) {
     //getting previous convo id, if not, create new.
 

@@ -7,10 +7,10 @@
             <br>
             Loading Conversations
         </div>
-        <div class="rounded border-bottom hover-bg cursor-pointer d-flex m-1" [ngClass]="{'bg-lite': !chat?.seen && chat?.lastSender!==user._id}" *ngFor="let chat of chats; let i = index"
+        <div class="rounded border-bottom hover-bg cursor-pointer d-flex m-1" [ngClass]="{'bg-lite': !chat?.seen && chat?.lastSender!==user._id, 'bg-theme text-white': convoIndex === i}" *ngFor="let chat of chats; let i = index"
             (click)="getMessagesFromId(chat.id); convoIndex = i; isMobile ? animate = true : ''; chat.seen = true">
             <div class="p-2">
-                <img [src]="chat?.dpLink | async" class="dp-big circle" />
+                <img [src]="domain.dp+chat.dp" class="dp-big circle" />
             </div>
             <div class="p-2" style="width: calc(100% - 4rem);">
                 <div class="float-right badge badge-lite">{{chat.time | ago : true : true}}</div>
@@ -33,7 +33,7 @@
                     <span class="iconset icon-chevron-left" style="font-size: 2rem;"></span>
                 </div>
                 <div class="p-2 cursor-pointer" (click)="routeToProfile()">
-                    <img [src]="chats[convoIndex]?.dpLink | async" class="dp-big circle" />
+                    <img [src]="domain?.dp+chats[convoIndex]?.dp" class="dp-big circle" />
                 </div>
                 <div class="p-2 rounded cursor-pointer"(click)="routeToProfile()">
                     <h6 class="text-truncate m-0 p-0">
@@ -54,7 +54,7 @@
                             *ngIf="msg.sender !== user._id" style="bottom: 50%; height: 2rem; width: 2rem;"
                             title="Goto Profile" (click)="routeToProfile()">
 
-                            <img [src]="(chats[convoIndex]?.dpLink | async)" alt="" style="height: 2rem; width: 2rem;"
+                            <img [src]="domain?.dp+chats[convoIndex]?.dp" alt="" style="height: 2rem; width: 2rem;"
                                 class="circle user-default-img circle">
                         </div>
 

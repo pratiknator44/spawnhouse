@@ -71,6 +71,7 @@ export class NavbarComponent implements OnInit {
   nowplayingForm: FormGroup;
   gameSuggestions = [];
   eula: String;
+  domain = {dp: APIvars.DP_DOMAIN, cover: APIvars.COVER_DOMAIN};
 
   @Input() imageUploadMode: string;
   @Output() onPicUpdate = new EventEmitter();
@@ -190,7 +191,6 @@ export class NavbarComponent implements OnInit {
   }
 
   getNotifications(refresh?) {
-    // if(this.navbarFlags.notificationsEnd) return;
     if (this.navbarFlags.notificationsLoading) return;
 
     if (refresh) this.pageNo = 1;
@@ -206,9 +206,9 @@ export class NavbarComponent implements OnInit {
         return;
       };
 
-      for (let x = 0; x < l; x++) {
-        temp[x].dp = this._apiService.getUserImageById('dp', temp[x].userid);
-      }
+      // for (let x = 0; x < l; x++) {
+      //   temp[x].dp = this._apiService.getUserImageById('dp', temp[x].userid);
+      // }
 
       this.navbarFlags.notificationsLoading = false;
       if (refresh) {
@@ -517,7 +517,7 @@ export class NavbarComponent implements OnInit {
         time: messages[x]['time'],
         seen: messages[x]['seen'],
         lastSender: messages[x].lastSender,
-        dp: this._apiService.getUserImageById('dp', messages[x]['senderid'])
+        dp: messages[x]['dp'],      //this._apiService.getUserImageById('dp', messages[x]['senderid'])
       });
 
       if (!messages[x]['seen'] && messages[x]['lastSender'] != this.user._id)

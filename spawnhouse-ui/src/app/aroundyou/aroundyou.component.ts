@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 import { StorageService } from 'src/assets/services/storage.service';
+import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { DurationsEnum } from 'src/assets/variables/toasts.enum';
 
 @Component({
@@ -27,12 +28,8 @@ export class AroundyouComponent implements OnInit {
     }
 
   ngOnInit(): void {
-
     this.userSuggestions = [];
-    // this.location = JSON.parse(this._storageService.getSessionData('location'));  
     this.getLocation();
-     
-    // this.getSimilarUsers();
   }
 
   getSimilarUsers() {
@@ -50,7 +47,7 @@ export class AroundyouComponent implements OnInit {
           if( l === 0) { this.ayFlags.noMoreUsers = true; return }
           // this.pageNo === 1 ? this.userSuggestions = result.result : this.userSuggestions.;
           for(let x=0; x<l; x++) {
-            result.result[x]['dp'] = this._apiService.getUserImageById('dp', result.result[x]._id);
+            //this._apiService.getUserImageById('dp', result.result[x]._id);
             result.result[x]['distance'] = this.location && result.result[x].location ? this.getDistance(this.location, result.result[x].location) : null;
           }
           this.pageNo === 1 ? this.userSuggestions = result.result : this.userSuggestions.push(...result.result);

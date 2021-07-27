@@ -1,6 +1,6 @@
 <!-- cover, dp, follow, unfollow, open profile options -->
 <div class="cover-picture position-relative std-box-shadow">
-    <img [src]="usercover | async" class="w-100 h-100 default-cover" style="left:0;" />
+    <img [src]="domain.cover+user.cover" class="w-100 h-100 default-cover" style="left:0;" />
 
     <div *ngIf="profileFlags.loadingCover" class="bg-white text-black position-absolute t-0" style="left:50%">
         Loading...
@@ -13,12 +13,8 @@
 
         <div style="right: 0; top:0; height: 1.5rem; width: 1.5rem;" class="position-absolute bg-white circle cursor-pointer" (click)="copyProfileUrl()">&nbsp;<span class="iconset icon-share2"></span></div>
 
-
-
-
-
         <div class="dp circle position-absolute b-0">
-            <img [src]="userdp | async" class="w-100 h-100 user-default-img" />
+            <img [src]="domain.dp+user?.dp" class="w-100 h-100 user-default-img" loading="lazy" />
             <div class="dp-edit w-100 position-absolute t-0 cursor-pointer overflow-hidden" *ngIf="isUserProfile"
                 (click)="setupImageUpload(true, imageuploadtemplate)">
                 <div class="iconset icon-edit-pencil text-white text-center"
@@ -238,8 +234,7 @@
             <div class="bg-white">
                 <h1 class="text-secondary h2 ml-3" *ngIf="!profileFlags.loadingFollow">{{followUsers?.length+'
                     '+selectedFollowType}}</h1>
-                <div class="position-relative" style="max-height: 60vh; overflow: auto;"
-                    [perfectScrollbar]="{suppressScrollX: true}">
+                <div class="position-relative" style="max-height: 60vh; overflow: auto;">
                     <div class="text-secondary font-italic text-center" *ngIf="followUsers?.length === 0">You have no
                         {{selectedFollowType}}</div>
                     <div class="text-center mt-3" *ngIf="profileFlags.loadingFollow">
@@ -250,7 +245,7 @@
                         <div class="row m-2 mb-0 mt-0">
                             <div class="col-4">
                                 <div class="dp-big circle">
-                                    <img [src]="followDpLinks[i] | async" class="w-100 h-100 circle" />
+                                    <img [src]="domain.dp+user?.dp" *ngIf="user?.dp" class="w-100 h-100 circle" />
                                 </div>
                             </div>
                             <div class="col-4 text-left">

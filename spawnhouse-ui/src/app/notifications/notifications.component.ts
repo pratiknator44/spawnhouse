@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
+import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
   selector: 'sh-notifications',
@@ -9,6 +10,7 @@ import { APIservice } from 'src/assets/services/api.service';
 })
 export class NotificationsComponent implements OnChanges {
 
+  domain = {dp: APIvars.DP_DOMAIN, cover: APIvars.COVER_DOMAIN};
   @Input() notifications;
   @Output() close = new EventEmitter();
   @Output() notificationClicked = new EventEmitter();

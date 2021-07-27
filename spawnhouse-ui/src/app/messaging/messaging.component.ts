@@ -29,6 +29,8 @@ export class MessagingComponent implements OnInit {
   isMobile: boolean = false;
   quickChats = ['Roger that!', 'To the lobby!', 'Lock & load', 'server password please?', 'Noob!'];
   lastActive;
+  domain = {dp: APIvars.DP_DOMAIN, cover: APIvars.COVER_DOMAIN};
+
   @ViewChild('messageTextbox') messageElement: ElementRef;
   @ViewChild('messageArea') messageArea: ElementRef;
 
@@ -101,7 +103,7 @@ export class MessagingComponent implements OnInit {
         seen: convos[x]['seen'],
         otherUser: convos[x]['senderid'],
         lastSender: convos[x].lastSender,
-        dpLink: this._apiService.getUserImageById('dp', convos[x]['senderid'])
+        dp: convos[x]['dp']  //this._apiService.getUserImageById('dp', convos[x]['senderid'])
       });
       // this.getUserImageById(messages[x]['senderid'], 'dp');
     }

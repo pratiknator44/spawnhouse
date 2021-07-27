@@ -1,6 +1,7 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { APIservice } from 'src/assets/services/api.service';
+import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
   selector: 'sh-user-card',
@@ -22,6 +23,7 @@ export class UserCardComponent {
   @Input() carddata;
   @Output() userClicked = new EventEmitter();
   @Output() loadmore = new EventEmitter();
+  domain = {dp: APIvars.DP_DOMAIN, cover: APIvars.COVER_DOMAIN};
 
   @HostListener('window: scroll', ['$event']) onScroll(e: Event): void {
     if (

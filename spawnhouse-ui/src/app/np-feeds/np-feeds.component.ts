@@ -137,12 +137,11 @@ export class NpFeedsComponent implements OnInit {
   }
 
   deleteNpPost(npid?, i?) {
-    if(!npid) {
+    if(!npid) { // this is for passing variables in modal 
       npid = this.postToDelete.postid;
       i = this.postToDelete.i;
     }
     this.np.splice(i, 1);
-    return;
     this._apiService.deleteNowPlayingPost(npid).then(result => {});
 
     this._notifService.makeToast.next('feedback');

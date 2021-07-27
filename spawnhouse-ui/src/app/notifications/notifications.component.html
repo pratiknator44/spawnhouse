@@ -1,7 +1,7 @@
 <div *ngFor="let notification of notifications; let i = index" class="hover-bg-grey cursor-pointer" (click)="onNotificationClick(i)" [ngClass]="{'bg-theme-lite': !notification?.seen}">
     <div class="row m-1">
       <div class="col-3 text-center">
-        <img [src]="notification?.dp | async" class="dp-big circle mt-3 overflow-hidden" />
+        <img [src]="domain.dp+notification?.dp" class="dp-big circle mt-3 overflow-hidden" />
       </div>
       <div class="col-9 text-left">
         <div class="m-2">

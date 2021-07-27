@@ -1,10 +1,10 @@
 <div class="bg-white ml-auto mr-auto" style="min-width: 800px; width: 50%;">
     <ul class="nav">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a class="nav-link cursor-pointer" (click)="openOption('bug')">Report a bug</a>
-        </li>
+        </li> -->
         <li class="nav-item">
-          <a class="nav-link cursor-pointer" [ngClass]="{'text-theme': option === 'about'}" aria-current="page">About</a>
+          <a class="nav-link cursor-pointer" [ngClass]="{'text-theme': option === 'about'}" (click)="openOption('about')" aria-current="page">About</a>
         </li>
         <li class="nav-item">
           <a class="nav-link cursor-pointer" [ngClass]="{'text-theme': option === 'help'}" (click)="openOption('help')">Help</a>
@@ -16,6 +16,20 @@
 
       <hr>
       <div>
+        <div class="m-2" *ngIf="option === 'about'">
+          <h2 class="text-secondary">About</h2>
+          Spawnhouse is about bringing the gamers from different streams together who enjoy playing with different people, or
+          enjoying story games while being connected. With the help of this platform users can create their own gaming profile,
+          keeping records of their skills, games they play or played, and make friends via gaming<br><br>
+          
+          We'd be adding tonnes of new features to make your experience better and be more expressive towards fellow users, keeping in
+          mind the security and integretiy of the data of all.<br><br>
+
+        </div>
+
+
+
+
         <div class="m-2" *ngIf="option === 'help'">
             <h2 class="text-secondary">Help</h2>
 
@@ -26,7 +40,7 @@
             <h6 class="text-theme">Q1. I'm unable to signup</h6>
             <h6>Simply follow the steps:</h6>
             <ul>
-                <li>goto <a href="http://spawnhouse.com/#/login">http://spawnhouse.com/#/login</a> and put a username. It should be unique and so you can use a good range within <var>a-z _ 0-9 . </var></li>
+                <li>goto <a href="https://thespawnhouse.com/#/login">https://thespawnhouse.com/#/login</a> and put a username. It should be unique and so you can use a good range within <var>a-z _ 0-9 . </var></li>
                 <li>Sign up via Google or enter the details in the form. It is free and we do not charge any fee for it. We DO NOT SEND promotional offers, letters or ads in your email. Only OTPs and reset password links</li>
                 <li>
                     If you signup via <br>
@@ -49,8 +63,8 @@
                 </div>
                
                 <div class="row">
-                    <div class="col-4 text-right">Call: </div>
-                    <div class="col-8 text-theme text-left">+91-9369-3194-01</div>
+                    <!-- <div class="col-4 text-right">Call: </div> -->
+                    <!-- <div class="col-8 text-theme text-left">+91-9369-3194-01</div> -->
                 </div>
             </ul>
 
@@ -70,8 +84,8 @@
             </div>
            
             <div class="row">
-                <div class="col-4 text-right">Call: </div>
-                <div class="col-8 text-theme text-left">+91-9369-3194-01</div>
+                <!-- <div class="col-4 text-right">Call: </div> -->
+                <!-- <div class="col-8 text-theme text-left">+91-9369-3194-01</div> -->
             </div>
         </div>
       </div>

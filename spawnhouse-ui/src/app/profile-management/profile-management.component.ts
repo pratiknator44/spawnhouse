@@ -91,7 +91,7 @@ export class ProfileManagementComponent implements OnInit {
       fname: new FormControl(this.user.fname, [Validators.required, Validators.pattern(/^[a-zA-Z]+$/)]),
       lname: new FormControl(this.user.lname, [Validators.required, Validators.pattern(/^[a-zA-Z]+$/)]),
       gamerType: new FormControl('gamerType' in this.user ? this.user.gamerType : null),
-      username: new FormControl(this.user.username || '', [Validators.pattern(/^[a-z0-9_.]{3,20}$/)]),
+      username: new FormControl(this.user.username || '', [Validators.pattern(/^[a-z0-9_.]{3,20}$/), Validators.required]),
       website: new FormControl(this.user.website || ''),
       bio: new FormControl(this.user.bio || ''),
       quote: new FormControl(this.user.quote || '')
@@ -157,7 +157,6 @@ export class ProfileManagementComponent implements OnInit {
 
 
   newSelections(items) {
-    console.log("new selections: ", items);
     this.gamedataForm.patchValue({
       fav: items
     });
@@ -206,10 +205,7 @@ export class ProfileManagementComponent implements OnInit {
   }
 
   submitUserdata() {
-    console.log("form invalid ? ", this.userinfoForm.invalid)
-    if (this.userinfoForm.invalid) {
-      return;
-    }
+    if (this.userinfoForm.invalid) return;
     this.saveText.personal = 'Saving...';
     this._http.patch(APIvars.APIdomain + '/' + APIvars.SET_USERDATA, this.userinfoForm.value).subscribe(result => {
       // console.log('result ======== ', result);
