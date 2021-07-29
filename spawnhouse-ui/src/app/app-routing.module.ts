@@ -16,6 +16,7 @@ import { RedirectComponent } from './redirect/redirect.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
+import { NowplayingFormComponent } from './nowplaying/nowplayingform.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,11 @@ const routes: Routes = [
     canActivate: [ProfileGuardService],
     loadChildren: () => import('./modules/home.module').then( m=> m.HomeModule),
     component: HomeComponent
+  },
+  {
+    path: 'create',
+    canActivate: [ProfileGuardService],
+    component: NowplayingFormComponent
   },
   {
     path: 'feedback',

@@ -81,7 +81,6 @@ export class ToastComponent implements OnInit {
     /* if user has not given feedback or rejected the feedback option or 'Hide', ask him every 24 hours
      * if use has given feedback, ask him every 24 hours
     */
-   console.log("aefeafeafea", this._cookieService.get('feedbackTime'));
    const lastFeedbackTime = parseInt(this._cookieService.get('feedbackTime'));
     if(lastFeedbackTime) {
       if( new Date().getTime() - lastFeedbackTime > 86400000) {     // ms in 24h

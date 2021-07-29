@@ -93,4 +93,18 @@ export class StorageService {
         return JSON.parse(this.getSessionData(_id));
     }
 
+    /*
+    * CurrentUser functions help get properties of logged in user
+    */
+    changeCurrentUserProperty(property: string, value) {
+        let user = JSON.parse( sessionStorage.getItem('user'));
+        user[property] = value;
+        sessionStorage.setItem('user', JSON.stringify(user));
+    }
+
+    getCurrentUserProperty(property) {
+        let user = JSON.parse( sessionStorage.getItem('user'));
+        return user[property];
+    }
+
 }

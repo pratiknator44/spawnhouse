@@ -42,6 +42,7 @@ import { ToastComponent } from './toast/toast.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
+import { NowplayingFormComponent } from './nowplaying/nowplayingform.component';
 
 const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
 
@@ -64,7 +65,8 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     FeedbackComponent,
     ToastComponent,
     NotificationsComponent,
-    ViewProfileComponent
+    ViewProfileComponent,
+    NowplayingFormComponent
   ],
   imports: [
     BrowserModule,

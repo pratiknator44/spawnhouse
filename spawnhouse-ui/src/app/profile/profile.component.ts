@@ -221,13 +221,12 @@ export class ProfileComponent implements OnInit {
       imageApi = APIvars.APIdomain + '/' + APIvars.SET_COVER;
     }
     let isOpenFlag = true;    // if false, the subject to keep open floating notice is not triggered
-    this._apiService.http.post(imageApi, fd, { reportProgress: true, observe: 'events' }).subscribe(result => {
+    this._apiService.http.post(imageApi, fd, { reportProgress: true, observe: 'events' }).toPromise().then(result => {
       if (isOpenFlag) {
         this._notifService.closeOn.next(true);
         isOpenFlag = false;
       }
       if (result.type === HttpEventType.UploadProgress) {
-        // this.setVisibilityImageOverlay(false);
         // console.log('sent config ');
         this._notifService.config.next({ text: 'Upading picture', icon: 'image' });
         this._notifService.progress.next(Math.round(result['loaded'] * 100 / result['total']) + '%');
@@ -240,6 +239,10 @@ export class ProfileComponent implements OnInit {
         this.disableImageUpload = false;
         setTimeout(() => {
           if(this.uploadMode === 'dp') {
+            try {
+              this.user.dp = result.body['newdp'];
+              this._storageService.changeCurrentUserProperty('dp', result.body['newdp']);
+            } catch {}
             this._navbarService.getDpSubject.next(true);
           } else {
           this.getCoverOfUser(this.user._id);
@@ -262,7 +265,6 @@ export class ProfileComponent implements OnInit {
         // event.src
         setTimeout(() => resolve(event.src), 0);
       });
-      // this.setVisibilityImageOverlay(false);
     }
   }
 
@@ -285,20 +287,10 @@ export class ProfileComponent implements OnInit {
     } else if (this.uploadMode === 'cover') {
       this.getCoverOfUser(this.user._id);
     }
-    // this.setVisibilityImageOverlay(false);
-  }
-
-  setVisibilityImageOverlay(visibility: boolean) {
-    // if(visibility)
-    //   this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
-
-    // this._overlayService.showSubject.next(visibility);
-    // this.showImageUpload = visibility;
   }
 
   openGamingInfo() {
-    this._navbarService.showOption.next('gamebroadcast');
-    // this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
+    this._apiService.router.navigate(['./create']);
     this._notifService.makeToast.next('feedback');
   }
 

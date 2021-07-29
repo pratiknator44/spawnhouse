@@ -355,4 +355,8 @@ export class APIservice {
 
     return this._http.post(APIvars.APIdomain + '/' + APIvars.SAVE_MESSAGE, resbody).toPromise();
   }
+
+  setNowPlaying(npOb) {
+    return this._http.post(APIvars.APIdomain + '/' + APIvars.NOW_PLAYING, npOb).toPromise();
+  }
 }

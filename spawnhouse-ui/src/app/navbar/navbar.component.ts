@@ -50,23 +50,6 @@ export class NavbarComponent implements OnInit {
   searchedGame = '';
   gameApiTimeout;
   searchword;
-  gameImage: string = '';
-  consoles = [
-    { icon: 'android', id: 'm' },
-    { icon: 'windows8', id: 'pc' },
-    { icon: 'playstation3', id: 'ps3' },
-    { icon: 'playstation4', id: 'ps4' },
-    { icon: 'playstation5', id: 'ps5' },
-    { icon: 'xbox', id: 'xb360' },
-    { icon: 'xbox', id: 'xb1' },
-    { icon: 'xbox', id: 'xbx' },
-    { icon: 'xbox', id: 'xbsx17' },
-    { icon: 'xbox', id: 'xbsx20' },
-    { icon: 'wii', id: 'wii' },
-    { icon: 'appleinc', id: 'mac' },
-    { icon: 'appleinc', id: 'ios' },
-    { icon: '', id: 'ot' },
-  ];
   alerts = { notifications: 0, messages: 0 };
   nowplayingForm: FormGroup;
   gameSuggestions = [];
@@ -75,8 +58,6 @@ export class NavbarComponent implements OnInit {
 
   @Input() imageUploadMode: string;
   @Output() onPicUpdate = new EventEmitter();
-  @ViewChild(SuggestionsComponent) gameSuggestComp: SuggestionsComponent;
-  @ViewChild('nowplayingTemplate', { static: true }) npTemplate;
 
   constructor(
     private _storageService: StorageService,
@@ -113,12 +94,6 @@ export class NavbarComponent implements OnInit {
       this.activeOption = null;
     });
 
-    this._navbarService.showOption.asObservable().subscribe(option => {
-      if (option === 'gamebroadcast') {
-        this.gameBroadcast();
-      }
-    });
-
     setTimeout(() => {
       this._navbarService.refreshUser.asObservable().subscribe(data => {
         this.refreshUserVar();
@@ -133,13 +108,6 @@ export class NavbarComponent implements OnInit {
     if (this._storageService.getSessionData('nppwd')) {
       this._nowplayingService.startListeningNPpwdRequests();
     }
-
-    this._navbarService.npShowSubject.asObservable().subscribe(data => {
-      // this._overlayService.configSubject.next({closeOnClick: false, transparent: false});
-      // this._overlayService.showSubject.next(true);
-      // this.showGameBroadcast = true;
-      this.gameBroadcast()
-    });
   }
 
   update(event) { }
@@ -277,33 +245,34 @@ export class NavbarComponent implements OnInit {
   }
 
   getDp() {
-    this._apiService.getPhotos('dp').then(image => {
+    this.dp  = APIvars.DP_DOMAIN+this._storageService.getCurrentUserProperty('dp');
+    // this._apiService.getPhotos('dp').then(image => {
 
-      // if image size is less than 30 bytes
-      if (image.size < 30) {
-        this.onPicUpdate.emit({ type: 'dp', src: null });
+    //   // if image size is less than 30 bytes
+    //   if (image.size < 30) {
+    //     this.onPicUpdate.emit({ type: 'dp', src: null });
 
-        // means if dp is null, dissociate from memory as well:
-        this._storageService.deleteSessionData(this.user._id);
-        this._navbarService.dpUpdated.next({ type: 'dp', src: null });
-        this.dp = null;
-        return null;
-      }
-      // convert raw image to Blob object
-      let reader = new FileReader();
-      reader.addEventListener('load', () => {
-        const unsafeValue = reader.result.toString();
-        this.dp = this._apiService.dom.bypassSecurityTrustResourceUrl(unsafeValue);
-        this._storageService.setSessionData(this._storageService.currentUser._id, unsafeValue);
-        this._storageService.dpLink = this.dp;
-        this.onPicUpdate.emit({ type: 'dp', src: this.dp });
-        this._navbarService.dpUpdated.next({ type: 'dp', src: this.dp });
-        // console.log("dp emitted ", this.dp);
-      }, false);
-      if (image) {
-        reader.readAsDataURL(image);
-      }
-    });
+    //     // means if dp is null, dissociate from memory as well:
+    //     this._storageService.deleteSessionData(this.user._id);
+    //     this._navbarService.dpUpdated.next({ type: 'dp', src: null });
+    //     this.dp = null;
+    //     return null;
+    //   }
+    //   // convert raw image to Blob object
+    //   let reader = new FileReader();
+    //   reader.addEventListener('load', () => {
+    //     const unsafeValue = reader.result.toString();
+    //     this.dp = this._apiService.dom.bypassSecurityTrustResourceUrl(unsafeValue);
+    //     this._storageService.setSessionData(this._storageService.currentUser._id, unsafeValue);
+    //     this._storageService.dpLink = this.dp;
+    //     this.onPicUpdate.emit({ type: 'dp', src: this.dp });
+    //     this._navbarService.dpUpdated.next({ type: 'dp', src: this.dp });
+    //     // console.log("dp emitted ", this.dp);
+    //   }, false);
+    //   if (image) {
+    //     reader.readAsDataURL(image);
+    //   }
+    // });
   }
 
   updateOptions() {
@@ -315,117 +284,10 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  gameBroadcast() {
-    this.modalOpen(this.npTemplate);
-    // this.showGameBroadcast = !this.showGameBroadcast;
-    this.gameSuggestions = [];
-    // if(this.showGameBroadcast) {
-
-    this.nowplayingForm = new FormGroup({
-      game: new FormControl('', Validators.required),
-      username: new FormControl(),
-      audience: new FormControl(),
-      stream: new FormControl(),
-      imageLink: new FormControl(),
-      console: new FormControl(),
-      estplaytime: new FormControl(1, [Validators.min(1), Validators.max(12)]),
-      desc: new FormControl(),
-      hasPrivateRoom: new FormControl(),
-      roomid: new FormControl(),
-      password: new FormControl(),
-      maxconnections: new FormControl(0, [Validators.min(0), Validators.max(150)])
-    });
-    this.nowplayingForm.patchValue({
-      audience: 'PVT',
-      console: '',
-      hasPrivateRoom: false,
-      // privatepassword: true
-    });
-
-    // this._overlayService.configSubject.next({transparent: false, closeOnClick: false });
-    // }
-  }
-
-  saveNowPlaying() {
-    // console.log(this.nowplayingForm.value);
-    // this.showGameBroadcast = false;
-    this.closeOverlay();
-    this._notifService.config.next({ text: 'Saving and broadcasting', icon: 'users' });
-    this._notifService.progress.next(null);
-    this._notifService.closeOn.next(true); // close notification
-
-    if (this.nowplayingForm.get('console').value.length > 0) {
-      this.nowplayingForm.patchValue({
-        console: this.selectedConsole
-      });
-      this.showConsoleList = false;
-    }
-    let nppw; // nowplaying password of server to be saved in local
-    if (!this.nowplayingForm.get('hasPrivateRoom').value) {
-      this.nowplayingForm.removeControl('roomid');
-      this.nowplayingForm.removeControl('password');
-      this.nowplayingForm.removeControl('maxconnections');
-    }
-    else {
-      nppw = this.nowplayingForm.get('password').value || ':o:';
-      this._storageService.setSessionData("nppwd", nppw);
-      this._storageService.setSessionData("accessorIds", "[]");
-    }
-    if (nppw === ':o:') this.nowplayingForm.patchValue({ password: ':o:' });  // server is open
-    this.nowplayingForm.removeControl('hasPrivateRoom');
-
-    this.nowplayingForm.patchValue({
-      imageLink: this.gameImage
-    });
-
-    this._apiService.http.post(APIvars.APIdomain + '/' + APIvars.NOW_PLAYING, this.nowplayingForm.value).subscribe(result => {
-      this._socketService.pushData('new-notification', { type: 'broadcast', sentBy: this.user._id, sentTo: 'follower' });
-      this._notifService.closeOn.next(false); // close notification
-      // this.showGameBroadcast = false;
-      setTimeout(() => {
-        this._apiService.getNowPlaying();
-      }, 500);
-
-      // if now playing has password, open a listener to that will keep adding people in case thy ask for password.
-      if (nppw && nppw !== ':o:') {
-        this._nowplayingService.startListeningNPpwdRequests();
-      }
-    });
-  }
-
+ 
   closeOverlay() {
     this._overlayService.showSubject.next(false);
     this._overlayService.closeSubject.next(true);
-  }
-
-  searchGame(searchword) {
-    if(searchword.length < 3 || searchword.trim() === '') return;
-    this.searchingGame = true;
-    this.searchword = searchword;
-
-    if (this.gameApiTimeout) {
-      clearTimeout(this.gameApiTimeout);
-    }
-
-    this.gameApiTimeout = setTimeout(() => {
-      // console.log("Search word = ", this.searchword);
-      this._apiService.getGameName(this.searchword).then(res => {
-        this.gameSuggestions = res['gamedata'];
-      }).catch(e => {
-        this.gameSuggestions = []
-      }).finally(() => {
-        this.searchingGame = false;
-        this.gameApiTimeout = null;
-      });
-    }, 1000);
-  }
-
-  gameSelect(game) {
-    this.gameSuggestComp.searchInput = game.label;
-    this.searchedGame = game.label;
-    this.nowplayingForm.patchValue({ game: game.label });
-    this.gameSuggestions = [];
-    this.navbarFlags.lockGameName = true;
   }
 
   routeTo(place) {
@@ -442,14 +304,6 @@ export class NavbarComponent implements OnInit {
     this.showUserSuggestions = false;
     this.searchSuggestions = [];
     this._apiService.router.navigate(['/', suggestion._id]);
-  }
-
-  selectConsole(console) {
-    this.nowplayingForm.patchValue({
-      console: new GameGenrePipe().transform(console.id, true)
-    });
-    this.selectedConsole = console.id;
-    this.showConsoleList = false;
   }
 
   navOptionSelected(option) {
@@ -597,10 +451,10 @@ export class NavbarComponent implements OnInit {
     this.modalOpen(template, 'small');
   }
 
-  async pasteLink() {
-    const text = await navigator.clipboard.readText().then(text => text); 
-    this.nowplayingForm.patchValue({
-      stream: text
-    });
-  }
+  // async pasteLink() {
+  //   const text = await navigator.clipboard.readText().then(text => text); 
+  //   this.nowplayingForm.patchValue({
+  //     stream: text
+  //   });
+  // }
 }

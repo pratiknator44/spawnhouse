@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
+import { APIservice } from 'src/assets/services/api.service';
 import { NowplayingService } from 'src/assets/services/now-playing.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
 import { SocketService } from 'src/assets/services/socket.service';
@@ -27,7 +28,8 @@ export class NowPlayingComponent implements OnInit {
   constructor(private _socketService: SocketService,
     private _nowplayingService: NowplayingService,
     private _storageService: StorageService,
-    private _overlayService: OverlayService) { }
+    private _overlayService: OverlayService,
+    private _apiService: APIservice) { }
 
   ngOnInit(): void {
     this.isUserProfile = this.userid === this._storageService.currentUser._id;
@@ -70,6 +72,7 @@ export class NowPlayingComponent implements OnInit {
 
   doOnNew() {
     this.onNew.emit();
+    this._apiService.router.navigate(['./create']);
   }
 
   sendRequestForNppwd() {
