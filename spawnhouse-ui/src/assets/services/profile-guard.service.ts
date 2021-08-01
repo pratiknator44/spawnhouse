@@ -10,14 +10,20 @@ export class ProfileGuardService implements CanActivate {
         private _navService: NavbarService) { }
 
     canActivate(router: ActivatedRouteSnapshot): boolean {
-        // console.log(router);
         if (sessionStorage.getItem('sh_auth_token')) {
             // if user is accessing his own profile, it should route to /profile and not /:ownUserID
             // this is handled in profile component
             this._storageService.setUserFromSession();
             this._navService.isLoggedIn.next(true);
             return true;
+        } 
+        else if(localStorage.getItem('sh_auth_token')) {
+            sessionStorage.setItem('sh_auth_token', localStorage.getItem('sh_auth_token'));
+            this._storageService.setUserFromSession();
+            this._navService.isLoggedIn.next(true);
+            return true;
         }
+        
         else if (router.url[0].path.length === 24) {
             // const userId = router.url[0].path
             this._router.navigate(['/user/' + router.url[0].path]);

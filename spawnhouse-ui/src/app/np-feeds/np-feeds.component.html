@@ -1,11 +1,11 @@
 <div class="text-white bg-secondary font-bold text-small ml-auto mr-auto" style="max-width: 800px;"
-    *ngIf="!(!np || np?.length === 0)">NOW PLAYING</div>
+    *ngIf="!(!np || np?.length === 0)">Play History</div>
 <div class="ml-auto mr-auto" style="max-width: 800px;">
     <div class="mt-2 bg-white m-2 overflow-hidden" @fade *ngFor="let usernp of np; let i = index">
         <div class="d-flex d-wrap-flex m-2">
             <div class="circle bg-theme text-center m-1 icons-container overflow-hidden"
                 style="transform: translate(-47deg);">
-                <img class="h-100 w-100 circle user-default-img" [src]="usernp?.dp | async" />
+                <img class="h-100 w-100 circle user-default-img" [src]="domain?.dp+usernp?.userdata?.dp" />
             </div>
             <div style="width: calc(100% - 4rem);">
                 <h6 class="m-0 text-theme hover-underline">

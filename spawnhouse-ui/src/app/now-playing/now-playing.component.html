@@ -23,17 +23,16 @@
 
 
 
-<label class="text-theme text-bold hover-underline cursor-pointer m-0"><span class="iconset icon-game-controller mr-1 h5"></span>{{npdata?.game}}</label>
+<label class="text-theme text-bold hover-underline m-0"><span class="iconset icon-game-controller mr-1 h5"></span>{{npdata?.game}}</label>
 <span *ngIf="npdata?.username">&nbsp; as </span>
 <span class="text-secondary m-0" *ngIf="npdata?.username">{{ npdata?.username }}</span> <span *ngIf="npdata?.console">  on </span>
 <div class="badge text-white ml-1" [ngClass]="{'badge-success': npdata?.console?.startsWith('x'),
 'badge-primary':npdata?.console?.startsWith('pc'),
 'bg-theme':npdata?.console?.startsWith('ps'),
 'bg-off-black': npdata?.console === 'mac' || npdata?.console === 'ios',
-'bg-secondary': npdata?.console === 'wii'}">
-    <span class="iconset icon-{{npdata?.console | consoleicon }}"></span>
-    {{npdata?.console | gameGenre: true}}
+'bg-secondary': npdata?.console === 'Wii'}">
 </div>
+{{ npdata?.console }}
 
 <div class="text-secondary mt-2" *ngIf="npdata?.stream">
     <span class="iconset icon-{{ npdata?.stream | streamlink }} mr-2 text-black"></span>

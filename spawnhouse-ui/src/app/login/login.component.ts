@@ -16,7 +16,7 @@ declare var gapi: any;
 })
 export class LoginComponent implements OnInit {
   verficationProgress: Boolean = false;
-  rememberMe: Boolean = false;
+  rememberMe: Boolean = true;
   hasLoggedOut: Boolean = false;
   eula = {greetText: 'Hi', eula: ''};
   loginFlags = {showAcceptTnCButton: true};
@@ -68,6 +68,7 @@ export class LoginComponent implements OnInit {
     this._http.get(APIvars.APIdomain+'/signup/verification/'+token).toPromise().then(res => {
       if(this.rememberMe) {
         this._cookieService.set('past_token', token);
+        this._storageService.setLocalData('sh_auth_token', token);
       }
       this._storageService.setSessionData('sh_auth_token', res['auth_token']);
       this._storageService.currentUser = res['user'];
@@ -105,7 +106,7 @@ export class LoginComponent implements OnInit {
     });
 
     this._http.get(APIvars.APIdomain+'/'+APIvars.GET_EULA).toPromise().then(data => {
-      console.log("data = ", data);
+      // console.log("data = ", data);
       if(data['message'] === 'passed') {
         this.eula.eula = data['eula'];
       } else {
@@ -115,7 +116,6 @@ export class LoginComponent implements OnInit {
   }
 
   updateTnCAcceptance() {
-    console.log("update TNC acceptance pending");
     this._http.post(APIvars.APIdomain+'/'+APIvars.EULA_CONFIRM, {tnc: true, cookies: []}).toPromise().then(result => {
       console.log(result);
     });

@@ -246,33 +246,6 @@ export class NavbarComponent implements OnInit {
 
   getDp() {
     this.dp  = APIvars.DP_DOMAIN+this._storageService.getCurrentUserProperty('dp');
-    // this._apiService.getPhotos('dp').then(image => {
-
-    //   // if image size is less than 30 bytes
-    //   if (image.size < 30) {
-    //     this.onPicUpdate.emit({ type: 'dp', src: null });
-
-    //     // means if dp is null, dissociate from memory as well:
-    //     this._storageService.deleteSessionData(this.user._id);
-    //     this._navbarService.dpUpdated.next({ type: 'dp', src: null });
-    //     this.dp = null;
-    //     return null;
-    //   }
-    //   // convert raw image to Blob object
-    //   let reader = new FileReader();
-    //   reader.addEventListener('load', () => {
-    //     const unsafeValue = reader.result.toString();
-    //     this.dp = this._apiService.dom.bypassSecurityTrustResourceUrl(unsafeValue);
-    //     this._storageService.setSessionData(this._storageService.currentUser._id, unsafeValue);
-    //     this._storageService.dpLink = this.dp;
-    //     this.onPicUpdate.emit({ type: 'dp', src: this.dp });
-    //     this._navbarService.dpUpdated.next({ type: 'dp', src: this.dp });
-    //     // console.log("dp emitted ", this.dp);
-    //   }, false);
-    //   if (image) {
-    //     reader.readAsDataURL(image);
-    //   }
-    // });
   }
 
   updateOptions() {
@@ -346,7 +319,6 @@ export class NavbarComponent implements OnInit {
 
   getUnseenMessageCount() {
     this._apiService.http.get(APIvars.APIdomain + '/' + APIvars.GET_UNSEEN_MESSAGE_COUNT).toPromise().then(result => {
-      // console.log('count ', result);
       this.alerts.messages = result['count'] || 0;
     });
   }

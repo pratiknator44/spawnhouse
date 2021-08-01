@@ -202,7 +202,7 @@ export class ViewProfileComponent implements OnInit {
   //   this.homeflags.loadMoreFeeds = true;
   // }
 
-  routeTo(url) {
+  routeToLogin() {
     this._apiService.router.navigate(['/login']);
   }
 

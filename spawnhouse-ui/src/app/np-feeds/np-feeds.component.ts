@@ -6,6 +6,7 @@ import { FloatNotificationService } from 'src/assets/services/float-notification
 import { NavbarService } from 'src/assets/services/navbar.service';
 import { SocketService } from 'src/assets/services/socket.service';
 import { StorageService } from 'src/assets/services/storage.service';
+import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
   selector: 'sh-np-feeds',
@@ -40,6 +41,7 @@ export class NpFeedsComponent implements OnInit {
   npListPageNo = 1;
   mouseOverNp: number;    // used to show and hide liker users
   postToDelete;
+  domain = {dp: APIvars.DP_DOMAIN, cover: APIvars.COVER_DOMAIN};
   
   @Input() userlist: Array<string> = null;
   @HostListener('window: scroll', ['$event']) onScroll(e: Event): void {
@@ -79,13 +81,13 @@ export class NpFeedsComponent implements OnInit {
       // this.np = nowplayings['result'] || [];
       if(nowplayings['result'].length === 0)  this.homeflags.feedsEnd = true;   // permanant stop to feel load more
       //getting dp of updated entries
-      this.getDpOfEntries(nowplayings['result']);
+      this.calculateStillPlaying(nowplayings['result']);
       this.npListPageNo++;
       // this.total.emit(this.np.length);
     });
   }
 
-  getDpOfEntries(nowplayings) {
+  calculateStillPlaying(nowplayings) {
     const l = nowplayings.length;
     for(let x=0; x < l; x++) {
       if(!nowplayings[x]['isDead']) {
@@ -97,10 +99,9 @@ export class NpFeedsComponent implements OnInit {
       } else {
         nowplayings[x]['stillplaying'] = false;
       }
-      nowplayings[x]['dp'] = this._apiService.getUserImageById('dp', nowplayings[x].userid);
+      // nowplayings[x]['dp'] = this._apiService.getUserImageById('dp', nowplayings[x].userid);
     }
     this.np.push(...nowplayings);
-    this.np.sort( (a, b) => b.stillplaying ?  1 : -1);
     this.homeflags.loadMoreFeeds = true;
   }
 

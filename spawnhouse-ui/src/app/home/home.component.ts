@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit {
   }
 
   openGamingInfo() {
-    this._navbarService.showOption.next('gamebroadcast');
+    this._apiService.router.navigate(['/create']);
   }
 
   getNp() {

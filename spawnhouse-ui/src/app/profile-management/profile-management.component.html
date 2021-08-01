@@ -127,7 +127,7 @@
                             <input type="text" class="form form-control" formControlName="username"
                                 (focusout)="checkUsername()" pattern="[a-z0-9_.]{3,20}" />
                             <div class="text-danger" *ngIf="userinfoForm.get('username').errors"> Should contain 3-20
-                                chartacters, alpha numeric, '_' and '.' accepted</div>
+                                chartacters, lowercase, alpha numeric, '_' and '.' accepted</div>
                         </div>
                         <div class="col-4">
                             <label class="btn text-primary cursor-pointer hover-underline"

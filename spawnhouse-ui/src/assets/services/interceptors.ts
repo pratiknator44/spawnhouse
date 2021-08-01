@@ -35,6 +35,10 @@ export class TokenInterceptor implements HttpInterceptor {
             this._floatNotifService.makeToast.next({heading: 'Guest Viewer', text:'You\'re not logged in', icon: 'iconset icon-user', type: 'info', duration: DurationsEnum.LONG});
           }
 
+          if(err.status === 500 ) {
+            this._floatNotifService.makeToast.next({heading: 'System Error', text: 'Something went wrong. If this is not the intended behaviour, please tell us on spawnhouse1@gmail.com', icon: 'iconset icon-cross', type: 'danger', duration: DurationsEnum.LONG});
+          }
+
           else if (err.status === 404) {
             this._router.navigate(['./not-found']);
           }
