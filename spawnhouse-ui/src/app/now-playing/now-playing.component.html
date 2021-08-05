@@ -6,7 +6,7 @@
             <span class="iconset icon-game-controller text-theme h3" *ngIf="!npFlags.isLive"></span>
         </div>
     </div>
-    <h4 class="text-secondary d-inline-block ml-2">PLAYING
+    <h4 class="text-secondary d-inline-block ml-2">{{ npFlags?.isLive ? 'Playing' : 'Recently Played'}}
     </h4>
     
     <label class="float-right">

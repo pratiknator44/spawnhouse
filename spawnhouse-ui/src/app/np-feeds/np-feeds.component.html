@@ -70,8 +70,7 @@
                     class="cursor-pointer hover-underline ml-1 badge badge-default"
                     (click)="getWhoLiked(usernp?._id, i)">{{ usernp?.noOfLikes || '' }} Likes</span>
 
-                <div class="position-absolute overflow-hidden p-1 bg-black text-white text-small"
-                    [perfectScrollbar]="{suppressScrollX: true}" style="max-height: 12rem; z-index: 1;" *ngIf="mouseOverNp === i">
+                <div class="position-absolute overflow-hidden p-1 bg-black text-white text-small" style="max-height: 12rem; z-index: 1;" *ngIf="mouseOverNp === i">
                     Likers: <span class="iconset2 icon-cross float-right mr-3 cursor-pointer"
                         (click)="mouseOverNp=-1"></span>
                     <loader2 [type]="2" *ngIf="homeflags.loadingWhoLiked"></loader2>

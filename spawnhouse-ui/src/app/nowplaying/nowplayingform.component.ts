@@ -7,6 +7,7 @@ import { FloatNotificationService } from 'src/assets/services/float-notification
 import { NowplayingService } from 'src/assets/services/now-playing.service';
 import { SocketService } from 'src/assets/services/socket.service';
 import { StorageService } from 'src/assets/services/storage.service';
+import { DurationsEnum } from 'src/assets/variables/toasts.enum';
 import { SuggestionsComponent } from '../suggestions/suggestions.component';
 
 @Component({
@@ -129,7 +130,14 @@ export class NowplayingFormComponent implements OnInit {
       this._apiService.getGameName(this.searchword).then(res => {
         this.gameSuggestions = res['gamedata'];
       }).catch(e => {
-        this.gameSuggestions = []
+        this.gameSuggestions = [];
+        let errorBody;
+        try {
+          errorBody = e['message'];
+        } catch {
+          errorBody = 'Something went wrong';
+        }
+        this._floatNotifService.makeToast.next({type: 'danger', heading: 'Service Down', text: 'Game search service is down, inconvenience is regretted: '+errorBody, duration: DurationsEnum.LONG});
       }).finally(() => {
         this.npflags.searchingGame = false;
         this.gameApiTimeout = null;

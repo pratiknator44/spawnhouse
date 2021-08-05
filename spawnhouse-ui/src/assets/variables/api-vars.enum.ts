@@ -87,7 +87,8 @@ export enum APIvars {
     EULA_CONFIRM = 'agreement/confirm-eula',
     ACTIVE_NOW_PLAYING_USERS = 'nowplaying/activeusers',
     FEEDBACK = 'feedback',
-    LAST_ACTIVE = 'signup/lastactive'
+    LAST_ACTIVE = 'signup/lastactive',
+    SAVE_USER_GAMEMODE = 'gamedata/savegamemode'
 }
 
 export enum GlobalContantsEnum {

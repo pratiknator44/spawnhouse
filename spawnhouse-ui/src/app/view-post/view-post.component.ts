@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { APIservice } from 'src/assets/services/api.service';
 import { SocketService } from 'src/assets/services/socket.service';
 import { StorageService } from 'src/assets/services/storage.service';
+import { APIvars } from 'src/assets/variables/api-vars.enum';
 
 @Component({
   selector: 'sh-view-post',
@@ -40,6 +41,8 @@ export class ViewPostComponent implements OnInit {
   comment: String = '';
   comments = [];
   commentToDelete;
+  domain = { dp:  APIvars.DP_DOMAIN, cover:  APIvars.COVER_DOMAIN};
+
   constructor(private _activeRoute: ActivatedRoute,
     private _apiService: APIservice,
     private _storageService: StorageService,
@@ -58,7 +61,6 @@ export class ViewPostComponent implements OnInit {
       if (!this.postDetails || this.postDetails.length === 0) {
         this._apiService.router.navigate(['/not-found']);
       }
-      this.postDetails.userdata['dpLink'] = this._apiService.getUserImageById('dp', this.postDetails.userdata._id);
       this.getComments();
     }).catch(error => {
     });
@@ -80,9 +82,6 @@ export class ViewPostComponent implements OnInit {
         // console.log("comments = ", this.comments);
         const l = this.comments.length;
 
-        for (let x = 0; x < l; x++) {
-          this.comments[x]['commenterdata']['dpLink'] = this._apiService.getUserImageById('dp', this.comments[x]['commenterdata']._id);
-        }
         this.vpflags.loadingComments = false;
       });
     }

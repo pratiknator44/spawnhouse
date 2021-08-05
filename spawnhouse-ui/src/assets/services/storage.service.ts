@@ -46,8 +46,18 @@ export class StorageService {
 
     // called when session token is found when a user reopens the browser or refreshes it
     setUserFromSession() {
-        if(sessionStorage.getItem('user'))
-        this.currentUser = JSON.parse(sessionStorage.getItem('user'));
+        const user = sessionStorage.getItem('user') || localStorage.getItem('user');
+        this.currentUser = JSON.parse(user);
+        if(!sessionStorage.getItem('user')) {
+            sessionStorage.setItem('user', user);
+        }
+        // if(sessionStorage.getItem('user'))
+        //     this.currentUser = JSON.parse(sessionStorage.getItem('user'));
+        // else {
+        //     localStorage.getItem('user') {
+
+        //     }
+        // }
     }
 
     setCover(url) {

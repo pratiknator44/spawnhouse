@@ -73,6 +73,7 @@ export class LoginComponent implements OnInit {
       this._storageService.setSessionData('sh_auth_token', res['auth_token']);
       this._storageService.currentUser = res['user'];
       this._storageService.setSessionData('user', JSON.stringify(res['user']));
+      this._storageService.setLocalData('user', JSON.stringify(res['user']));
       this._navbarService.isLoggedIn.next(true);
       this.verficationProgress = false;
 

@@ -1,8 +1,7 @@
 <br>
 <div class="d-flex d-wrap-flex m-2">
     <div class="circle bg-theme text-center m-2" style="height: 3rem; width: 3rem; transform: translate(-47deg);">
-        <img class="h-100 w-100 circle user-default-img" [src]="postDetails?.userdata?.dpLink | async"
-            *ngIf="postDetails?.userdata?.dpLink | async" />
+        <img class="h-100 w-100 circle user-default-img" [src]="domain.dp+postDetails?.userdata?.dp"/>
     </div>
     <div style="width: calc(100% - 4rem);">
         <h5 class="m-0 text-theme hover-underline">
@@ -55,8 +54,7 @@
         <span class="cursor-pointer hover-underline ml-1 badge badge-default"
             (click)="getWhoLiked(postDetails?._id)">{{ postDetails?.noOfLikes || '' }} Likes</span>
 
-        <div class="position-absolute overflow-hidden p-1 bg-black text-white text-small"
-            [perfectScrollbar]="{suppressScrollX: true}" style="max-height: 12rem;" *ngIf="vpflags.mouseOverNp">
+        <div class="position-absolute overflow-hidden p-1 bg-black text-white text-small" style="max-height: 12rem;" *ngIf="vpflags.mouseOverNp">
             Likers: <span class="iconset2 icon-cross float-right mr-3 cursor-pointer"
                 (click)="vpflags.mouseOverNp=false"></span>
             <loader2 [type]="2" *ngIf="vpflags.loadingWhoLiked"></loader2>
@@ -109,21 +107,16 @@
             style="height: 20vh;" />
         <div class="text-center text-secondary display-6 text-bold">Be the first one to comment</div>
     </div>
-
     <div class="m-1 bg-theme-lite overflow-hidden" @fade *ngFor="let comment of comments; let i = index">
         <div class="d-flex d-wrap-flex">
             <div class="m-2">
                 <div class="circle bg-theme text-center text-white" style="height: 3rem; width: 3rem;">
-                    <img [src]="comment?.commenterdata?.dpLink | async" class="h-100 w-100 user-default-img circle"
-                        *ngIf="comment?.commenterdata?.dpLink | async" />
-                    <div *ngIf="!(comment?.commenterdata?.dpLink | async)">
-                        <span class="iconset icon-player h2"></span>
-                    </div>
+                    <img [src]="domain?.dp+comment?.commenterdata?.dp" class="h-100 w-100 user-default-img circle"/>
                 </div>
             </div>
             <div style="width: calc(100% - 4rem);">
                 <h6 class="text-theme cursor-pointer hover-underline ml-2 p-0 mb-0">{{
-                    comment?.commenterdata?.username}}:
+                    comment?.commenterdata?.username}}
                     <div class="float-right d-inline-block text-secondary p-1"
                         title="Double click to permanently remove this comment"
                         (click)="confirmDeleteComment(confirmDeleteCommentTemplate, postDetails?._id, comment?.time, i)"

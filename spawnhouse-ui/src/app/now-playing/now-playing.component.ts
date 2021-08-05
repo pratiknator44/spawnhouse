@@ -114,7 +114,7 @@ export class NowPlayingComponent implements OnInit {
     if(this.npdata['estplaytime'] && this.npdata['estplaytime'] !== 0)
       {
         // console.log("estplaytime = ", (3600000 * this.npdata['estplaytime']), " ", (new Date().getTime() - this.npdata['time']));
-        this.npFlags.isLive = 3600000 * this.npdata['estplaytime'] > new Date().getTime() - this.npdata['time'];
+        this.npFlags.isLive = 3600000 * this.npdata['estplaytime'] > (new Date().getTime() - this.npdata['time']);
       }
     else 
       this.npFlags.isLive = true;

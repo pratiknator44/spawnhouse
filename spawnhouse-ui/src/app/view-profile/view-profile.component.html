@@ -144,6 +144,16 @@
                             *ngFor="let genre of user?.gamedata?.genres; let i = index"> {{ genre | gameGenre }}</span>
                     </h5>
                 </div>
+
+                <div *ngIf="user?.gamedata?.gameMode">
+                    <hr>
+                    <div *ngIf="user?.gamedata?.gameMode === 'story'">
+                        <span class="iconset3 icon-book text-theme h5"></span> &nbsp; Prefers Story Games
+                    </div>
+                    <div *ngIf="user?.gamedata?.gameMode === 'competitive'">
+                        <span class="iconset3 icon-trophy text-warning h5"></span> &nbsp; Prefers Competitive Gaming
+                    </div>
+                </div>
             </div>
 
             <div class="mt-3" *ngIf="user?.bio || user?.quote || user?.website">

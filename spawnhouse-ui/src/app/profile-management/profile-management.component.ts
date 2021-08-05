@@ -22,6 +22,7 @@ export class ProfileManagementComponent implements OnInit {
   userinfoForm: FormGroup;
   saveText = { videogame: 'Save', personal: 'Save', type: 'Save' };
   selectedSection: Number = 0;
+  selectedGameMode;
   mgtFlags = { loadingData: true, usernameExists: false, checkingUsername: false, searchingGame: false };
   genres = [
     { id: 'action', genre: 'Action', example: 'PUBG, Call of Duty, Counter-Strike', checked: '' },
@@ -47,6 +48,8 @@ export class ProfileManagementComponent implements OnInit {
     { id: 'fr', checked: false },
     { id: 'co', checked: false },
   ];
+
+  gameModes = [{value: 'story', label: 'story based', icon: 'book'}, {value: 'competitive', label: 'competitive', icon: 'trophy'}];
 
   gamerTypes = [{ value: 'CAS', label: 'Casual' },
   { value: 'HOB', label: 'Hobbyist' },
@@ -106,6 +109,7 @@ export class ProfileManagementComponent implements OnInit {
       // console.log("user settings === ", result);
       if (result['result']) {
         try {
+          this.selectedGameMode = result['result'].gameMode;
           let l = result['result']['genres'].length || 0;
           let gl = this.genres.length;
 
@@ -275,6 +279,22 @@ export class ProfileManagementComponent implements OnInit {
         this._apiService.logout();
       }
     })
+  }
+
+  saveGamemode(mode) {
+
+    //remove the game mode
+    if(this.selectedGameMode === mode) {
+      this.selectedGameMode = null;
+      this._apiService.saveGamemode(null).then(res => {
+      }).catch(error => {
+      });
+      return;
+    }
+    this.selectedGameMode = mode;
+    this._apiService.saveGamemode(mode).then(res => {
+    }).catch(error => {
+    });
   }
 
 }

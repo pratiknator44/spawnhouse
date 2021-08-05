@@ -32,10 +32,6 @@
                 <div class="d-inline-block mt-2" *ngIf="user?.nowplaying">
                     <div class="text-small">{{user?.isLive ? 'Now Playing' : 'Recently Played'}}</div>
                     <div class="text-theme text-bold" [title]="user?.nowplaying?.game">{{ user?.nowplaying?.game }}
-                        <!-- &nbsp; <a *ngIf="user?.nowplaying?.stream" class="text-theme badge" target="__blank" [href]="user?.nowplaying?.stream">
-                            <span class="badge h3">
-                                <span class="iconset icon-{{user?.nowplaying?.stream | streamlink}}"></span>
-                            </span> Watch </a> -->
                     </div>
                 </div>
             </div>

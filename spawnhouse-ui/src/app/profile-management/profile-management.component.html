@@ -35,6 +35,19 @@
                     </div> {{saveText.type}}
                 </div>
             </div>
+            <br>
+            <div class="m-3">
+                <div>What kind of games do you like more</div>
+                <div class="row text-center mt-3 cursor-pointer">
+                    <div class="col-6" *ngFor="let mode of gameModes">
+                        <div class="circle" (click)="saveGamemode(mode.value)" [ngClass]="{'text-theme': selectedGameMode === mode.value, 'text-secondary': selectedGameMode !== mode.value}">
+                            <span class="iconset3 icon-{{mode.icon}} h1"></span>
+                        </div>
+                        <div class="">{{mode.label | titlecase }}</div>
+                    </div>
+                </div>
+
+            </div>
 
 
             <div class="m-3" *ngIf="!mgtFlags.loadingData">

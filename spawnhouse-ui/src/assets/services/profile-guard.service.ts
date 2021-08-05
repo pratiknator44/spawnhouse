@@ -17,12 +17,13 @@ export class ProfileGuardService implements CanActivate {
             this._navService.isLoggedIn.next(true);
             return true;
         } 
-        else if(localStorage.getItem('sh_auth_token')) {
-            sessionStorage.setItem('sh_auth_token', localStorage.getItem('sh_auth_token'));
-            this._storageService.setUserFromSession();
-            this._navService.isLoggedIn.next(true);
-            return true;
-        }
+        // else if(localStorage.getItem('sh_auth_token')) {
+        //     console.log("assigning local token to session");
+        //     sessionStorage.setItem('sh_auth_token', localStorage.getItem('sh_auth_token'));
+        //     this._storageService.setUserFromSession();
+        //     this._navService.isLoggedIn.next(true);
+        //     return false;
+        // }
         
         else if (router.url[0].path.length === 24) {
             // const userId = router.url[0].path

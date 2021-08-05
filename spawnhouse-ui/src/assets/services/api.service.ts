@@ -359,4 +359,8 @@ export class APIservice {
   setNowPlaying(npOb) {
     return this._http.post(APIvars.APIdomain + '/' + APIvars.NOW_PLAYING, npOb).toPromise();
   }
+
+  saveGamemode(mode) {
+    return this._http.post(APIvars.APIdomain + '/' + APIvars.SAVE_USER_GAMEMODE, {gameMode: mode}).toPromise();
+  }
 }
