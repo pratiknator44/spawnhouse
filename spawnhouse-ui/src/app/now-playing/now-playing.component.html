@@ -14,9 +14,9 @@
         </span>     
     </label>
 
-    <label class="text-theme cursor-pointer float-right mr" (click)="doOnNew()" *ngIf="isUserProfile">
+    <!-- <label class="text-theme cursor-pointer float-right mr" (click)="doOnNew()" *ngIf="isUserProfile">
         <span class="icon-add iconset2"></span>
-    </label>
+    </label> -->
     
     <label class="text-secondary font-italic ml-2">{{ npdata?.time | ago }}</label>
 </div>
@@ -33,7 +33,6 @@
 'bg-secondary': npdata?.console === 'Wii'}">
 </div>
 {{ npdata?.console }}
-
 <div class="text-secondary mt-2" *ngIf="npdata?.stream">
     <span class="iconset icon-{{ npdata?.stream | streamlink }} mr-2 text-black"></span>
     <a class="text-theme" target="__blank" [href]="npdata?.stream">Watch on {{ npdata?.stream | streamlink: true | titlecase }} </a>

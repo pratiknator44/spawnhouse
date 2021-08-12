@@ -1,6 +1,5 @@
 <div class="bg-white">
-    <div class="m-3 position-relative" [perfectScrollbar]="{suppressScrollY: true, suppressScrollX: false}"
-        style="height: 12rem; white-space: nowrap;">
+    <div class="m-3 position-relative w-100" style="height: 12rem; white-space: nowrap; overflow-y: auto;">
         <div class="ongoing-card rounded d-inline-block text-center border-grey hover-bg cursor-pointer"
             style="vertical-align: top;" (click)="openGamingInfo()">
             <div class="h1 iconset2 icon-add text-theme mt-3"></div>
@@ -10,8 +9,8 @@
         <div class="ongoing-card rounded d-inline-block text-center border-grey cursor-pointer ml-1 overflow-hidden position-relative"
             *ngFor="let activeuser of activeUsers">
             <div class="h-50" (click)="gotoProfile(activeuser?.userid)">
-                <img [src]="activeuser?.dp | async" class="w-100 h-100 user-default-img">
-                
+                <img [src]="domain?.dp+activeuser?.dp" class="w-100 h-100 user-default-img">
+
                 <div class="text-small text-truncate">{{activeuser?.username}}</div>
                 <div class="text-small fw-bold text-theme mr- ml-1" style="white-space: normal;">{{activeuser?.game}}
                 </div>
@@ -33,7 +32,8 @@
                 <div class="story-options-container d-flex flex-nowrap text-white">
                     <div class="bg-success rounded iconset2 icon-game-server" title="personal room available"
                         *ngIf="activeuser?.maxconnections"></div>
-                    <div class="bg-danger rounded iconset icon-tv" (click)="gotoWebsite(activeuser?.stream)" title="watch stream" *ngIf="activeuser?.stream">
+                    <div class="bg-danger rounded iconset icon-tv" (click)="gotoWebsite(activeuser?.stream)"
+                        title="watch stream" *ngIf="activeuser?.stream">
                     </div>
                     <div class="bg-theme rounded iconset2 icon-jolly-roger" (click)="gotoProfile(activeuser?.userid)"
                         title="Goto profile"></div>

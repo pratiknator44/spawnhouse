@@ -108,12 +108,8 @@ export class NowPlayingComponent implements OnInit {
   }
 
   isPlayerLive() {
-    // check if player is online
-    // console.log("nowplay data = ", this.npdata);
-    // current time - last update <= est. time of play.
-    if(this.npdata['estplaytime'] && this.npdata['estplaytime'] !== 0)
-      {
-        // console.log("estplaytime = ", (3600000 * this.npdata['estplaytime']), " ", (new Date().getTime() - this.npdata['time']));
+    
+    if(this.npdata['estplaytime'] && this.npdata['estplaytime'] !== 0) {
         this.npFlags.isLive = 3600000 * this.npdata['estplaytime'] > (new Date().getTime() - this.npdata['time']);
       }
     else 

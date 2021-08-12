@@ -142,6 +142,7 @@ export class ProfileComponent implements OnInit {
     this._notifService.setTitle(this.user.username || this.user.fname + ' ' + this.user.lname);
 
     this.getCoverOfUser(this.user._id);
+    this._navbarService.selectedOption.next(this.user.username);
   }
 
   getFollowStatus(id: String) {

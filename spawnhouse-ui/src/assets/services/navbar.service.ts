@@ -18,6 +18,7 @@ export class NavbarService {
     unseenMessagesRecord = [];
     audio: any;
     nppwdOb;        // observable to get data for np password
+    selectedOption = new Subject<string>();
     constructor(
         private _http: HttpClient,
         private _socketService: SocketService,

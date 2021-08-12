@@ -26,8 +26,8 @@
             <div class="text-small badge badge-success" (click)="showWhyGoogle(whyGoogleTemplate)">Why only Google
                 account?</div>
             <div *ngIf="verficationProgress">Loading... Please wait</div>
-            <div *ngIf="errorText" class="bg-danger text-white">Something went wrong... {{ errorText | slice: 0:20 }}...
-                Please try again after sometime</div>
+            <div *ngIf="errorText" class="bg-danger text-white"> {{ errorText | slice: 0:20 }}...
+                Please re-login</div>
         </div>
     </div>
 </div>

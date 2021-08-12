@@ -6,15 +6,12 @@ import { IPictureUploadSchema } from 'src/assets/interfaces/picture-upload-schem
 import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SuggestionsComponent } from '../suggestions/suggestions.component';
+import { FormGroup } from '@angular/forms';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
-import { GameGenrePipe } from 'src/assets/pipes/gamegenre.pipe';
 import { INavbarMessage } from 'src/assets/interfaces/MsgNotif.interface';
 import { SocketService } from 'src/assets/services/socket.service';
 import { NowplayingService } from 'src/assets/services/now-playing.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { animate, style, transition, trigger } from '@angular/animations';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -54,7 +51,7 @@ export class NavbarComponent implements OnInit {
   nowplayingForm: FormGroup;
   gameSuggestions = [];
   eula: String;
-  domain = {dp: APIvars.DP_DOMAIN, cover: APIvars.COVER_DOMAIN};
+  domain = { dp: APIvars.DP_DOMAIN, cover: APIvars.COVER_DOMAIN };
 
   @Input() imageUploadMode: string;
   @Output() onPicUpdate = new EventEmitter();
@@ -81,7 +78,9 @@ export class NavbarComponent implements OnInit {
     // { name: 'Settings & Privacy', icon: 'cog', alert: 0 }];
 
     this._navbarService.refreshUnseenMessages.subscribe(res => { this.getUnseenMessageCount(); });
-
+    this._navbarService.selectedOption.asObservable().subscribe( option => {
+      this.selectedOption = option;
+    })
 
     this.selectedOption = this.options[0].name;
     // call profile picture api
@@ -245,7 +244,7 @@ export class NavbarComponent implements OnInit {
   }
 
   getDp() {
-    this.dp  = APIvars.DP_DOMAIN+this._storageService.getCurrentUserProperty('dp');
+    this.dp = APIvars.DP_DOMAIN + this._storageService.getCurrentUserProperty('dp');
   }
 
   updateOptions() {
@@ -257,7 +256,7 @@ export class NavbarComponent implements OnInit {
     }
   }
 
- 
+
   closeOverlay() {
     this._overlayService.showSubject.next(false);
     this._overlayService.closeSubject.next(true);
@@ -300,7 +299,7 @@ export class NavbarComponent implements OnInit {
         this.activeOption = null;
         this.routeTo('all-notifications');
         break;
-        
+
       case 'userop':
         if (this.activeOption === 'userop') { this.activeOption = null; this.closeOverlay(); return; }
         this.activeOption = 'userop';

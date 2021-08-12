@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
+import { NavbarService } from 'src/assets/services/navbar.service';
 
 @Component({
   selector: 'sh-all-notifications',
@@ -22,9 +23,11 @@ export class AllNotificationsComponent implements OnInit {
   }
 
   constructor(private _apiService: APIservice,
-    private _router: Router) { }
+    private _router: Router,
+    private _navbarService: NavbarService) { }
 
   ngOnInit(): void {
+    this._navbarService.selectedOption.next(null);
     this.getNotifications(true);
   }
 
