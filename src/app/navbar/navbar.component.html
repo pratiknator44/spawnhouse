@@ -1,0 +1,291 @@
+<nav class="navbar navbar-expand-lg bg-light nav-shadow d-flex sh-nav">
+  <div class="w-100 d-flex" style="height: auto; flex-wrap: wrap;">
+
+    <div class="navbar-item navbar-item-responsive text-black overflow-none" title="{{user.username}}"
+      (click)="routeTo('profile')" (click)="selectedOption = user.username">
+      <div class="text-center overflow-hidden" style="height: 100%;">
+
+        <img [src]="dp" class="cursor-pointer dp circle user-default-img"
+          [ngClass]="{'filter-greyscale': selectedOption !== user.username}" />
+        <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label"
+          [ngClass]="{'text-theme': selectedOption === user.username}">{{ user?.username }}</div>
+      </div>
+    </div>
+
+    <div class="navbar-item navbar-item-responsive text-black" title="Home"
+      (click)="selectedOption = 'Home'; routeTo('/home')">
+      <div class="cursor-pointer text-center iconset2 icon-size icon-jolly-roger"
+        [ngClass]="{'color-theme': selectedOption==='Home'}">
+      </div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Home</div>
+    </div>
+
+    <div class="navbar-item navbar-item-responsive text-black" title="Gamers around your location"
+      (click)="selectedOption = 'Aroundyou'; routeTo('/aroundyou')">
+      <div class="cursor-pointer text-center iconset icon-size icon-compass2"
+        [ngClass]="{'color-theme': selectedOption==='Aroundyou'}">
+      </div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Nearby</div>
+    </div>
+
+
+    <!-- search bar and suggestions-->
+    <div class="mt-1 mob-search-flex ml-1">
+      <div class="navbar-item navbar-item-responsive text-black mobile-view-only" title="Search User"
+        (click)="modalOpen(searchTemplate, 'lg'); userSearch=''">
+        <div class="cursor-pointer text-center iconset icon-size icon-search">
+        </div>
+      </div>
+
+      <div class="pc-view-only">
+        <sh-suggestions [placeholder]="'Search by name, username, or email'" [icon]="'search'"
+          [template]="searchSuggestionTemplate" (inputChanged)="searchThis($event)"
+          [showSuggestions]="showUserSuggestions"></sh-suggestions>
+        <ng-template #searchSuggestionTemplate>
+          <!-- search template -->
+          <div class="position-relative border-grey" style="height: 3.5rem;"
+            *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
+            <div class="position-absolute search-icon-container">
+              <div style="animation: rotate-left 1s infinite linear;">
+                <!-- <loader2 [type]=""></loader2> -->
+                <span class="iconset icon-search"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- data template -->
+          <div class="hover-bg-grey p-3" *ngFor="let suggestion of searchSuggestions" (click)="gotoProfile(suggestion)">
+            <div class="d-flex">
+              <img class="m-1 circle user-default-img" *ngIf="suggestion?.dp" [src]="domain.dp+suggestion?.dp"
+                style="width: 2.5rem; height: 2.5rem;" />
+              <div style="width: calc(100% - 3rem);">
+                <div class="text-truncate cursor-pointer ">&nbsp;{{ suggestion?.username }}</div>
+                <div class="text-theme" [ngClass]="{'mt-2': !suggestion?.username }">
+                  &nbsp;{{ (suggestion?.fname + ' ' + suggestion?.lname) | titlecase }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- not found template -->
+          <div class="class text-center text-secondary cursor-pointer" *ngIf="noUserFound">No users found</div>
+          <div class="class text-center hover-underline text-primary cursor-pointer"
+            *ngIf="searchSuggestions?.length > 5">
+            See All</div>
+        </ng-template>
+      </div>
+    </div>
+
+
+    <div class="navbar-item navbar-item-responsive text-black text-center position-relative" title="Notifications"
+      (click)="navOptionSelected('notif')">
+      <div class="cursor-pointer" [ngClass]="{'color-theme': activeOption==='notif'}">
+        <span class="iconset icon-size icon-bell"></span>
+        <span class="badge badge-danger" style="margin-left: -0.25rem;"
+          *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
+      </div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div>
+
+      <div class="notifications-container bg-white position-absolute mt-3 rounded std-box-shadow"
+        *ngIf="activeOption==='notif'">
+
+        <div class="bg-lite text-bold" style="height: 3rem;">
+          <label style="line-height: 3;">New Notifications
+            <span class="badge badge-pill badge-danger">{{alerts.notifications}}</span>
+          </label>
+          <div class="btn btn-default h-100 float-right border-gray" (click)="markAllNotificationsRead()"
+            title="Mark all as read" style="border-left: solid 1px #CCC; border-radius: 0;">
+            <span class="iconset icon-eye h4"></span>
+          </div>
+        </div>
+
+        <!-- <loader2 [type]="3" *ngIf="navbarFlags.notificationsLoading"></loader2> -->
+        <div class="text-center font-italic text-secondary" *ngIf="notifications?.length <= 0">No Notifications</div>
+
+        <div class="position-relative" style="max-height: 20rem; overflow: auto;" (scroll)="notifScroll($event)">
+          <sh-notifications [notifications]="notifications" (close)="closeNotificationOverlay($event)"
+            (notificationClicked)="markAsRead($event)">
+          </sh-notifications>
+        </div>
+        <div class="bg-lite font-0-5-rem text-theme text-bold hover-underline cursor-pointer p-2"
+          (click)="navOptionSelected('all-notif');"
+          style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;"> Show All
+        </div>
+      </div>
+
+    </div>
+
+    <div class="navbar-item text-black text-center position-relative" title="Messages"
+      (click)="navOptionSelected('msg')">
+      <div class="cursor-pointer" [ngClass]="{'color-theme': activeOption==='msg'}">
+        <span class="iconset icon-size icon-bubbles3"></span>
+        <span class="badge badge-danger" style="margin-left: -0.25rem;"
+          *ngIf="alerts.messages !== 0">{{alerts.messages}}</span>
+      </div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer">Messages</div>
+
+
+      <div class="message-container bg-white position-absolute mt-3 std-box-shadow rounded"
+        *ngIf="activeOption==='msg'">
+        <div class="bg-lite text-bold" style="height: 3rem;">
+          <label style="line-height: 3;">New Messages <span
+              class="badge badge-pill badge-danger">{{alerts.messages}}</span></label>
+        </div>
+
+        <div class="text-center font-italic text-secondary" *ngIf="navbarFlags.messagelistLoading===null ">No messages
+          yet</div>
+        <div class="position-relative w-100" *ngIf="navbarFlags.messagelistLoading">
+          <loader2 [type]="3"></loader2><br>
+        </div>
+        <div>
+        </div>
+        <div class="user-message-row hover-bg-grey cursor-pointer m-1"
+          [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}"
+          *ngFor="let msg of messages; let i = index" (click)="routeToMessaging(msg._id)">
+
+          <div class="row m-1 text-left">
+            <div class="col-3 text-center">
+              <img class="circle dp-big mt-2" [src]="domain?.dp+msg?.dp" />
+            </div>
+
+            <div class="col-9">
+              <span class="text-theme hover-underline font-weight-bold">
+                {{msg?.username }}
+              </span>
+
+              <div class="text-secondary mr-2 text-truncate overflow-hidden" style="width: 11rem; white-space: nowrap;">
+                {{ msg.text }}
+              </div>
+              <div class="badge badge-lite">{{msg.time | ago: true : true }}</div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="bg-lite font-0-5-rem text-theme text-bold hover-underline cursor-pointer p-2"
+          (click)="routeToMessaging()" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;"> Show All
+        </div>
+      </div>
+
+    </div>
+
+    <div class="navbar-item position-relative">
+      <div class="cursor-pointer font-0-5-rem mt-3 text-center" (click)="navOptionSelected('userop')"><span
+          class="iconset icon-dots-horizontal-triple h6 mt-3"></span></div>
+
+
+      <div class="position-absolute bg-white position-relative user-options rounded border-grey"
+        *ngIf="activeOption==='userop'">
+        <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('manage')"><span
+            class="iconset icon-cog mr-2"></span>Manage profile</div>
+        <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('feedback')"><span
+            class="iconset2 icon-star mr-2"></span>Feedback</div>
+        <div class="hover-bg-grey p-2 cursor-pointer" (click)="routeTo('about')"><span
+            class="iconset2 icon-jolly-roger mr-2"></span>About</div>
+        <div class="hover-bg-grey p-2 cursor-pointer" (click)="showFeedback(feedbackTemplate)"><span
+            class="iconset icon-switch mr-2"></span>Logout</div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+
+<!-- navbar bottom-->
+
+<nav class="mob-navbar-display position-absolute w-100 d-block bg-lite d-flex d-wrap-flex">
+
+  <div class="navbar-item text-black" title="Home" (click)="selectedOption = 'Home'; routeTo('/home')">
+    <div class="cursor-pointer text-center iconset h3 icon-home" [ngClass]="{'color-theme': selectedOption==='Home'}">
+    </div>
+    <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Home</div> -->
+  </div>
+
+
+  <div class="navbar-item text-black" title="Gamers around you"
+    (click)="selectedOption = 'Aroundyou'; routeTo('/aroundyou')">
+    <div class="cursor-pointer text-center iconset h3 icon-compass2"
+      [ngClass]="{'color-theme': selectedOption==='Aroundyou'}">
+    </div>
+  </div>
+
+
+  <div class="navbar-item text-black overflow-none" title="{{user.fname}}" (click)="routeTo('profile')"
+    (click)="selectedOption = user.fname">
+    <div class="text-center overflow-hidden" style="height: 100%;">
+      <img [src]="dp" class="cursor-pointer dp circle user-default-img"
+        [ngClass]="{'filter-greyscale': selectedOption!==user.fname}" />
+      <!-- <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label" [ngClass]="{'text-theme': selectedOption===user.fname}">{{ user.username ? user.username : user.fname }}</div> -->
+    </div>
+  </div>
+
+
+  <div class="navbar-item text-black text-center position-relative" title="Notifications"
+    (click)="navOptionSelected('notif')">
+    <div class="cursor-pointer" [ngClass]="{'color-theme': activeOption === 'notif'}">
+      <span class="iconset h3 icon-bell"></span>
+      <span class="badge badge-danger" style="margin-left: -0.25rem;"
+        *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
+    </div>
+
+  </div>
+
+</nav>
+
+<!-- navbar bottom ends-->
+
+
+<ng-template #feedbackTemplate let-dismiss="dismiss">
+  <sh-feedback [submitButtonText]="'Submit and Logout'" (aftersave)="logout(); dismiss('close click')"></sh-feedback>
+  <div>
+    <button class="btn btn-danger w-25 float-right" (click)="logout(); dismiss('close click');">Logout</button>
+    <button class="btn btn-default w-25 float-right" (click)="dismiss('close click');">Cancel</button>
+  </div>
+</ng-template>
+
+
+
+
+
+<!-- search template -->
+<ng-template #searchTemplate let-dismiss="dismiss">
+  <sh-suggestions [placeholder]="'Search by name, username, or email'" [icon]="'search'"
+    [template]="searchSuggestionTemplate" (inputChanged)="searchThis($event)" [showSuggestions]="showUserSuggestions"
+    [searchInput]="userSearch">
+  </sh-suggestions>
+  <ng-template #searchSuggestionTemplate>
+    <!-- search template -->
+    <div class="position-relative border-grey" style="height: 3.5rem;"
+      *ngIf="searchSuggestions.length === 0 && userSearch.length > 0 && !noUserFound">
+      <div class="position-absolute search-icon-container">
+        <div style="animation: rotate-left 1s infinite linear;">
+          <!-- <loader2 [type]=""></loader2> -->
+          <span class="iconset icon-search"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- data sub-template -->
+    <div class="hover-bg-grey p-3" *ngFor="let suggestion of searchSuggestions"
+      (click)="gotoProfile(suggestion); dismiss('close')">
+      <div class="d-flex">
+        <img class="m-1 circle user-default-img" [src]="suggestion?.dpaddress | async"
+          style="width: 2.5rem; height: 2.5rem;" />
+        <div style="width: calc(100% - 3rem);">
+          <div class="text-truncate cursor-pointer ">&nbsp;{{ suggestion?.username }}</div>
+          <div class="text-theme" [ngClass]="{'mt-2': !suggestion?.username }">
+            &nbsp;{{ (suggestion?.fname + ' ' + suggestion?.lname) | titlecase }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- not found template -->
+    <div class="class text-center text-secondary cursor-pointer" *ngIf="noUserFound">No users found</div>
+    <div class="class text-center hover-underline text-primary cursor-pointer" *ngIf="searchSuggestions?.length > 5">
+      See All</div>
+  </ng-template>
+</ng-template>

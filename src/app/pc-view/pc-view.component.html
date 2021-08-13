@@ -1,0 +1,26 @@
+<div class="z-nav position-fixed" style="z-index: 9; top:0;">
+    <navbar *ngIf="isLoggedIn" #navbar></navbar>
+</div>
+
+<sh-overlay 
+[closeOnClick]="config.closeOnClick"
+[transparent]="config.transparent"
+*ngIf="showOverlay"
+(click)="overlayClicked($event)"
+></sh-overlay>
+
+<div class="mt-0 ml-auto mr-auto" [ngClass]="{'mt-3rem': isLoggedIn}" style="max-width: 1080px;">
+<router-outlet></router-outlet>
+<!-- <div>(c) BitA Studio Pvt Ltd.</div> -->
+</div>
+
+
+<sh-float-notification
+*ngIf="isNotifVisible"
+[ngClass]="{'float-in': isNotifVisible}"
+[config]="floatNotifConfig"></sh-float-notification>
+
+<div class="position-fixed" style="right: 0; bottom: 0;">
+  <sh-toast>
+  </sh-toast>
+</div>

@@ -1,0 +1,5 @@
+<div class="d-inline-block mr-2 text-secondary">{{labelLeft}}</div>
+<div class="container position-relative rounded d-inline-block" [ngClass]="{'bg-success': status, 'bg-secondary': !status}" (click)="statusChanged()">
+    <div class="position-absolute circle bg-white border-grey cursor-pointer" [ngClass]="{'position-on': !status, 'position-off': status}"></div>
+
+</div>

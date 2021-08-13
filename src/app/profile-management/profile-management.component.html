@@ -1,0 +1,263 @@
+<!-- <div class="position-relative"> -->
+
+<!-- <div class="w-100 bg-theme" style="z-index: 0; height: 30vh;"></div> -->
+<div class="profile-management position-relative mt-3 z-nav bg-white">
+    <h2 class="text-secondary">About You</h2>
+
+
+    <div *ngFor="let section of pageSections; let i = index" class="btn badge-circle bg-white ml-1 corners-sharp"
+        [ngClass]="{'section-unselected text-black': selectedSection !== i, 'section-selected text-theme': selectedSection === i}"
+        (click)="selectedSection = i">
+        <span class="iconset icon-{{section.icon}} mr-2"></span> {{section.title | titlecase }}
+    </div>
+
+
+    <div class="m-3" [ngSwitch]="selectedSection">
+        <ng-container *ngSwitchCase="0">
+            <loader2 [type]="2" *ngIf="mgtFlags.loadingData"></loader2>
+            <div *ngIf="!mgtFlags.loadingData">
+
+                <label>Your top 3 preferences when you play a co-op game</label>
+                <div class="player-type-choices text-center d-flex text-secondary mt-3" style="flex-wrap: wrap;">
+                    <div class="player-type-choice-container text-center ml-auto mr-auto cursor-pointer"
+                        [ngClass]="{'text-theme': type?.checked}" (click)="selectType(i)"
+                        *ngFor="let type of playerTypes; let i = index">
+                        <span
+                            class="big-icon cursor-pointer iconset icon-{{type.id | playertype : true}} d-block m-2 p-0"></span>
+                        {{type.id | playertype | titlecase}}
+                    </div>
+                </div>
+                <div class="w-75 d-inline-block bg-info mt-1"></div>
+                <div class="btn bg-theme text-white w-25" (click)="savePlayerType()"
+                    [ngClass]="{'bg-secondary': saveText.type === 'Saving...'}" style="margin-top: 2rem;">
+                    <div class="d-inline-block mt-1" *ngIf="saveText.type === 'Saving...'">
+                        <loader2 [type]="2.5"></loader2>
+                    </div> {{saveText.type}}
+                </div>
+            </div>
+            <br>
+            <div class="m-3">
+                <div>What kind of games do you like more</div>
+                <div class="row text-center mt-3 cursor-pointer">
+                    <div class="col-6" *ngFor="let mode of gameModes">
+                        <div class="circle" (click)="saveGamemode(mode.value)" [ngClass]="{'text-theme': selectedGameMode === mode.value, 'text-secondary': selectedGameMode !== mode.value}">
+                            <span class="iconset3 icon-{{mode.icon}} h1"></span>
+                        </div>
+                        <div class="">{{mode.label | titlecase }}</div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="m-3" *ngIf="!mgtFlags.loadingData">
+                <!-- <div class="w-25">
+                </div> -->
+                <hr>
+                <form [formGroup]="gamedataForm" (ngSubmit)="submitGamedata()" action="" method="POST">
+                    <label class="mt-1">Some of the best videogames you've played. Click on game name to remove it.
+                        Click on <span class="iconset icon-favorite_outline text-danger"></span> to set as
+                        favourite</label>
+                    <!-- <br>
+                    <span class="text-secondary">Please add your favourite and super-favourite games only</span> -->
+                    <br><br>
+                    <sh-chips [items]="gameSuggestions" [selected]="items" (queryChange)="queryChange($event)"
+                        (selectionChange)="newSelections($event)"
+                        [config]="{showFav: true, showCross: false, placeholder: 'Type a game name'}"></sh-chips>
+
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            Type of games you like (select top 3):
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div *ngFor="let genre of genres">
+                                <input
+                                    [disabled]="gamedataForm.get('genres').value?.length > 3 && !gamedataForm.get('genres').value?.includes(genre.id)"
+                                    type="checkbox" (click)="updateGenreCheckList($event, genre.id)" class="form"
+                                    id="{{genre.id}}" [checked]="genre.checked" /> <label class="ml-1"
+                                    for="{{genre.id}}">{{genre.genre}} <label class="ml-1 text-secondary font-italic"
+                                        for={{genre.id}}>{{ genre.example }} etc.</label></label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn w-25 bg-theme text-white float-right"
+                        [ngClass]="{'bg-secondary': saveText.videogame === 'Saving...'}">
+                        <div class="d-inline-block mt-1" *ngIf="saveText.videogame === 'Saving...'">
+                            <loader2 [type]="2.5"></loader2>
+                        </div>
+                        {{saveText.videogame}}
+                    </button>
+                </form>
+            </div>
+        </ng-container>
+
+
+        <ng-container *ngSwitchCase="1">
+            <div class="m-3">
+                <form [formGroup]="userinfoForm" (ngSubmit)="submitUserdata()" action="" method="POST">
+                    <h2 class="text-secondary">Personal</h2>
+
+                    <div class="row">
+                        <div class="col-6">First Name<label class="text-danger">*</label></div>
+                        <div class="col-6">Last Name<label class="text-danger">*</label></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="text" formControlName="fname" class="form form-control" />
+                        </div>
+                        <div class="col-6">
+                            <input type="text" formControlName="lname" class="form form-control" />
+                        </div>
+                    </div>
+
+
+
+                    <div class="row mt-3">
+                        <div class="col-6">What type of gamer are you?
+                            <span class="text-secondary">
+                                <select class="form form-control" formControlName="gamerType">
+                                    <option [value]="null">Select</option>
+                                    <option [value]="gtype.value" *ngFor="let gtype of gamerTypes">{{gtype.label}}
+                                    </option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-3">
+                        <div class="col-6">Username <span class="text-danger">*</span>
+                            <!-- <span class="text-secondary" style="font-size: 10px;">
+                                will let you access spawnhouse.com/your-username
+                            </span> -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="text" class="form form-control" formControlName="username"
+                                (focusout)="checkUsername()" pattern="[a-z0-9_.]{3,20}" />
+                            <div class="text-danger" *ngIf="userinfoForm.get('username').errors"> Should contain 3-20
+                                chartacters, lowercase, alpha numeric, '_' and '.' accepted</div>
+                        </div>
+                        <div class="col-4">
+                            <label class="btn text-primary cursor-pointer hover-underline"
+                                *ngIf="mgtFlags.checkingUsername" (click)="checkUsername()">checking...</label>
+                            <span class="text-danger" *ngIf="mgtFlags.usernameExists && !mgtFlags.checkingUsername">is
+                                taken, try another</span>
+                            <span class="text-success"
+                                *ngIf="!mgtFlags.usernameExists && !mgtFlags.checkingUsername">available</span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12">Website</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12"><input type="text" class="form form-control" formControlName="website" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12">Bio</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <textarea cols="7" class="form form-control" formControlName="bio"></textarea>
+                            <label class="text-secondary float-right">{{ userinfoForm.get('bio').value.length+'/100'
+                                }}</label>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">Favourite Quote</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="text" formControlName="quote" class="form form-control font-italic"
+                                placeholder="'Sic Patvis magna' -Nathan Drake ">
+                            <label class="text-secondary float-right">{{ userinfoForm.get('quote').value.length+'/100'
+                                }}</label>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-6">You joined on {{ user['doj'] | date:'mediumDate' }}</div>
+                        <div class="col-6">
+
+                            <button type="submit" class="btn w-50 bg-theme text-white float-right"
+                                [ngClass]="{'bg-secondary': saveText.personal === 'Saving...'}">
+                                <div class="d-inline-block mt-1" *ngIf="saveText.personal === 'Saving...'">
+                                    <loader2 [type]="2.5"></loader2>
+                                </div>
+                                {{saveText.personal}}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </ng-container>
+
+
+        <ng-container *ngSwitchCase="2">
+            <div class="m-3">
+                <div class="badge badge-dark badge-pill cursor-pointer">Delete my account</div>
+
+                <div class="delete-accoungt-section">
+                    What is the reason of your exit from Spawnhouse?
+                    <br>
+                    <ul class="list-group">
+                        <li class="list-group-item" *ngFor="let reason of deleteReasons">
+                            <input type="checkbox" value="{{reason.value}}" id="{{reason.value}}"
+                                [(ngModel)]="reason.checked" />
+                            <label for="{{reason.value}}">{{reason.label}}</label>
+                        </li>
+
+                        <li class="list-group-item">
+                            <label>Something else or details of your exit:</label><br>
+                            <textarea [(ngModel)]="customcomment" class="form form-control"
+                                placeholder="Please specify"></textarea>
+                        </li>
+                    </ul>
+
+                    <div class="">Out of 10, how likely are you going to recommend Spawnhouse to a friend?</div>
+                    <div style="height: 3rem; width: 3rem;"
+                        class="circle cursor-pointer d-inline-block m-1 border-grey text-center"
+                        *ngFor="let x of [0,1,2,3,4,5,6,7,8,9,10]"
+                        [ngClass]="{ 'bg-off-black text-white': recommendIndex === x}" (click)="recommendIndex = x">
+                        <div class="mt-2">{{ x }}</div>
+                    </div>
+                    <br>
+                    <button class="btn btn-danger ml-auto mr-auto mt-3 float-right"
+                        (click)="confirmDelete(confirmdeleteTemplate)"><span
+                            class="iconset2 icon-jolly-roger"></span>&nbsp; Pemanantly Delete my Account</button>
+                    <!-- <div class="text-small text-secondary">Please Note: Your messages to other users might still exist after account deletion.</div> -->
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+
+
+
+
+
+<ng-template #confirmdeleteTemplate let-dismiss="dismiss">
+    <div class="modal-header bg-theme">
+        <h4 class="modal-title text-white" id="modal-basic-title">It's hard to let you go...</h4>
+        <button type="button" class="close border-none text-white" aria-label="Close" (click)="dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body text-center">
+        <div class="iconset2 icon-jolly-roger-sad text-theme" style="font-size: 7rem;"></div>
+        Are you sure you want to delete your account?
+
+        <div class="mt-3">
+            <button class="btn btn-light w-50" (click)="dismiss('Save item')">Cancel</button>
+            <button class="btn btn-danger w-50" (click)="initiateAccountDelete(); dismiss('Save item')">Delete</button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- </div> -->

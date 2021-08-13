@@ -1,0 +1,228 @@
+<!-- <div class="display-5">Conversations</div> -->
+
+<div class="d-flex" style="max-height: calc(100vh - 3rem); width: calc(100% - 0rem);">
+    <div class="conversations-container m-3" [ngClass]="{'flex-expand-reverse d-none': animate}">
+        <div class="text-center mt-3" *ngIf="messageFlags.convosLoading">
+            <loader2 [type]="2"></loader2>
+            <br>
+            Loading Conversations
+        </div>
+        <div class="rounded border-bottom hover-bg cursor-pointer d-flex m-1" [ngClass]="{'bg-lite': !chat?.seen && chat?.lastSender!==user._id, 'bg-theme text-white': convoIndex === i}" *ngFor="let chat of chats; let i = index"
+            (click)="getMessagesFromId(chat.id); convoIndex = i; isMobile ? animate = true : ''; chat.seen = true">
+            <div class="p-2">
+                <img [src]="domain.dp+chat.dp" class="dp-big circle" />
+            </div>
+            <div class="p-2" style="width: calc(100% - 4rem);">
+                <div class="float-right badge badge-lite">{{chat.time | ago : true : true}}</div>
+                <h6 class="text-truncate">
+                    {{(chat?.username | async ) || 'spawnhouser'}}
+                </h6>
+                <div class="display-6 text-truncate">{{chat?.text}}</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="w-100 position-relative">
+        <div class="chat-thread-container overflow-hidden float-right"
+            style="width: 100%;"
+            [ngClass]="{'flex-expand d-block': animate}">
+
+            <div class="current-thread-head d-flex border-bottom position-absolute bg-white w-100">
+                <div class="p-2 back-button cursor-pointer bg-lite" (click)="animate = false;">
+                    <span class="iconset icon-chevron-left" style="font-size: 2rem;"></span>
+                </div>
+                <div class="p-2 cursor-pointer" (click)="routeToProfile()">
+                    <img [src]="domain?.dp+chats[convoIndex]?.dp" class="dp-big circle" />
+                </div>
+                <div class="p-2 rounded cursor-pointer"(click)="routeToProfile()">
+                    <h6 class="text-truncate m-0 p-0">
+                        {{(chats[convoIndex]?.username | async ) || 'spawnhouser'}}
+                    </h6>
+                    <div class="display-6" [ngClass]="{'text-success': lastActive === 'online'}">{{ lastActive | ago : true : true }}</div>
+                </div>
+            </div>
+
+            <!--messages-->
+            <div #messageArea style="overflow-y: auto !important; height: calc(100vh - 9.5rem); min-height: 10rem; margin-top: 3rem;">
+                <div style="overflow-wrap: break-word; max-width: 50%;" *ngFor="let msg of conversation"
+                    [ngClass]="{'user-bubble': msg.sender == user._id, 'other-user-bubble': msg.sender != user._id}"
+                    title="received on {{msg.time | date: 'HH:mm dd MMM, yyyy'}}
+            " class="mt-3">
+                    <div class="p-2 pb-2 d-flex">
+                        <div class="text-black circle bg-grey text-center mb-2 d-inline-block cursor-pointer"
+                            *ngIf="msg.sender !== user._id" style="bottom: 50%; height: 2rem; width: 2rem;"
+                            title="Goto Profile" (click)="routeToProfile()">
+
+                            <img [src]="domain?.dp+chats[convoIndex]?.dp" alt="" style="height: 2rem; width: 2rem;"
+                                class="circle user-default-img circle">
+                        </div>
+
+                        <div class="p-2 rounded ml-1 d-inline-block"
+                            style="overflow-wrap: break-word; width: calc(100% - 2rem);"
+                            [ngClass]="{'bg-theme': msg.sender != user._id, 'bg-grey': msg.sender == user._id}">
+                            {{msg.text}}
+                        </div>
+
+                        <div class="text-black bg-white circle text-center mb-2 d-inline-block ml-1"
+                            *ngIf="msg.sender === user._id" style="bottom: 50%; height: 2rem; width: 2rem;">
+                            <div class="iconset2 icon-jolly-roger" style="font-size: 1.5rem;"
+                                *ngIf="!(user?.dp | async)">
+                            </div>
+                            <img [src]="user?.dp | async" alt="" style="height: 2rem; width: 2rem;" class="circle user-default-img"
+                                *ngIf="user?.dp | async">
+                        </div>
+
+                    </div>
+                    <div class="bg-white text-grey text-small"
+                        [ngStyle]="{'margin-left': msg.sender !== user._id ? '2.5rem' : '0','margin-right': msg.sender === user._id ? '2.5rem' : '0'}">
+                        {{ msg.time | ago : false : true }} <span *ngIf="msg.seen"><span
+                                class="iconset icon-checkmark"></span></span></div>
+                </div>
+            </div>
+            <!-- <div class="text-center ml-auto mr-auto" style="transform: translate(0, 50%);"
+                *ngIf="messageFlags.msgLoading">
+                <loader2 [type]="2"></loader2>
+                <br>
+                Refreshing Conversation
+            </div> -->
+            <div class="position-absolute row w-100" style="height: 3rem; bottom: -3rem;">
+                <div class="w-100" *ngIf="messageFlags.sendingMessage || messageFlags.msgLoading">
+                    <loader2 [type]="3"></loader2>
+                </div>
+                <div class="col-10 bg-theme">
+                    <input type="text" class="form form-control m-1" [(ngModel)]="message"
+                        [disabled]="messageFlags.sendingMessage" (keydown)="keyPressedInMessageBox($event)"
+                        placeholder="Write something..." #messageTextbox />
+                </div>
+                <div class="col-2 bg-theme cursor-pointer" (click)="sendMessage()">
+                    <div class="iconset icon-paper-plane text-white mt-1 text-center mt-2"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- <h3 class="text-secondary text-center" *ngIf="chats.length === 0">You have no messages
+    <h5 class="text-black mt-3">Goto a user's profile and click <span class="iconset icon-bubbles3"></span> Message</h5>
+</h3>
+<div class="text-center" *ngIf="messageFlags.convosLoading">
+    <loader2 [type]="2"></loader2>
+</div>
+
+<div class="w-100 row m-0" style="height: auto;" *ngIf="chats.length > 0">
+    <div class="col-4 p-1" style="overflow: auto; background-color: rgb(250,250,250);">
+
+        <div class="text-center" *ngIf="messageFlags.convosLoading">
+            <loader2 [type]="0"></loader2>
+            <br>
+            Loading Conversations
+        </div>
+
+        <div class="font-italic text-secondary text-center " *ngIf="chats.length===0">
+            no conversations
+        </div>
+        <div class="ml-1 mr-1 mt-2 mb-2 cursor-pointer rounded" style="border-radius: 0; overflow-x: none !important;"
+            [ngClass]="{'bg-theme text-white position-relative': selectedChat === chat.id, 'bg-white hover-border-theme border-grey': selectedChat !== chat.id}"
+            *ngFor="let chat of chats; let i = index" (click)="getMessagesFromId(chat.id); convoIndex = i;">
+            <div class="d-flex d-wrap-flex">
+                <div class="flex-4">
+                    <img class="dp-big circle m-2" [src]="chat?.dpLink | async" style="max-height: 4rem;" />
+                </div>
+                <div class="flex-8">
+                    <div class="m-2">{{(chat?.username | async ) || 'spawnhouser'}}<span
+                            class="float-right mr-3 badge badge-lite">{{chat.time | ago : true : true}}</span>
+                        <div class="d-flex d-wrap-flex">
+                            <div class="flex-10">
+                                <div class="font-italic overflow-hidden "
+                                    style="font-size: 0.75rem; text-overflow: ellipsis;"
+                                    [ngClass]="{'text-white': selectedChat === chat.id}">{{chat.text | slice : 0 : 25}}
+                                    ...
+                                </div>
+                            </div>
+                            <div class="flex-2 float-right">
+                                <div class="bg-danger new-message-indicator circle mt-2 d-inline-block float-right mr-3"
+                                    *ngIf="unseenConvos.includes(chat?.id)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-8 position-relative p-0">
+        <div class="message-area w-100 position-relative bg-white" #messageArea>
+
+            <div style="overflow-wrap: break-word;" *ngFor="let msg of conversation"
+                [ngClass]="{'user-bubble': msg.sender == user._id, 'other-user-bubble': msg.sender != user._id}" title="received on {{msg.time | date: 'HH:mm dd MMM, yyyy'}}
+            " class="mt-3" style="max-width: 50%;">
+
+                <div class="p-2 pb-2 d-flex">
+                    <div class="text-black circle bg-grey text-center mb-2 d-inline-block cursor-pointer"
+                        *ngIf="msg.sender !== user._id" style="bottom: 50%; height: 2rem; width: 2rem;"
+                        title="Goto Profile" (click)="routeToProfile()">
+
+                        <img [src]="(chats[convoIndex]?.dpLink | async)" alt="" style="height: 2rem; width: 2rem;"
+                            class="circle user-default-img circle">
+                    </div>
+
+                    <div class="p-2 rounded ml-1 d-inline-block"
+                        style="overflow-wrap: break-word; width: calc(100% - 2rem);"
+                        [ngClass]="{'bg-theme': msg.sender != user._id, 'bg-grey': msg.sender == user._id}">
+                        {{msg.text}}
+                    </div>
+
+                    <div class="text-black bg-white circle text-center mb-2 d-inline-block ml-1"
+                        *ngIf="msg.sender === user._id" style="bottom: 50%; height: 2rem; width: 2rem;">
+                        <div class="iconset2 icon-jolly-roger" style="font-size: 1.5rem;" *ngIf="!(user?.dp | async)">
+                        </div>
+                        <img [src]="user?.dp | async" alt="" style="height: 2rem; width: 2rem;" class="circle"
+                            *ngIf="user?.dp | async">
+                    </div>
+
+                </div>
+                <div class="bg-white text-grey text-small"
+                    [ngStyle]="{'margin-left': msg.sender !== user._id ? '2.5rem' : '0','margin-right': msg.sender === user._id ? '2.5rem' : '0'}">
+                    {{ msg.time | ago : false : true }} <span *ngIf="msg.seen"><span
+                            class="iconset icon-checkmark"></span></span></div>
+            </div>
+            <div class="text-center ml-auto mr-auto" style="transform: translate(0, 50%);"
+                *ngIf="messageFlags.msgLoading">
+                <loader2 [type]="2"></loader2>
+                <br>
+                Refreshing Conversation
+            </div>
+
+        </div>
+        <div class="send-message-area w-100 bg-white">
+            <div><span class="text-small text-secondary">Quick chat: </span>
+                <span class="badge cursor-pointer badge-info m-1" *ngFor="let qc of quickChats; let i = index"
+                    (click)="sendQuickChat(i)">{{ qc }}</span>
+            </div>
+            <div class="position-relative h-100">
+                <div class="typing-area bg-white position-absolute border-grey"
+                    style="width: calc(100% - 3rem); margin-top: 0.5rem;">
+                    <input type="text" [(ngModel)]="message" class="h-100 outline-none border-none"
+                        style="width: calc(100% - 2.5rem); margin-left:0.5rem;" placeholder="Type a message..."
+                        (keydown)="keyPressedInMessageBox($event)" />
+                </div>
+                <div class="send-button border-grey circle position-absolute cursor-pointer" (click)="sendMessage()"
+                    style="right: 0.125rem;"
+                    [ngClass]="{'bg-theme': !messageFlags.msgLoading, 'bg-secondary': messageFlags.msgLoading}">
+                    <h3 style="margin-top: 1.25rem;">
+                        <div class="iconset icon-paper-plane text-center text-white"></div>
+                    </h3>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div> -->

@@ -1,0 +1,44 @@
+
+<div class="position-relative" *ngIf="type==0">
+    <div class="ball-container-small d-inline-block postion-relative">
+        <div class="ball-small circle position-absolute"></div>
+        <div class="shadow-small position-absolute"></div>
+    </div>
+</div>
+
+<div class="postion-relative" *ngIf="type==1">
+    <div class="text">L</div>
+    <div class="ball-container postion-relative">
+        <div class="ball position-absolute"></div>
+        <div class="shadow position-absolute"></div>
+    </div>
+    <div class="text">ading</div>
+</div>
+
+
+<div  *ngIf="type==2" class="circle ml-auto mr-auto"
+style="height: 3rem; width: 3rem; border: solid 0.25rem rgb(216, 216, 216); border-top: solid 0.25rem transparent; animation: rotate 0.5s infinite linear;
+">
+</div>
+
+<div  *ngIf="type==2.5" class="circle ml-auto mr-auto"
+style="height: 1rem; width: 1rem; border: solid #FFF; border-top: solid 0.25rem transparent; animation: rotate 0.5s infinite linear;
+">
+</div>
+
+
+<div *ngIf="type==3">
+    <div class="type3-container position-relative rounded overflow-hidden" style="height: 0.25rem;">
+        <div class="type-3-animation bg-danger h-100 rounded position-absolute">
+
+        </div>
+    </div>
+</div>
+
+<div *ngIf="type === 'live'">
+    <div class="type-live-container">
+        <div class="h-100 w-100 circle position-relative bg-danger">
+            <div class="inner-circle circle bg-white position-absolute"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+
+<div class="d-flex float-container position-absolute overflow-hidden bg-white z-nav">
+    <div *ngIf="config?.icon" class="h-100 iconset text-center text-white" [ngStyle]="{'background-color': config?.bgcolor || 'black'}">
+        <div class="p-2 text-{{config?.iconcolor || 'white'}} iconset icon-size icon-{{config?.icon}}"></div>
+    </div>
+    <div style="width: calc(100% - 1.5rem); word-wrap: break-word;
+    ">
+        <div class="ml-1" style="text-overflow: ellipsis;">{{ config?.text }}
+        </div>
+
+        <div class="position-absolute w-100" style="height: 0.5rem; bottom:0; background-color: rgb(236, 236, 236);">
+            <div class="h-100 bg-theme text-white" [ngStyle]="{'width': currentProgress }" ></div>
+        </div>
+    </div>
+    <span class="notif-close-size h-100 text-center cursor-pointer position-absolute" (click)="closeThisNotification()"><label class="position-relative text-danger cursor-pointer" title="close this notification">x</label></span>
+</div>
+
+<!-- 
+<div class="w-75 bg-success position-absolute" style="height: 4rem; top: calc(100vh - 7rem);">
+</div> -->

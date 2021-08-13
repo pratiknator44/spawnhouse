@@ -1,0 +1,36 @@
+<div class="bg-white text-black">
+    <!-- {{ np | json }} -->
+    <!-- <div class="bg-secondary text-small text-bold text-white"> CURRENTLY LIVE </div> -->
+    <div class="d-flex d-wrap-flex border-bottom hover-bg" *ngFor="let usernp of np">
+        <div class="">
+            <div class="circle bg-theme text-center m-2" style="height: 3rem; width: 3rem; transform: translate(-47deg);">
+                <span class="iconset icon-player text-white h4" *ngIf="!(usernp?.dp | async)"></span>
+                <img class="h-100 w-100 circle" [src]="usernp?.dp | async" *ngIf="usernp?.dp | async" />
+            </div>
+        </div>
+        <div class="" style="width: calc(100% - 4rem);">
+            <h6 class="m-0 text-theme hover-underline" (click)="routeToProfile(usernp?._id)"><span class="iconset2 icon-live text-danger" title="still playing" *ngIf="usernp?.stillplaying"></span> {{ usernp?.username }}
+            </h6>
+
+            <div class="m-0 overflow-hidden" style="text-overflow: ellipsis; white-space: nowrap;">{{ usernp?.nowplaying?.game }}</div>
+            <div class="m-0">
+                <!-- <div class="badge badge-danger badge-pill"><span class="iconset2 icon-live text-white"></span> LIVE</div> -->
+                <a class="text-theme m-1" target="__blank" [href]="usernp?.nowplaying?.stream"
+                *ngIf="usernp?.nowplaying?.stream"
+                title="Goto Stream">
+                    <div class="circle bg-danger text-white d-inline-block text-center icons-container">
+                        <div class="iconset icon-tv mt-1"></div>
+                    </div>
+                </a>
+
+                <div class="circle bg-success d-inline-block icons-container text-center m-1" *ngIf="usernp?.nowplaying?.maxconnections" >
+                    <div class="iconset2 icon-game-server text-white mt-1" title="accepting players on server"></div>
+
+                </div>
+
+                <!-- <span class="iconset icon-tv"></span>{{ usernp?.nowplaying?.stream | streamlink : true | titlecase }}</span> -->
+            </div>
+        </div>
+    </div>
+    <!-- <div class="bg-secondary text-small text-bold mt-2 text-white"> RECENTLY LIVE </div> -->
+</div>

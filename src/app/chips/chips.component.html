@@ -1,0 +1,27 @@
+<div class="position-relative">
+    <div class="border-grey" style="min-height: 2.5rem; background-color:whitesmoke;">
+        <div class="btn ml-1 bg-white cursor-pointer mt-1" *ngFor="let item of selected; let i = index">
+            <div (click)="removeItem(i)" class="float-left">{{ item.label }}</div>
+            <div class="float-right text-center pl-2" (click)="setFavoriteByIndex(i)" *ngIf="config?.showFav">
+                <span class="iconset h5 text-danger" [ngClass]="{'icon-favorite_outline': item.value !== 'fav',  'icon-favorite': item.value === 'fav'}"></span>
+            </div>
+
+            <div class="float-right text-center pl-2" (click)="crossClicked(i)" *ngIf="config?.showCross">
+                <span class="iconset text-danger icon-cross" style="font-size: 0.75rem;"></span>
+            </div>
+
+        </div>
+        <input type="text" [(ngModel)]="searchword" placeholder="{{config?.placeholder || 'Type a game name...'}}" (keyup)="newQuery($event)" class="form outline-none d-inline-block ml-1 outline-none border-none" style="word-break: break-all; height: 2.5rem; background-color: whitesmoke;" [disabled]="isLimitReached">
+    </div>
+    <label class="text-secondary float-right" *ngIf="max">{{(selected?.length || 0)+'/'+max }}</label>
+
+
+    <div class="suggestions border-grey position-absolute w-100 text-center text-white z-nav" *ngIf="searchword.length > 2 && items.length === 0" style="background-color: grey;">
+        Searching
+    </div>
+
+    <div tabindex="0" class="suggestions border-grey position-absolute bg-white z-nav" *ngIf="items.length > 0">
+        <div class="p-3" *ngFor="let item of items"(click)="pushToSelected(item)">{{ item.label }} <span class="text-secondary font-italic" *ngIf="item?.subtext">{{item?.subtext}}</span>
+        </div>
+    </div>
+</div>

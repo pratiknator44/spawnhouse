@@ -1,0 +1,23 @@
+@import '../../assets/variables/variables.scss';
+
+// .label {
+//     margin-bottom: 0 !important;
+// }
+
+
+.player-type-choice-container > span {
+    line-height: 1 !important;
+}
+
+.section-unselected {
+    border: solid 1px black;
+}
+
+.section-selected {
+    border: solid 1px $theme-color;
+    color: $theme-color;
+}
+
+.list-group-item > label {
+    margin-left: 0.5rem !important;
+}

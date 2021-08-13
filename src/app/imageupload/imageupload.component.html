@@ -1,0 +1,41 @@
+<div class="bg-white w-100" style="max-height: 80vh;">
+    <!-- <div class="row" [perfectScrollbar]="{suppressScrollX: true}" > -->
+    <!-- <div class="">     -->
+
+    <div>
+        <input type="file" class="d-none" #newdpOrCover (change)="fileChangeEvent($event)" [disabled]=isDisabled />
+        <button class="btn bg-theme text-white cursor-pointer mb-3 border-radius-none float-left"
+            [ngClass]="{'btn-secondary': isDisabled}" (click)="newdpOrCover.click()">Browse an image</button>
+        <span (click)="removeImage()" class="text-danger float-right border-none hover-underline cursor-pointer mr-3"
+            [ngClass]="{'text-secondary': isDisabled}"><span class="text-danger iconset icon-bin"></span> Remove {{ mode
+            ===
+            'dp' ?
+            'Profile': 'Cover' }} Picture</span>
+        <div *ngIf="!temp" class="text-center text-grey">
+            <span class="iconset icon-image" style="font-size: 16rem; ">
+            </span>
+            <br>Browse and select an image
+        </div>
+    </div>
+    <div class="mt-2" style="min-width: 50% !important; margin-left: 2.5%; overflow-y: auto;">
+        <!-- {{imageSchema | json}} -->
+        <br><br>
+        <image-cropper *ngIf="temp" class="h-100" [imageChangedEvent]="imageChangedEvent"
+            [maintainAspectRatio]="imageSchema.maintainAspectRatio" [aspectRatio]="imageSchema.aspectRatio"
+            [resizeToWidth]="imageSchema.resizeToWidth" [format]="imageSchema.format"
+            (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+            (loadImageFailed)="loadImageFailed()"></image-cropper>
+        <label class="text-danger" *ngIf="loadingFailed">Please select only a jpg</label>
+        <img [src]="croppedImage" class="d-none" />
+    </div>
+
+
+    <div>
+        <button class="bg-theme text-white float-right btn m-1" (click)="updateNewDpCover()"
+            [disabled]="isDisabled || !temp">Update &nbsp; <span class="iconset icon-paper-plane"></span></button>
+        <button (click)="hideUI()" [disabled]="isDisabled" class="btn btn-lite float-right m-1"
+            [ngClass]="{'text-secondary': isDisabled}">Cancel</button>
+    </div>
+    <!-- <button (click)="updateNewDpCover()" [disabled]="isDisabled || !temp" style="line-height: 1.5; width: 5rem; height: 2.5rem;" class="bg-theme text-white float-right border-none" [ngClass]="{'btn-secondary': isDisabled || !temp}">Update</button>
+    <button (click)="hideUI()" [disabled]="isDisabled" class="btn btn-default float-right" [ngClass]="{'text-secondary': isDisabled}" >Cancel</button> -->
+</div>

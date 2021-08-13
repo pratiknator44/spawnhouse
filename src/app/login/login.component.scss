@@ -1,0 +1,50 @@
+.login-container {
+    background-image: url("../../assets//images/bg-new.jpg");
+    background-position: 50% 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: auto;
+}
+
+@media screen and (max-width: 450px) {
+    .login-container {
+        background-size: contain;
+    }
+}
+
+@keyframes float-animation {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.float-animation-class {
+    animation: float-animation 2s linear;
+}
+
+.dance-animation-class {
+    animation: dance-animation 1s linear infinite alternate-reverse;
+}
+
+@keyframes dance-animation {
+    0% {
+        transform: skewX(10deg);
+    }
+    100% {
+        transform: skewX(-10deg);
+    }
+
+}
+
+
+@keyframes flap {
+    0% {
+        transform: rotate(-15deg);
+    }
+    50% {
+        transform: rotate(15deg);
+    }
+}

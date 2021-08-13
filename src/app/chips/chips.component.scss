@@ -1,0 +1,17 @@
+.suggestions > div:hover {
+    background-color: #CCC;
+    cursor: pointer;
+}
+
+.btn {
+    border: solid 1px #CCC !important;
+}
+
+.suggestions > span {
+    height: 5rem;
+}
+
+.chip {
+    // height: 2rem;
+    line-height: 2;
+}

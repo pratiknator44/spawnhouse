@@ -1,0 +1,37 @@
+.btn {
+    border-radius: 0;
+}
+
+.timer {
+    height: 0.25rem;
+    width: 0;
+}
+
+.animate-width-3 {
+    animation: width-animation 3s forwards linear;
+}
+
+.animate-width-5 {
+    animation: width-animation 5s forwards linear;
+}
+
+.animate-width-8 {
+    animation: width-animation 8s forwards linear;
+}
+
+.animate-width-15 {
+    animation: width-animation 15s forwards linear;
+}
+
+@keyframes width-animation {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.h-0 {
+    height: 0 !important;
+}

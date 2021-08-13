@@ -1,0 +1,47 @@
+.category-tile {
+    height: 6rem;
+    width: 6rem;
+}
+
+.icons-container {
+    height: 2rem;
+    width: 2rem;
+}
+
+.delete-desc:hover + .delete-desc-notice {
+    display: block;
+}
+.delete-desc-notice {
+    width: 7rem;
+    bottom: 2rem; right: -3.5rem;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    display: none;
+}
+
+.ongoing-card {
+    height: 10rem;
+    width: 7rem;
+}
+
+.ongoing-card:hover > .story-options-cover {
+    height: 100%;
+}
+
+.story-options-cover {
+    background-color: rgba(0, 0, 0, 0.85);
+    bottom: 0;
+    height: 0;
+    transition: height 0.5s;
+}
+
+.story-options-container {
+    justify-content: space-evenly;
+    margin-top: calc( 75% - 1rem );
+}
+
+.story-options-container > div {
+    height: 2rem;
+    width: 2rem;
+    line-height: 1.75;
+}

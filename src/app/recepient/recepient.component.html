@@ -1,0 +1,12 @@
+
+<div class="outline-none">
+    <div class="d-flex d-wrap-flex">
+        <div class="d-inline recipient border-grey cursor-pointer hover-remove-entry">Pragya Agarwal</div>
+    </div>
+</div>
+<div class="text-secondary text-small d-inlines w-100">click to remove selected entry</div>
+<input type="text" class="form form-control" [(ngModel)]="searchWord" (keydown)="getSuggestions($event)" />
+<div class="suggestions position-absolute border-grey" *ngIf="suggestResult || true">
+    <div class="suggestion hover-bg-grey cursor-pointer" (click)="addThis(res)" *ngFor="let res of inputData">{{ res.label }}</div>
+</div>
+<span class="text-secondary hover-underline cursor-pointer float-right">Clear All</span>

@@ -1,0 +1,114 @@
+<div class="bg-white ml-auto mr-auto" style="min-width: 800px; width: 50%;">
+    <ul class="nav">
+        <!-- <li class="nav-item">
+            <a class="nav-link cursor-pointer" (click)="openOption('bug')">Report a bug</a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link cursor-pointer" [ngClass]="{'text-theme': option === 'about'}" (click)="openOption('about')" aria-current="page">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link cursor-pointer" [ngClass]="{'text-theme': option === 'help'}" (click)="openOption('help')">Help</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link cursor-pointer" (click)="openOption('contri')">Contributors & Contact</a>
+        </li>
+      </ul>
+
+      <hr>
+      <div>
+        <div class="m-2" *ngIf="option === 'about'">
+          <h2 class="text-secondary">About</h2>
+          Spawnhouse is about bringing the gamers from different streams together who enjoy playing with different people, or
+          enjoying story games while being connected. With the help of this platform users can create their own gaming profile,
+          keeping records of their skills, games they play or played, and make friends via gaming<br><br>
+          
+          We'd be adding tonnes of new features to make your experience better and be more expressive towards fellow users, keeping in
+          mind the security and integretiy of the data of all.<br><br>
+
+        </div>
+
+
+
+
+        <div class="m-2" *ngIf="option === 'help'">
+            <h2 class="text-secondary">Help</h2>
+
+            Hello.<br>
+            We're new and we're trying everything to make ourselves better day by day. Anything we can help you with, please tell us your query.<br>
+            <hr>
+
+            <h6 class="text-theme">Q1. I'm unable to signup</h6>
+            <h6>Simply follow the steps:</h6>
+            <ul>
+                <li>goto <a href="https://thespawnhouse.com/#/login">https://thespawnhouse.com/#/login</a> and put a username. It should be unique and so you can use a good range within <var>a-z _ 0-9 . </var></li>
+                <li>Sign up via Google or enter the details in the form. It is free and we do not charge any fee for it. We DO NOT SEND promotional offers, letters or ads in your email. Only OTPs and reset password links</li>
+                <li>
+                    If you signup via <br>
+                    > Google, it takes you directly to Home, we recommend you to change your password there and then <br>
+                    > any other email client, you can will be asked to enter an OTP for confirmation
+                </li>
+                <li>We DO NOT save any information unless your sign up is successful</li>
+            </ul>
+
+            <h6 class="text-theme">Q2. I'm unable to login</h6>
+            <h6>We take a lot of steps to ensure privacy, therefore our servers sometimes work overtime and the steps of recovery are limited. You can:</h6>
+            <ul>
+                <li>Use <var>forgot password</var> option from login page, an email will be sent contianing the reset token to your registered email after entering email and successful Re-Captcha test</li>
+                <li>Please check the spam folder too and confirm if you dont find any email from <var class="text-theme">spawnhouse1@gmail.com</var> in your inbox</li>
+                <li>If the above steps dont work, please write us or contact us on email or number given below:</li>
+
+                <div class="row">
+                    <div class="col-4 text-right">Email us: </div>
+                    <div class="col-8 text-theme text-left">spawnhouse1@gmail.com</div>
+                </div>
+               
+                <div class="row">
+                    <!-- <div class="col-4 text-right">Call: </div> -->
+                    <!-- <div class="col-8 text-theme text-left">+91-9369-3194-01</div> -->
+                </div>
+            </ul>
+
+            <h6 class="text-theme">Q3. Website not working on my browser</h6>
+            <h6>We work best on the browsers created on Chromium Browsers V8 Engine, which include the following:</h6>
+            <ul>
+                <li><span class="iconset icon-chrome"></span> &nbsp; Google Chrome</li>
+                <li><span class="iconset icon-firefox" style="color: orange;"></span> &nbsp; Mozilla Firefox</li>
+                <li><span class="iconset icon-edge text-theme"></span> &nbsp; Microsoft EDGE (new version)</li>
+                <li><span class="iconset icon-brave" style="color: orange;"></span> &nbsp; Brave</li>
+                <li>Opera, Vivaldi, GNU Falcon etc.</li>
+                <li class="text-danger font-italic">Internet Explorer not supported</li>
+            </ul>
+            <div class="row">
+                <div class="col-4 text-right">Email us: </div>
+                <div class="col-8 text-theme text-left">spawnhouse1@gmail.com</div>
+            </div>
+           
+            <div class="row">
+                <!-- <div class="col-4 text-right">Call: </div> -->
+                <!-- <div class="col-8 text-theme text-left">+91-9369-3194-01</div> -->
+            </div>
+        </div>
+      </div>
+</div>
+
+
+
+<!---->
+<!-- <h1>Angular 8 Bootstrap Modal Popup Example</h1>
+   
+<button class="btn btn-lg btn-outline-primary" (click)="open(mymodal)">Open My Modal</button>
+   
+<ng-template #mymodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Bootstrap Modal</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    This is example from ItSolutionStuff.com
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template> -->

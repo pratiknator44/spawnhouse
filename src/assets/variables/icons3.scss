@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'sh-icons3';
+    src: url('src/assets/fonts/icomoon3.woff');
+    format:('opentype');
+}
+
+.icon-book:before {
+    content: "\e901";
+}
+.icon-trophy:before {
+    content: "\e900";
+}

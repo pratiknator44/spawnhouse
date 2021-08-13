@@ -1,0 +1,21 @@
+.edit-game-container {
+    width: 50%;
+    max-height: 90%;
+    transform: translate(50%, 2%);
+    box-shadow: 0 0 5px 0 #000;
+}
+
+.game-img-container {
+    height: 20rem;
+}
+
+@media screen and (max-width: 650px) {
+    .game-img-container {
+        height: 10rem;
+    }
+}
+
+
+.min-width-flex {
+    min-width: 300px; // 448 px
+}

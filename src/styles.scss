@@ -1,0 +1,408 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~bootstrap/scss/bootstrap.scss';
+@import './assets/variables/variables.scss';
+@import './assets/variables/icons.scss';
+@import './assets/variables/icons2.scss';
+@import './assets/variables/icons3.scss';
+@import './assets/variables/media-queries.scss';
+
+@import '~perfect-scrollbar/css/perfect-scrollbar.css';
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.title-font {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.text-small {
+    font-size: 0.75rem;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+
+.d-inline-block {
+    display: inline-block !important;
+}
+
+.d-hidden {
+    display: hidden !important;
+}
+
+.justify-content-evenly {
+    justify-content: space-evenly;
+}
+
+.text-bold {
+    font-weight: 700 !important;
+}
+
+.color-theme {
+    color: $theme-color;
+}
+.bg-theme {
+    background-color: $theme-color !important;
+}
+
+.bg-online {
+    background-color: $online;
+}
+
+.bg-offline {
+    background-color: $offline;
+}
+
+.bg-busy {
+    background-color: $busy;
+}
+
+.bg-lite {
+    background-color: $litegrey !important;
+}
+.text-lite {
+    color: $litegrey !important;
+}
+.bg-theme-lite {
+    background-color: rgb(232, 241, 255) !important;
+}
+
+.bg-nocover {
+    background: linear-gradient(90deg, $theme-color, orange, purple);
+}
+
+.hover-border-theme:hover {
+    border-color: $theme-color;
+}
+
+.border-none {
+    border: none !important;
+    outline: none;
+}
+
+.border-grey {
+    border: solid 1px #CCC;
+}
+
+.border-bottom-grey {
+    border-bottom: solid 1px #CCC;
+}
+
+.border-theme {
+    border: solid 1px $theme-color;
+}
+
+.outline-none {
+    outline: none;
+}
+
+.text-black {
+    color: black !important;
+}
+
+.text-grey {
+    color: #CCC !important;
+}
+
+.d-wrap-flex {
+    flex-wrap: wrap !important;
+}
+
+.iconset {
+    font-family: sh-icons !important;
+    src: url('/../spawnhouse-ui/src/assets/fonts/icomoon.woff');
+    // format:('opentype');
+}
+
+.iconset2 {
+    font-family: sh-icons2 !important;
+    src: url('/../spawnhouse-ui/src/assets/fonts/icomoon2.woff');
+}
+
+.iconset3 {
+    font-family: sh-icons3 !important;
+    src: url('/../spawnhouse-ui/src/assets/fonts/icomoon3.woff');
+}
+
+.text-ellipsis {
+    text-overflow: ellipsis !important;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.content-center {
+    transform: translate(50%, 50%) !important;
+}
+
+.border-bottom {
+    border-bottom: solid 1px $theme-color;
+}
+
+.r-0 {
+    right: 0 !important;
+}
+
+.circle {
+    border-radius: 50%;
+}
+.corners-sharp {
+    border-radius: 0 !important;
+}
+
+ .animate-float {
+    transition: width 20rem 3s !important;
+ }
+
+ @keyframes float-in-animation {
+     from {
+         opacity: 0;
+     } to {
+         opacity: 1;
+     }
+ }
+
+ .float-in {
+     animation: float-in-animation 1s linear forwards;
+ }
+
+ .mt-belownav {
+     margin-top: 4.25rem;
+ }
+ 
+ .t-0 {
+     top: 0 !important;
+ }
+ .l-0 {
+     left: 0 !important;
+ }
+ .b-0 {
+     bottom: 0 !important;
+ }
+
+.h-nav {
+    height: 4.30rem;
+}
+
+.mt-nav {
+    margin-top: 4.25rem !important;
+}
+
+.ml-auto {
+    margin-left: auto !important;
+}
+
+.mr-auto {
+    margin-right: auto !important;
+}
+
+.z-nav {
+    z-index: 4;
+}
+
+.text-truncate {
+    text-overflow: ellipsis !important;
+}
+
+.text-theme {
+    color: $theme-color;
+}
+
+.hover-underline {
+
+}
+.hover-underline:hover {
+    text-decoration: underline;
+}
+
+@keyframes search-animation {
+    0%{ top: 0; left: 0; }
+    25% { top: 0; right: 100%}
+    50% { top: 100%; right: 100%;}
+    75% {top: 100%; right: 0}
+    100%{ top: 0; left: 0; }
+
+}
+
+@keyframes rotate-right {
+    from{transform: rotate(0deg);}
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-left {
+    from{transform: rotate(0deg);}
+    to { transform: rotate(-360deg); }
+}
+
+
+.anim-search-animation {
+    animation: search-animation 2s infinite ;
+}
+
+.mh-50 {
+    max-height: 50% !important;
+}
+
+.mh-50vh {
+    max-height: 50vh !important;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+
+.hover-bg-grey:hover {
+    background-color: #CCC;
+}
+
+.hover-bg:hover {
+    background-color: rgb(231, 231, 231) !important;
+}
+
+.hover-bg-lite:hover {
+    background-color: rgb(255, 255, 255) !important;
+    // color: white !important;
+}
+
+
+.hover-bg-theme:hover {
+    background-color: $theme-color !important;
+    color: white !important;
+}
+
+.border-thin-theme {
+    border: solid thin $theme-color;
+}
+
+.filter-greyscale {
+    filter: grayscale(100%);
+}
+
+.hover-remove-entry:hover {
+    background-color: red !important;
+    color: white;
+}
+.bg-red {
+    background-color: red;
+}
+
+.std-box-shadow {
+    box-shadow: 0 0 10px 0 #CCC;
+}
+
+.bg-black {
+    background-color: black !important;
+}
+
+.bg-off-black {
+    background-color: rgb(54, 54, 54) !important;
+}
+
+.bg-grey {
+    background-color: rgb(238, 238, 238) !important;
+}
+
+.text-twitch {
+    color: #9147ff !important;
+}
+
+.text-vimeo {
+    color: #00ADEF !important;
+}
+
+.border-radius-none {
+    border-radius: 0 !important;
+}
+
+label {
+    margin: 0 !important;
+}
+
+// emojione classes do not touch
+.emojione{font-size:inherit;height:3ex;width:3.1ex;min-height:20px;min-width:20px;display:inline-block;margin:-.2ex .15em .2ex;line-height:normal;vertical-align:middle}img.emojione{width:auto}
+
+.dp-big {
+    height: 3rem;
+    width: 3rem;
+    background-image: url('./assets/images/no-user.jpg');
+    background-position: center;
+    border:0; text-decoration:none; outline:none;
+    background-size: contain;
+}
+
+.user-default-img {
+    background-image: url('./assets/images/no-user.jpg');
+    background-position: center;
+    border:0; text-decoration:none; outline:none;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.default-cover {
+    background-image: url('./assets/images/default-cover.jpg');
+    background-position: center;
+    border:0; text-decoration:none; outline:none;
+    background-size: cover;
+}
+
+.dp-xl {
+    height: 7rem;
+    width: 7rem;
+}
+
+.text-small {
+    font-size: 0.75rem; 
+}
+
+.big-icon {
+    font-size: 4rem;
+}
+
+.border-bottom-thin {
+    border-bottom: solid 1px #CCC;
+}
+
+.border-top-thin {
+    border-bottom: solid 1px #CCC;
+}
+
+.resize-none {
+    resize: none !important;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.display-5 {
+    font-size: 2rem;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-weight: 300;
+}
+
+.display-6 {
+    font-size: 1rem;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-weight: 300;
+}
+
+.flex-1 { flex: 8.3333%;  }
+.flex-2 { flex: 16.666%;  }
+.flex-3 { flex: 24.9999%;  }
+.flex-4 { flex: 33.3333%;  }
+.flex-5 { flex: 41.6666%;  }
+.flex-6 { flex: 50%;  }
+.flex-7 { flex: 58.3331%;  }
+.flex-8 { flex: 66.666%;  }
+.flex-9 { flex: 74.9997%;  }
+.flex-10 { flex: 83.3333%;  }
+.flex-11 { flex: 91.6663%;  }
+.flex-12 { flex: 100%;  }
+
+@media screen and (max-width: 1000px) {
+    .flex-container {
+        flex-direction: column;
+    };
+}
