@@ -81,10 +81,10 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     NgbTooltipModule,
     NgbModule,
     BrowserAnimationsModule
-],
+  ],
   exports: [
   ],
-  providers: [{ 
+  providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: TokenInterceptor,
     multi: true
@@ -103,7 +103,7 @@ const config: SocketIoConfig = { url: APIvars.APIdomain, options: {} };
     NowplayingService,
   ],
   bootstrap: [AppComponent],
-  
+
   entryComponents: [
     ModalAboutComponent
   ]

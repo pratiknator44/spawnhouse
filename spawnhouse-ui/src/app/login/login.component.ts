@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._titleService.setTitle('Spawnhouse');
+    this._titleService.setTitle('Spawnhouse - showcase, team up and share your play');
     this.injectGoogleScript();
     // check for autologin
     if(this._cookieService.get('past_token')) {
@@ -50,9 +50,6 @@ export class LoginComponent implements OnInit {
     // this.hasLoggedOut = true;
   }
 
-  // ngAfterViewInit() {
-  //   this.showEula();
-  // }
 
   onSignIn(gUser) {
     if(this.verficationProgress)  return;
@@ -87,14 +84,22 @@ export class LoginComponent implements OnInit {
       this.errorText = error['message'];
     });
   }
-
+  temp="web";
   injectGoogleScript() {
     let scr = this._renderer.createElement('script');
     scr.src = APIvars.APIgoogleSignup;
     scr.defer = true;
     scr.async = true;
     this._renderer.appendChild(document.body, scr);
-    this._metaService.addTags([{name: 'google-signin-client_id', content: APIvars.GOOGLE_0AUTH_CLIENT_ID}]);
+    // check if the 
+    let token = APIvars.OAUTH_PUBLIC_KEY_WEB;
+    if(navigator.userAgent.toLowerCase().includes('android')) {
+      this._metaService.addTag({'http-equiv': "Content-Security-Policy",
+      content:"default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"});
+      token = APIvars.OAUTH_PUBLIC_KEY_ANDROID;
+      this.temp = "android";
+    }
+    this._metaService.addTags([{name: 'google-signin-client_id', content: token}]);
   }
 
   routeToProfile() {

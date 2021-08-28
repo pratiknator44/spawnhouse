@@ -169,7 +169,6 @@ export class ProfileComponent implements OnInit {
   // add or remove
   setFollowStatus() {
     this._apiService.addRemoveFollower(this.followStatus, this.user._id).then(resolve => {
-      console.log("resolve == ", resolve);
       this.followStatus = resolve['status'] || '+Follow';
       if (this.followStatus === 'Unfollow') {
         this._socketService.pushData('new-notification', { type: 'started following', sentBy: this._storageService.currentUser._id, targetid: this.user._id });

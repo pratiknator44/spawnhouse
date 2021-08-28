@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
 import { StorageService } from 'src/assets/services/storage.service';
 import { APIservice } from 'src/assets/services/api.service';
 import { Subject } from 'rxjs';
@@ -116,7 +116,6 @@ export class NavbarComponent implements OnInit {
     if (
       (e['target']['scrollTop'] / (e['target']['scrollHeight']
         - e['target']['clientHeight'])) > 0.95) {
-      // console.log("hello trigger scroll");
       this.getNotifications(false);
     }
   }

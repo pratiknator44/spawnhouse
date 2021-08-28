@@ -37,9 +37,9 @@
             </div>
         </div>
 
-        <div class="position-absolute w-100 rounded overflow-hidden" style="bottom: 0; left: 0;">
-            <div class="btn btn-danger w-100" *ngIf="user?.isFollowing" (click)="addRemoveUser(user?._id, i)"><span class="iconset icon-user-minus"></span>&nbsp;Unfollow</div>
-            <div class="btn bg-theme text-white w-100" *ngIf="!user?.isFollowing" (click)="addRemoveUser(user?._id, i)"><span class="iconset icon-user-plus"></span>&nbsp; Follow</div>
+        <div class="position-absolute w-100 overflow-hidden" style="bottom: 0.25rem; left: 0;">
+            <div class="btn btn-danger w-50 badge-pill" *ngIf="user?.isFollowing" (click)="addRemoveUser(user?._id, i)"><span class="iconset icon-user-minus"></span>&nbsp;Unfollow</div>
+            <div class="btn bg-theme text-white w-50 badge-pill" *ngIf="!user?.isFollowing" (click)="addRemoveUser(user?._id, i)"><span class="iconset icon-user-plus"></span>&nbsp; Follow</div>
             <div class="d-block"></div>
             <!-- <div class="badge border-grey"><span class="iconset icon-bubbles3"></span>&nbsp;Message</div>     -->
         </div>

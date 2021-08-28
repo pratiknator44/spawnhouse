@@ -1,21 +1,25 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'sh-minimessage',
   templateUrl: './minimessage.component.html',
   styleUrls: ['./minimessage.component.scss']
 })
-export class MinimessageComponent {
+export class MinimessageComponent implements AfterViewInit {
   @Input() message;
   @Input() user;
   @Output() fireMessage: EventEmitter<{id: string, message: string}>;
   @Output() close: EventEmitter<boolean>;
-
+  @ViewChild('messageBox') messageBox: ElementRef;
   sendingStatus: string;
 
   constructor() {
     this.fireMessage = new EventEmitter();
     this.close = new EventEmitter();
+  }
+
+  ngAfterViewInit() {
+    this.messageBox.nativeElement.focus();
   }
 
   closeOverlay() {

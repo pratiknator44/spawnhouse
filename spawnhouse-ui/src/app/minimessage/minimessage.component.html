@@ -17,7 +17,7 @@
 </div>
 <div class="m-1">
     <textarea class="form form-control outline-none corners-sharp" [(ngModel)]="message" placeholder="Type something..."
-        style="resize: none; height: 10rem;"></textarea>
+        style="resize: none; height: 10rem;" #messageBox></textarea>
 </div>
 <div class="btn bg-theme text-white float-right m-2"
     [ngClass]="{'bg-secondary': sendingStatus === 'Sending...', 'bg-white text-success': sendingStatus === 'sent'}"

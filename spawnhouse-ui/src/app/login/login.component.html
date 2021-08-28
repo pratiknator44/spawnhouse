@@ -5,7 +5,7 @@
                 class="text-grey">beta</span></h3>
 
         <div class="text-center">
-            <h5>Find and Team up with co-players around you</h5>
+            <h6>Showcase, team up, and share your play</h6>
         </div>
         <br /><br />
         <!-- login signup module-->
@@ -17,17 +17,26 @@
                 <div class="d-inline-block ml-auto mr-auto">
                     <input type="checkbox" [(ngModel)]="rememberMe" id="remember-me"> &nbsp; <label class="m-0 p-0"
                         for="remember-me">Keep me signed in</label>
-                    <br />
+                    <br /> <br />
+                    {{'modeAndroid: '+temp}}
                     <div class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
                 </div>
             </div>
-            <div class="hover-underline text-theme cursor-pointer"
-                (click)="showEula();loginFlags.showAcceptTnCButton = false;">Terms & Conditions of Service</div>
-            <div class="text-small badge badge-success" (click)="showWhyGoogle(whyGoogleTemplate)">Why only Google
-                account?</div>
+
+            <div class="text-center text-small mt-3">
+                <div *ngIf="errorText" class="text-danger"> {{ errorText | slice: 0:20 }}...
+                    Please re-login</div>
+                <span class="hover-underline text-theme cursor-pointer"
+                    (click)="showEula();loginFlags.showAcceptTnCButton = false;">Terms & Conditions of Service</span>&nbsp; . &nbsp;
+                <span class="text-theme cursor-pointer hover-underline"
+                    (click)="showWhyGoogle(whyGoogleTemplate)">Why Google
+                    account?</span>
+            </div>
+
+
+
+
             <div *ngIf="verficationProgress">Loading... Please wait</div>
-            <div *ngIf="errorText" class="bg-danger text-white"> {{ errorText | slice: 0:20 }}...
-                Please re-login</div>
         </div>
     </div>
 </div>
@@ -36,7 +45,7 @@
 <ng-template #eulaTemplate let-dismiss="dismiss">
     <div class="display-2 text-center text-secondary float-animation-class">{{eula.greetText}}</div>
     <div class="display-4 text-center text-secondary float-animation-class" style="font-size: 2rem;">It's great to have
-        you onboard :)</div>
+        you onboard</div>
 
     <div class="text-center mt-3 bg-black text-white" *ngIf="!eula.eula">Getting EULA, Please Wait...</div>
 
@@ -53,17 +62,19 @@
 
 <ng-template #whyGoogleTemplate let-dismiss="dismiss">
     <div>
-        <div class="display-5 text-secondary text-center">Why only a Google account?</div>
+        <div class="display-5 text-secondary text-center">Why Google account?</div>
         <div class="mt-3 m-1">
             Hello user! It's great to have you here. Here's what we do with your Google account:<br>
             <ul>
                 <li>Get email id, first name, middle name (if any), and last name ONLY</li>
                 <li>You DO NOT subscribe to any of our service except sign-in / sign-up by doing this</li>
-                <li>We WON'T SENT any emails, OTPs, or newsletters regarding anything, unless you lose keys to your Google account and contact us for Spawnhouse account recovery </li>
+                <li>We WON'T SENT any emails, OTPs, or newsletters regarding anything, unless you lose keys to your
+                    Google account and contact us for Spawnhouse account recovery </li>
                 <li>We do not intend to share any of your data with Google</li>
             </ul>
         </div>
-        <button type="button" class="btn btn-outline-dark float-right m-3" (click)="dismiss('Save click')">Dimiss</button>
+        <button type="button" class="btn btn-outline-dark float-right m-3"
+            (click)="dismiss('Save click')">Dimiss</button>
     </div>
-   
+
 </ng-template>

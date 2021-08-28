@@ -363,4 +363,8 @@ export class APIservice {
   saveGamemode(mode) {
     return this._http.post(APIvars.APIdomain + '/' + APIvars.SAVE_USER_GAMEMODE, {gameMode: mode}).toPromise();
   }
+
+  unsubsribePushNotifications () {
+    return this._http.get(APIvars.APIdomain+'/'+APIvars.UNSUBSCRIBE_PUSH_NOTIFICATION).toPromise();
+  }
 }

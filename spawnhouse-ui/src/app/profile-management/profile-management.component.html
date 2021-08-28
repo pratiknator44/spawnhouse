@@ -4,12 +4,14 @@
 <div class="profile-management position-relative mt-3 z-nav bg-white">
     <h2 class="text-secondary">About You</h2>
 
-
-    <div *ngFor="let section of pageSections; let i = index" class="btn badge-circle bg-white ml-1 corners-sharp"
-        [ngClass]="{'section-unselected text-black': selectedSection !== i, 'section-selected text-theme': selectedSection === i}"
-        (click)="selectedSection = i">
-        <span class="iconset icon-{{section.icon}} mr-2"></span> {{section.title | titlecase }}
+    <div class="text-center">
+        <div *ngFor="let section of pageSections; let i = index" class="badge badge-pill ml-1 cursor-pointer"
+            [ngClass]="{'section-unselected text-black': selectedSection !== i, 'badge-dark': selectedSection === i}"
+            (click)="selectedSection = i">
+            <span class="iconset icon-{{section.icon}} mr-2"></span> {{section.title | titlecase }}
+        </div>
     </div>
+
 
 
     <div class="m-3" [ngSwitch]="selectedSection">
@@ -19,31 +21,44 @@
 
                 <label>Your top 3 preferences when you play a co-op game</label>
                 <div class="player-type-choices text-center d-flex text-secondary mt-3" style="flex-wrap: wrap;">
-                    <div class="player-type-choice-container text-center ml-auto mr-auto cursor-pointer"
+                    <div class="player-type-choice-container text-center ml-auto mr-auto cursor-pointer m-3"
                         [ngClass]="{'text-theme': type?.checked}" (click)="selectType(i)"
                         *ngFor="let type of playerTypes; let i = index">
-                        <span
-                            class="big-icon cursor-pointer iconset icon-{{type.id | playertype : true}} d-block m-2 p-0"></span>
-                        {{type.id | playertype | titlecase}}
+                        <div class="circle text-center" [ngClass]="{'std-box-shadow': type?.checked}"
+                            style="height: 4rem; width: 4rem;">
+                            <span
+                                class="md-icon cursor-pointer iconset icon-{{type.id | playertype : true}} d-block p-2"></span>
+                        </div>
+                        <span class="text-small">
+                            {{type.id | playertype | titlecase}}
+                        </span>
                     </div>
                 </div>
-                <div class="w-75 d-inline-block bg-info mt-1"></div>
-                <div class="btn bg-theme text-white w-25" (click)="savePlayerType()"
-                    [ngClass]="{'bg-secondary': saveText.type === 'Saving...'}" style="margin-top: 2rem;">
-                    <div class="d-inline-block mt-1" *ngIf="saveText.type === 'Saving...'">
-                        <loader2 [type]="2.5"></loader2>
-                    </div> {{saveText.type}}
+
+                <div class="text-center">
+                    <div class="btn btn-dark badge-pill text-white min-save-button-width"(click)="savePlayerType()"
+                        [ngClass]="{'bg-secondary': saveText.type === 'Saving...'}" style="margin-top: 2rem;">
+                        <div class="d-inline-block mt-1" *ngIf="saveText.type === 'Saving...'">
+                            <loader2 [type]="2.5"></loader2>
+                        </div> {{saveText.type}}
+                    </div>
                 </div>
+
             </div>
             <br>
             <div class="m-3">
                 <div>What kind of games do you like more</div>
-                <div class="row text-center mt-3 cursor-pointer">
-                    <div class="col-6" *ngFor="let mode of gameModes">
-                        <div class="circle" (click)="saveGamemode(mode.value)" [ngClass]="{'text-theme': selectedGameMode === mode.value, 'text-secondary': selectedGameMode !== mode.value}">
-                            <span class="iconset3 icon-{{mode.icon}} h1"></span>
+                <div class="d-flex text-center mt-3 cursor-pointer">
+                    <div *ngFor="let mode of gameModes" class="ml-auto mr-auto">
+                        <div (click)="saveGamemode(mode.value)"
+                            [ngClass]="{'text-theme': selectedGameMode === mode.value, 'text-secondary': selectedGameMode !== mode.value}">
+
+                            <div [ngClass]="{'std-box-shadow': selectedGameMode === mode.value}" class="circle"
+                                style="height: 4rem; width: 4rem;">
+                                <span class="iconset3 icon-{{mode.icon}} md-icon p-2 d-block"></span>
+                            </div>
                         </div>
-                        <div class="">{{mode.label | titlecase }}</div>
+                        <div class="text-small">{{mode.label | titlecase }}</div>
                     </div>
                 </div>
 
@@ -82,13 +97,16 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn w-25 bg-theme text-white float-right"
-                        [ngClass]="{'bg-secondary': saveText.videogame === 'Saving...'}">
-                        <div class="d-inline-block mt-1" *ngIf="saveText.videogame === 'Saving...'">
-                            <loader2 [type]="2.5"></loader2>
-                        </div>
-                        {{saveText.videogame}}
-                    </button>
+                    <div class="text-center m-3">
+                        <button type="submit" class="btn btn-dark badge-pill min-save-button-width"
+                            [ngClass]="{'bg-secondary': saveText.videogame === 'Saving...'}">
+                            <div class="d-inline-block mt-1" *ngIf="saveText.videogame === 'Saving...'">
+                                <loader2 [type]="2.5"></loader2>
+                            </div>
+                            {{saveText.videogame}}
+                        </button>
+                    </div>
+
                 </form>
             </div>
         </ng-container>
@@ -97,8 +115,6 @@
         <ng-container *ngSwitchCase="1">
             <div class="m-3">
                 <form [formGroup]="userinfoForm" (ngSubmit)="submitUserdata()" action="" method="POST">
-                    <h2 class="text-secondary">Personal</h2>
-
                     <div class="row">
                         <div class="col-6">First Name<label class="text-danger">*</label></div>
                         <div class="col-6">Last Name<label class="text-danger">*</label></div>
@@ -181,11 +197,9 @@
                                 }}</label>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-6">You joined on {{ user['doj'] | date:'mediumDate' }}</div>
-                        <div class="col-6">
-
-                            <button type="submit" class="btn w-50 bg-theme text-white float-right"
+                    <div class="mt-3">
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-dark badge-pill min-save-button-width"
                                 [ngClass]="{'bg-secondary': saveText.personal === 'Saving...'}">
                                 <div class="d-inline-block mt-1" *ngIf="saveText.personal === 'Saving...'">
                                     <loader2 [type]="2.5"></loader2>
@@ -193,6 +207,7 @@
                                 {{saveText.personal}}
                             </button>
                         </div>
+                        <div class="text-small mt-2 mb-2 text-right">You joined on {{ user['doj'] | date:'mediumDate' }}</div>
                     </div>
                 </form>
             </div>
@@ -201,7 +216,7 @@
 
         <ng-container *ngSwitchCase="2">
             <div class="m-3">
-                <div class="badge badge-dark badge-pill cursor-pointer">Delete my account</div>
+                <div class="badge cursor-pointer">Delete my account</div>
 
                 <div class="delete-accoungt-section">
                     What is the reason of your exit from Spawnhouse?
@@ -220,17 +235,23 @@
                         </li>
                     </ul>
 
-                    <div class="">Out of 10, how likely are you going to recommend Spawnhouse to a friend?</div>
-                    <div style="height: 3rem; width: 3rem;"
-                        class="circle cursor-pointer d-inline-block m-1 border-grey text-center"
-                        *ngFor="let x of [0,1,2,3,4,5,6,7,8,9,10]"
-                        [ngClass]="{ 'bg-off-black text-white': recommendIndex === x}" (click)="recommendIndex = x">
-                        <div class="mt-2">{{ x }}</div>
+                    <div>Out of 10, how likely are you going to recommend Spawnhouse to a friend?</div>
+                    <div class="text-center">
+                        <div class="cursor-pointer m-1 border-grey badge badge-pill"
+                            *ngFor="let x of [0,1,2,3,4,5,6,7,8,9,10]" [ngClass]="{ 'badge-dark': recommendIndex === x}"
+                            (click)="recommendIndex = x">
+                            <div class="pt-1 pd-1 pl-3 pr-3">{{ x }}</div>
+                        </div>
                     </div>
+
                     <br>
-                    <button class="btn btn-danger ml-auto mr-auto mt-3 float-right"
-                        (click)="confirmDelete(confirmdeleteTemplate)"><span
-                            class="iconset2 icon-jolly-roger"></span>&nbsp; Pemanantly Delete my Account</button>
+
+                    <div class="text-center">
+                        <button class="btn btn-danger ml-auto mr-auto mt-3 badge-pill"
+                            (click)="confirmDelete(confirmdeleteTemplate)"><span
+                                class="iconset2 icon-jolly-roger"></span>&nbsp; Pemanantly Delete my Account</button>
+                    </div>
+
                     <!-- <div class="text-small text-secondary">Please Note: Your messages to other users might still exist after account deletion.</div> -->
                 </div>
             </div>

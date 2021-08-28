@@ -17,7 +17,6 @@ export class AllNotificationsComponent implements OnInit {
   @HostListener('window:scroll', ['$event'])
   onScroll(event) {
     if (window.scrollY/(document.body.scrollHeight-window.innerHeight)  >= 1 ) {
-      console.log("hello trigger scroll");
       this.getNotifications(false);
     }
   }

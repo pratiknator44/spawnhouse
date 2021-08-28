@@ -8,6 +8,7 @@ import { NavbarService } from 'src/assets/services/navbar.service';
 import { OverlayService } from 'src/assets/services/overlay.service';
 import { ActivatedRoute } from '@angular/router';
 import { DurationsEnum } from 'src/assets/variables/toasts.enum';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'view-profile',
@@ -36,7 +37,8 @@ export class ViewProfileComponent implements OnInit {
     private _notifService: FloatNotificationService,
     private _navbarService: NavbarService,
     private _overlayService: OverlayService,
-    private _activeRoute: ActivatedRoute) {
+    private _activeRoute: ActivatedRoute,
+    private _titleService: Title) {
 
     this._activeRoute.params.subscribe(val => {
       if (this._activeRoute.snapshot.params.username)
@@ -64,6 +66,11 @@ export class ViewProfileComponent implements OnInit {
         }
 
         this.user = result['user'];
+
+        this._titleService.setTitle(this.user.username+'\'s gaming profile');
+
+
+
         this.user['nowplaying'] = result['nowplaying'];
 
         this.user['gamedata'] = result['gamedata'];

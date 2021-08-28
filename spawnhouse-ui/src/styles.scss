@@ -11,6 +11,7 @@
     cursor: pointer !important;
 }
 
+
 .title-font {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
@@ -355,8 +356,11 @@ label {
     font-size: 0.75rem; 
 }
 
-.big-icon {
+.lg-icon {
     font-size: 4rem;
+}
+.md-icon {
+    font-size: 2rem;
 }
 
 .border-bottom-thin {

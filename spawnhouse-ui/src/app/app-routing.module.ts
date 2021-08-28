@@ -17,6 +17,7 @@ import { FeedbackComponent } from './feedback/feedback.component';
 import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { NowplayingFormComponent } from './nowplaying/nowplayingform.component';
+import { PushNotificationComponent } from './push-notification/push-notification.component';
 
 const routes: Routes = [
   {
@@ -97,7 +98,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/notification.module').then(m=> m.NotificationsModule),
     component: AllNotificationsComponent
   },
-  
+  {
+    path: 'push-notifications',
+    canActivate: [ProfileGuardService],
+    loadChildren: () => import('./modules/editProfile.module').then(m => m.ProfileEditModule),
+    component: PushNotificationComponent
+  },
   {
     path: ':username',
     canActivate: [ProfileGuardService],
@@ -105,7 +111,7 @@ const routes: Routes = [
     component: ProfileComponent
   }, 
   // { path: '',   redirectTo: '/login', pathMatch: 'full' }, // redirect to `first-component`
-   {
+  {
     path: '**',
     component: NotFoundComponent
   },

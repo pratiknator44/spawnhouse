@@ -1,7 +1,7 @@
 export enum APIvars {
-    APIdomain = 'http://localhost:3000',
-    DP_DOMAIN = 'http://localhost:3000/dp/',
-    COVER_DOMAIN = 'http://localhost:3000/cover/',
+    APIdomain = 'https://thespawnhouse.com',
+    DP_DOMAIN = 'https://thespawnhouse.com/dp/',
+    COVER_DOMAIN = 'https://thespawnhouse.com/cover/',
     APIlogin = 'login',
     CHECK_IF_TAKEN = 'signup/checkiftaken',
     APIemailOTP = 'signup/emailverification',
@@ -12,7 +12,9 @@ export enum APIvars {
     APIallowAll = '*',
     APIattemptLogin = 'login/attempt',
     APIattemptLogin2 = 'login/attempt2',
-    GOOGLE_0AUTH_CLIENT_ID = '1063064480579-4pqt0259eqsu2epkctrchjk31q5j8ani.apps.googleusercontent.com', // '206033993886-qqam7i8l0egv1t8iih63hnqiut8c932e.apps.googleusercontent.com'
+    OAUTH_PUBLIC_KEY_WEB = '1063064480579-4pqt0259eqsu2epkctrchjk31q5j8ani.apps.googleusercontent.com', // '206033993886-qqam7i8l0egv1t8iih63hnqiut8c932e.apps.googleusercontent.com'
+    OAUTH_PUBLIC_KEY_ANDROID= "1063064480579-b0g6lvcce5isksop6rgr69l79p3hrk2s.apps.googleusercontent.com",
+
     FACEBOOK_APP_ID = '',
     GET_HASHTAGS  = 'mentions',
     GET_DP = 'resources/getdp',
@@ -88,11 +90,14 @@ export enum APIvars {
     ACTIVE_NOW_PLAYING_USERS = 'nowplaying/activeusers',
     FEEDBACK = 'feedback',
     LAST_ACTIVE = 'signup/lastactive',
-    SAVE_USER_GAMEMODE = 'gamedata/savegamemode'
+    SAVE_USER_GAMEMODE = 'gamedata/savegamemode',
+    SAVE_PUSH_NOTIFICATIONS_OBJECT = 'pushnotifications',
+    UNSUBSCRIBE_PUSH_NOTIFICATION = 'pushnotifications/unsubscribe'
 }
 
-export enum GlobalContantsEnum {
-    RECAPTCHA_SITE_KEY = '6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU'
+export enum ServiceKeysEnum {
+    RECAPTCHA_SITE_KEY = '6LflNcUZAAAAABuL1BkTS27rP3t2iuI7FMgrC0WU',
+    PUSH_SUBSCRIPTION_PUBLIC_KEY = 'BP5R5lsiWhoi47WWWVF3PkfonuInWU2pDWLezDxTSc63QFRovO4LR_z1X_b9PQGkZMjI0u7Ro197jzYcTpFnyZM'
 }
 
 export enum SocketEventsEnum {
