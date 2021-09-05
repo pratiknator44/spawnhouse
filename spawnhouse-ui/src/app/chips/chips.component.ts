@@ -85,7 +85,7 @@ export class ChipsComponent implements OnInit {
 
   crossClicked(index) {
     this.emitCrossClick.emit(index);
-    this.selected.splice(index, 1);
+    this.removeItem(index);
   }
 
 }

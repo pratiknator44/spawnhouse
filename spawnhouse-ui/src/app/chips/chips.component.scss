@@ -3,8 +3,18 @@
     cursor: pointer;
 }
 
-.btn {
+.chip-container {
+    display: inline-block;
+    font-weight: 400;
+    vertical-align: middle;
     border: solid 1px #CCC !important;
+    padding-right: .6em;
+    padding-left: .6em;
+    border-radius: 10rem;
+}
+.like-container {
+    height: 2rem; width: 2rem;
+    margin-left: -0.7rem;
 }
 
 .suggestions > span {

@@ -368,4 +368,8 @@ export class APIservice {
   unsubsribePushNotifications () {
     return this._http.get(APIvars.APIdomain+'/'+APIvars.UNSUBSCRIBE_PUSH_NOTIFICATION).toPromise();
   }
+
+  samplePushNotification() {
+    return this._http.get(APIvars.APIdomain+'/'+APIvars.PUSH_NOTIFICATION_SAMPLE).toPromise();
+  }
 }

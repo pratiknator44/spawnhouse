@@ -1,7 +1,7 @@
 export enum APIvars {
     APIdomain = 'http://localhost:3000',
-    DP_DOMAIN = 'http://localhost:3000//dp/',
-    COVER_DOMAIN = 'http://localhost:3000//cover/',
+    DP_DOMAIN = 'http://localhost:3000/dp/',
+    COVER_DOMAIN = 'http://localhost:3000/cover/',
     APIlogin = 'login',
     CHECK_IF_TAKEN = 'signup/checkiftaken',
     APIemailOTP = 'signup/emailverification',
@@ -92,7 +92,8 @@ export enum APIvars {
     LAST_ACTIVE = 'signup/lastactive',
     SAVE_USER_GAMEMODE = 'gamedata/savegamemode',
     SAVE_PUSH_NOTIFICATIONS_OBJECT = 'pushnotifications',
-    UNSUBSCRIBE_PUSH_NOTIFICATION = 'pushnotifications/unsubscribe'
+    UNSUBSCRIBE_PUSH_NOTIFICATION = 'pushnotifications/unsubscribe',
+    PUSH_NOTIFICATION_SAMPLE = 'pushnotifications/sample'
 }
 
 export enum ServiceKeysEnum {

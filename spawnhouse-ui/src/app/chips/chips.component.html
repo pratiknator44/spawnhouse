@@ -1,13 +1,24 @@
 <div class="position-relative">
-    <div class="border-grey" style="min-height: 2.5rem; background-color:whitesmoke;">
-        <div class="btn ml-1 bg-white cursor-pointer mt-1" *ngFor="let item of selected; let i = index">
-            <div (click)="removeItem(i)" class="float-left">{{ item.label }}</div>
-            <div class="float-right text-center pl-2" (click)="setFavoriteByIndex(i)" *ngIf="config?.showFav">
-                <span class="iconset h5 text-danger" [ngClass]="{'icon-favorite_outline': !item?.value?.isFav,  'icon-favorite': item?.value?.isFav}"></span>
-            </div>
+    <div class="rounded" style="min-height: 2.5rem; background-color:#fff1f2    ;">
+        <div class="chip-container m-1 bg-white" *ngFor="let item of selected; let i = index">
 
-            <div class="float-right text-center pl-2" (click)="crossClicked(i)" *ngIf="config?.showCross">
-                <span class="iconset text-danger icon-cross" style="font-size: 0.75rem;"></span>
+
+
+
+            <div class="float-left border-grey text-center mr-1 circle like-container cursor-pointer"
+            (click)="setFavoriteByIndex(i)"
+            title="Mark as favourite"
+            *ngIf="config?.showFav"
+            [ngClass]="{'bg-danger': !item?.value?.isFav,  'bg-grey': item?.value?.isFav}">
+                <div class="iconset icon-favorite text-white mt-1"></div>
+            </div>
+            
+            <div class="float-left mt-1">{{ item.label }}</div>
+            
+
+            <div class="float-right text-center ml-3 cursor-pointer" (click)="crossClicked(i)" *ngIf="config?.showCross || true">
+                <span class="text-secondary h4">×</span>
+                <!-- <span class="iconset2 text-danger icon-cross" style="font-size: 0.75rem;"></span> -->
             </div>
 
         </div>

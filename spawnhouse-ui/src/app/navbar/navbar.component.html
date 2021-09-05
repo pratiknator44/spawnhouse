@@ -80,7 +80,7 @@
       (click)="navOptionSelected('notif')">
       <div class="cursor-pointer" [ngClass]="{'color-theme': activeOption==='notif'}">
         <span class="iconset icon-size icon-bell"></span>
-        <span class="badge badge-danger" style="margin-left: -0.25rem;"
+        <span class="badge badge-danger badge-pill" style="margin-left: -0.25rem;"
           *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
       </div>
       <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifs</div>
@@ -118,7 +118,7 @@
       (click)="navOptionSelected('msg')">
       <div class="cursor-pointer" [ngClass]="{'color-theme': activeOption==='msg'}">
         <span class="iconset icon-size icon-bubbles3"></span>
-        <span class="badge badge-danger" style="margin-left: -0.25rem;"
+        <span class="badge badge-danger badge-pill" style="margin-left: -0.25rem;"
           *ngIf="alerts.messages !== 0">{{alerts.messages}}</span>
       </div>
       <div class="text-center m-0 font-0-5-rem cursor-pointer pc-view-only">Messages</div>
