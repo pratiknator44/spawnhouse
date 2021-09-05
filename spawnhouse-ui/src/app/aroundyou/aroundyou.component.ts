@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { APIservice } from 'src/assets/services/api.service';
 import { FloatNotificationService } from 'src/assets/services/float-notification.service';
@@ -24,11 +25,13 @@ export class AroundyouComponent implements OnInit {
     private _storageService: StorageService,
     private _floatNotifService: FloatNotificationService,
     private _apiService: APIservice,
-    private _router: Router) {
+    private _router: Router,
+    private _titleService: Title) {
     }
 
   ngOnInit(): void {
     this.userSuggestions = [];
+    this._titleService.setTitle('Playing Nearby');
     this.getLocation();
   }
 

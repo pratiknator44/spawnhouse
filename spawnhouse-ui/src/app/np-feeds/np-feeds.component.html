@@ -113,10 +113,10 @@
     <div *ngIf="!np || np?.length === 0">
         <h1 class="text-secondary">Getting started</h1>
         <ul>
-            <li>You can update what you're playing today on <var>Now Playing</var> button on the left</li>
-            <li>Set up your <var>favourites</var> games so it's easier for others to see what all you like to play, and
+            <li>Update username and info: <span class="text-theme hover-underline cursor-pointer text-bold" (click)="routeToProfile('manage')">Update Profile </span> > Personal</li>
+            <li>Let's update what you're playing from <span class="text-theme hover-underline cursor-pointer text-bold" (click)="routeToProfile('create')">Now Playing</span> </li>
+            <li><span class="text-theme hover-underline cursor-pointer text-bold" (click)="routeToProfile('manage')">Set up your <var>favourites</var></span> games so it's easier for others to see what all you like to play, and
                 connect</li>
-            <li>Select what kind of player you are, to get create or join co-op team! </li>
         </ul>
     </div>
 </div>

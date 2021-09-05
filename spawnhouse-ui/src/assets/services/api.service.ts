@@ -39,6 +39,7 @@ export class APIservice {
   logout() {
     this.relogin();
     this._cookieService.deleteAll('');
+    sessionStorage.setItem("addhit", "0");
   }
 
   relogin() {

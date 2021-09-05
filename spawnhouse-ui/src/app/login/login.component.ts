@@ -48,6 +48,10 @@ export class LoginComponent implements OnInit {
     }
     // console.log("past token: ", this._cookieService.get('past_token'));
     // this.hasLoggedOut = true;
+
+    // if user logs out, dont count it as a hit
+    if(sessionStorage.getItem("addhit")) sessionStorage.removeItem("addhit");
+    else  this._http.get(APIvars.APIdomain+'/'+APIvars.HITS).toPromise();
   }
 
 
@@ -84,7 +88,7 @@ export class LoginComponent implements OnInit {
       this.errorText = error['message'];
     });
   }
-  temp="web";
+
   injectGoogleScript() {
     let scr = this._renderer.createElement('script');
     scr.src = APIvars.APIgoogleSignup;
@@ -93,12 +97,11 @@ export class LoginComponent implements OnInit {
     this._renderer.appendChild(document.body, scr);
     // check if the 
     let token = APIvars.OAUTH_PUBLIC_KEY_WEB;
-    if(navigator.userAgent.toLowerCase().includes('android')) {
-      this._metaService.addTag({'http-equiv': "Content-Security-Policy",
-      content:"default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"});
-      token = APIvars.OAUTH_PUBLIC_KEY_ANDROID;
-      this.temp = "android";
-    }
+    // if(navigator.userAgent.toLowerCase().includes('android')) {
+    //   this._metaService.addTag({'http-equiv': "Content-Security-Policy",
+    //   content:"default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"});
+    //   token = APIvars.OAUTH_PUBLIC_KEY_ANDROID;
+    // }
     this._metaService.addTags([{name: 'google-signin-client_id', content: token}]);
   }
 

@@ -14,7 +14,7 @@
         <div *ngIf="!temp" class="text-center text-grey">
             <span class="iconset icon-image" style="font-size: 16rem; ">
             </span>
-            <br>Browse and select an image
+            <div (click)="newdpOrCover.click()" class="btn btn-dark badge-pill">Browse and select an image </div>
         </div>
     </div>
     <div class="mt-2" style="min-width: 50% !important; margin-left: 2.5%; overflow-y: auto;">

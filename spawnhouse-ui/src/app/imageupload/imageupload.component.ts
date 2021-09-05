@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { APIvars } from 'src/assets/variables/api-vars.enum';
 import { IPictureUploadSchema } from 'src/assets/interfaces/picture-upload-schema.interface';
 import { APIservice } from 'src/assets/services/api.service';
+import { FloatNotificationService } from 'src/assets/services/float-notification.service';
 
 @Component({
   selector: 'sh-imageupload',
@@ -28,7 +29,8 @@ export class ImageuploadComponent implements OnInit {
   @Output() newsubmit = new EventEmitter();
   @Output() onImageRemove = new EventEmitter();
 
-  constructor( private _apiService: APIservice) { }
+  constructor( private _apiService: APIservice,
+    private _floatNotificationService: FloatNotificationService) { }
 
   ngOnInit(): void {
   }
@@ -80,10 +82,11 @@ export class ImageuploadComponent implements OnInit {
     }
 
     this._apiService.removeUserImage(this.mode).then(result => {
-    }).catch(res => {
-      console.log("failed to remove image ", res);
-    }).finally( () => {
+
+      this._floatNotificationService.makeToast.next({heading: "Success", type: 'success', text: "image removed successfully"});
       this.onImageRemove.emit();
+    }).catch(res => {
+      this._floatNotificationService.makeToast.next({heading: "Failed to remove image", text: "Something went wrong ", res});
     });
   }
 

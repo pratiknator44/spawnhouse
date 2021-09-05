@@ -20,8 +20,8 @@
             <div *ngIf="!mgtFlags.loadingData">
 
                 <label>Your top 3 preferences when you play a co-op game</label>
-                <div class="player-type-choices text-center d-flex text-secondary mt-3" style="flex-wrap: wrap;">
-                    <div class="player-type-choice-container text-center ml-auto mr-auto cursor-pointer m-3"
+                <div class="player-type-choices text-center d-flex text-secondary mt-3" style="flex-wrap: wrap; justify-content: center;">
+                    <div class="player-type-choice-container text-center m-3 cursor-pointer"
                         [ngClass]="{'text-theme': type?.checked}" (click)="selectType(i)"
                         *ngFor="let type of playerTypes; let i = index">
                         <div class="circle text-center" [ngClass]="{'std-box-shadow': type?.checked}"
@@ -48,8 +48,8 @@
             <br>
             <div class="m-3">
                 <div>What kind of games do you like more</div>
-                <div class="d-flex text-center mt-3 cursor-pointer">
-                    <div *ngFor="let mode of gameModes" class="ml-auto mr-auto">
+                <div class="d-flex text-center mt-3 cursor-pointer" style="justify-content: center;">
+                    <div *ngFor="let mode of gameModes" class="m-3">
                         <div (click)="saveGamemode(mode.value)"
                             [ngClass]="{'text-theme': selectedGameMode === mode.value, 'text-secondary': selectedGameMode !== mode.value}">
 

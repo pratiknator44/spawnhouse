@@ -126,11 +126,11 @@
                         <h4 class="text-secondary d-inline-block">Favourites</h4>
                     </div>
                     <div class="text-theme cursor-pointer" style="word-wrap: break-word;"
-                        [title]="'See who all are playing '+fav.label " [ngClass]="{'d-inline mr-2': fav.value === ''}"
+                        [ngClass]="{'d-inline mr-2': !fav?.value?.isFav}"
                         *ngFor="let fav of tempFavGamesArray">
-                        <span *ngIf="fav.value !== ''" class="iconset icon-favorite"></span>
+                        <span *ngIf="fav.value?.isFav" class="iconset icon-favorite"></span>
                         {{ fav.label }}
-                        <span *ngIf="fav.value === ''" class="text-black">,</span>
+                        <span *ngIf="!fav.value?.isFav" class="text-black">,</span>
                     </div>
                     <label class="text-theme hover-underline cursor-pointer badge"
                         *ngIf="user?.gamedata?.fav?.length > 5 && tempFavGamesArray.length === 5"
@@ -164,7 +164,7 @@
                 <h4 class="text-secondary d-inline-block"><span class="iconset icon-user"></span>&nbsp;About</h4>
                 <div>{{user?.bio}}</div>
                 <div class="text-primary hover-underline cursor-pointer" (click)="gotoWebsite(user?.website)">
-                    {{user?.website}}</div>
+                    {{(user?.website | slice:0:30) + (user?.website?.length > 30 ? '...' : '')}}</div>
                 <label class="font-italic text-secondary">{{ user?.quote }}</label>
             </div>
         </div>
@@ -244,8 +244,12 @@
         <div class="modal-body text-center p-0 border-none">
 
             <div class="bg-white">
-                <h1 class="text-secondary h2 ml-3" *ngIf="!profileFlags.loadingFollow">{{followUsers?.length+'
-                    '+selectedFollowType}}</h1>
+                <!-- <div class="std-box-shadow">
+                    <h1 class="text-secondary h2 ml-3" *ngIf="!profileFlags.loadingFollow">{{followUsers?.length+'
+                        '+selectedFollowType}}
+                    </h1>
+                </div> -->
+                
                 <div class="position-relative" style="max-height: 60vh; overflow: auto;">
                     <div class="text-secondary font-italic text-center" *ngIf="followUsers?.length === 0">You have no
                         {{selectedFollowType}}</div>
@@ -281,7 +285,7 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="std-box-shadow">
                     <div class="btn bg-theme text-white m-2 w-50" (click)="modal.close('Save click')">Okay</div>
                 </div>
 

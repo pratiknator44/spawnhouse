@@ -26,6 +26,7 @@ export class NowplayingFormComponent implements OnInit {
   searchword;
   npflags = { lockGameName: false, searchingGame: false };
   gameApiTimeout;
+  gameInfo = {rating: null, playtime: null};
 
   consoles = [
     { icon: 'android', id: 'm' },
@@ -114,7 +115,13 @@ export class NowplayingFormComponent implements OnInit {
     this.nowplayingForm.patchValue({ game: game.label });
     this.gameSuggestions = [];
     this.npflags.lockGameName = true;
+    try {
+      this.gameInfo = {rating: game.value.rating, playtime: game.value.playtime};
+    } catch {
+      this.gameInfo = {rating: 'N/A', playtime: 'N/A'};
+    }
   }
+    
 
   searchGame(searchword) {
     if (searchword.length < 3 || searchword.trim() === '') return;

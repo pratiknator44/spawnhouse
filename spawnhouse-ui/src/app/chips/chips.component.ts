@@ -64,11 +64,22 @@ export class ChipsComponent implements OnInit {
   setFavoriteByIndex(i) {
 
     // if not set/unfav
-    if(this.selected[i].value === 'fav') {
-      this.selected[i].value = '';
-    } else {
-      this.selected[i].value = 'fav';
+    try {
+      if(this.selected[i].value.isFav) {
+        delete this.selected[i].value.isFav
+      } else {
+        this.selected[i].value['isFav'] = true
+      }
+    } catch {
+      this.selected[i].value = {};
+      this.selected[i].value['isFav'] = true
     }
+
+    // if(this.selected[i].value === 'fav') {
+    //   this.selected[i].value = '';
+    // } else {
+    //   this.selected[i].value = 'fav';
+    // }
     this.selectionChange.emit(this.selected);
   }
 

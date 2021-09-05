@@ -1,6 +1,10 @@
 <div class="text-center overflow-hidden game-img-container" *ngIf="gameImage?.length > 0">
     <img [src]="gameImage" alt="Selected game has no image" class="w-100"/>
 </div>
+<div class="float-right" *ngIf="gameInfo?.rating">
+    <span class="badge badge-dark badge-pill" title="Ratings as per global users"><span class="iconset2 icon-star text-warning"></span> {{gameInfo?.rating}} / 5</span>
+    <span class="badge badge-dark badge-pill ml-1" *ngIf="gameInfo?.playtime !== 0">~{{gameInfo.playtime}}h gameplay</span>
+</div>
 
 <div class="mt-2 text-secondary display-5 m-1" *ngIf="!gameImage">What are you playing today?</div>
 <!-- <div class="m-1">Autofill previous sessions:

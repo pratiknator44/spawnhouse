@@ -1,7 +1,7 @@
 export enum APIvars {
-    APIdomain = 'https://thespawnhouse.com',
-    DP_DOMAIN = 'https://thespawnhouse.com/dp/',
-    COVER_DOMAIN = 'https://thespawnhouse.com/cover/',
+    APIdomain = 'http://localhost:3000',
+    DP_DOMAIN = 'http://localhost:3000//dp/',
+    COVER_DOMAIN = 'http://localhost:3000//cover/',
     APIlogin = 'login',
     CHECK_IF_TAKEN = 'signup/checkiftaken',
     APIemailOTP = 'signup/emailverification',
@@ -14,7 +14,7 @@ export enum APIvars {
     APIattemptLogin2 = 'login/attempt2',
     OAUTH_PUBLIC_KEY_WEB = '1063064480579-4pqt0259eqsu2epkctrchjk31q5j8ani.apps.googleusercontent.com', // '206033993886-qqam7i8l0egv1t8iih63hnqiut8c932e.apps.googleusercontent.com'
     OAUTH_PUBLIC_KEY_ANDROID= "1063064480579-b0g6lvcce5isksop6rgr69l79p3hrk2s.apps.googleusercontent.com",
-
+    HITS = 'signup/hits',
     FACEBOOK_APP_ID = '',
     GET_HASHTAGS  = 'mentions',
     GET_DP = 'resources/getdp',

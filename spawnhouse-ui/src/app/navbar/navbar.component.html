@@ -14,7 +14,7 @@
 
     <div class="navbar-item navbar-item-responsive text-black" title="Home"
       (click)="selectedOption = 'Home'; routeTo('/home')">
-      <div class="cursor-pointer text-center iconset2 icon-size icon-jolly-roger"
+      <div class="cursor-pointer text-center iconset icon-size icon-home"
         [ngClass]="{'color-theme': selectedOption==='Home'}">
       </div>
       <div class="text-center m-0 font-0-5-rem cursor-pointer medq-nav-label">Home</div>
@@ -83,7 +83,7 @@
         <span class="badge badge-danger" style="margin-left: -0.25rem;"
           *ngIf="alerts.notifications !==0">{{alerts.notifications}}</span>
       </div>
-      <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifications</div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer">Notifs</div>
 
       <div class="notifications-container bg-white position-absolute mt-3 rounded std-box-shadow"
         *ngIf="activeOption==='notif'">
@@ -121,7 +121,7 @@
         <span class="badge badge-danger" style="margin-left: -0.25rem;"
           *ngIf="alerts.messages !== 0">{{alerts.messages}}</span>
       </div>
-      <div class="text-center m-0 font-0-5-rem cursor-pointer">Messages</div>
+      <div class="text-center m-0 font-0-5-rem cursor-pointer pc-view-only">Messages</div>
 
 
       <div class="message-container bg-white position-absolute mt-3 std-box-shadow rounded"
@@ -138,28 +138,31 @@
         </div>
         <div>
         </div>
-        <div class="user-message-row hover-bg-grey cursor-pointer m-1"
-          [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}"
-          *ngFor="let msg of messages; let i = index" (click)="routeToMessaging(msg._id)">
+        <div style="max-height: 50vh; overflow-y: auto;">
+          <div class="user-message-row hover-bg-grey cursor-pointer m-1"
+            [ngClass]="{'bg-theme-lite': !msg.seen && msg.lastSender != user._id}"
+            *ngFor="let msg of messages; let i = index" (click)="routeToMessaging(msg._id)">
 
-          <div class="row m-1 text-left">
-            <div class="col-3 text-center">
-              <img class="circle dp-big mt-2" [src]="domain?.dp+msg?.dp" />
-            </div>
-
-            <div class="col-9">
-              <span class="text-theme hover-underline font-weight-bold">
-                {{msg?.username }}
-              </span>
-
-              <div class="text-secondary mr-2 text-truncate overflow-hidden" style="width: 11rem; white-space: nowrap;">
-                {{ msg.text }}
+            <div class="row m-1 text-left">
+              <div class="col-3 text-center">
+                <img class="circle dp-big mt-2" [src]="domain?.dp+msg?.dp" />
               </div>
-              <div class="badge badge-lite">{{msg.time | ago: true : true }}</div>
+
+              <div class="col-9">
+                <span class="text-theme hover-underline font-weight-bold">
+                  {{msg?.username }}
+                </span>
+
+                <div class="text-secondary mr-2 text-truncate overflow-hidden"
+                  style="width: 11rem; white-space: nowrap;">
+                  {{ msg.text }}
+                </div>
+                <div class="badge badge-lite">{{msg.time | ago: true : true }}</div>
+              </div>
             </div>
           </div>
-        </div>
 
+        </div>
 
         <div class="bg-lite font-0-5-rem text-theme text-bold hover-underline cursor-pointer p-2"
           (click)="routeToMessaging()" style="border-bottom-left-radius: 3px;border-bottom-right-radius: 3px;"> Show All
