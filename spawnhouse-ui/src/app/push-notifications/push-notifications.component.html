@@ -1,0 +1,28 @@
+<div class="h3 text-secondary display-5">Notifications Subscription</div>
+
+You'll be notified on this device when someone:
+<ul>
+    <li>starts following you</li>
+    <li>updates what they are playing</li>
+    <li>sends you message</li>
+    <li>likes/comments your post</li>
+</ul>
+<div class="text-center">
+    <div class="btn btn-dark badge-pill" (click)="getSubscription()">&nbsp; <span class="iconset icon-bell"></span>  &nbsp;{{buttonText.sub}}&nbsp;&nbsp;</div>
+    <br><br>
+    <div class="btn text-danger" (click)="unsubscribeAll()">{{buttonText.unsub}}</div>
+</div>
+<!-- <div class="btn btn-default text-info" (click)="getSampleNotification()">Send a sample notification (developer)</div> -->
+<div class="text-center">
+    <a (click)="getSampleNotification()" class="text-theme hover-underline cursor-pointer">Get a sample notification</a> 
+</div>
+
+<div class="mt-2">
+    <h6 class="text-secondary">Guide</h6>
+
+    1. Allow notifications for the website
+    <div class="text-center">
+        <img [src]="domain+'/default/allow-notifications.jpg'" style="max-height: 25vh; max-width: 50vw;" />
+    </div>
+
+</div>

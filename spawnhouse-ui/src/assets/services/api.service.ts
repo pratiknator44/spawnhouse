@@ -372,4 +372,8 @@ export class APIservice {
   samplePushNotification() {
     return this._http.get(APIvars.APIdomain+'/'+APIvars.PUSH_NOTIFICATION_SAMPLE).toPromise();
   }
+
+  savePushSubscriptionObject(sub) {
+    return this._http.post(APIvars.APIdomain+'/'+APIvars.SAVE_PUSH_NOTIFICATIONS_OBJECT, sub).toPromise();
+  }
 }
