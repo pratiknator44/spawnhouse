@@ -34,7 +34,8 @@
       "urls": [
         "/resources/getfollowdata",
         "/signup",
-        ""
+        "/post",
+        "/agreement"
       ],
       "cacheConfig": {
         "maxSize": 1000,

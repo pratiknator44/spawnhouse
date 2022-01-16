@@ -16,11 +16,11 @@ import { DurationsEnum } from '../variables/toasts.enum';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-    constructor(private _userService: UserService,
+    constructor(
       private _floatNotifService: FloatNotificationService,
       private _cookieService: CookieService,
       private _router: Router) {}
-    
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
       request = request.clone({
           setHeaders: {

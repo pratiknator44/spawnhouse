@@ -1,6 +1,6 @@
 {
-  "name": "spawnhouse-ui",
-  "version": "0.0.0",
+  "name": "spawnhouse",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -30,7 +30,6 @@
     "clean-webpack-plugin": "^3.0.0",
     "g": "^2.0.1",
     "gapi": "0.0.3",
-    "http-server": "^0.12.3",
     "ngx-cookie-service": "^10.1.1",
     "ngx-image-cropper": "^3.3.1",
     "ngx-perfect-scrollbar": "^10.0.1",
