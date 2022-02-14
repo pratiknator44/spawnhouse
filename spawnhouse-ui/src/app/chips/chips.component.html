@@ -9,12 +9,12 @@
             (click)="setFavoriteByIndex(i)"
             title="Mark as favourite"
             *ngIf="config?.showFav"
-            [ngClass]="{'bg-danger': !item?.value?.isFav,  'bg-grey': item?.value?.isFav}">
+            [ngClass]="{'bg-danger': item?.value?.isFav,  'bg-grey': !item?.value?.isFav}">
                 <div class="iconset icon-favorite text-white mt-1"></div>
             </div>
-            
+
             <div class="float-left mt-1">{{ item.label }}</div>
-            
+
 
             <div class="float-right text-center ml-3 cursor-pointer" (click)="crossClicked(i)" *ngIf="config?.showCross || true">
                 <span class="text-secondary h4">×</span>
