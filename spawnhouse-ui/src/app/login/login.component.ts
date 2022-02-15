@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
   eula = {greetText: 'Hi', eula: ''};
   loginFlags = {showAcceptTnCButton: true};
   errorText = null;
+  email = ''; password = '';
   @ViewChild('eulaTemplate') eulaTemplate;
 
   constructor(private _metaService: Meta,
@@ -95,7 +96,7 @@ export class LoginComponent implements OnInit {
     scr.defer = true;
     scr.async = true;
     this._renderer.appendChild(document.body, scr);
-    // check if the 
+    // check if the
     let token = APIvars.OAUTH_PUBLIC_KEY_WEB;
     // if(navigator.userAgent.toLowerCase().includes('android')) {
     //   this._metaService.addTag({'http-equiv': "Content-Security-Policy",
@@ -134,5 +135,14 @@ export class LoginComponent implements OnInit {
     this._modalService.open(template, { ariaLabelledBy: 'modal-basic-title', size: 'md'}).result.then((result) => {
     }, (reason) => {
     });
+  }
+
+  submitCreds() {
+    if(this.email.trim().length === 0 && this.password.length === 0)  return;
+
+    const creds = atob(this.email+' '+this.password);
+
+
+
   }
 }

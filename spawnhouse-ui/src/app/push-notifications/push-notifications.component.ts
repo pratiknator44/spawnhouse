@@ -37,10 +37,9 @@ export class PushNotificationsComponent {
   }
 
   async requestSubscription() {
-    try { 
+    try {
       const sub = await this._swPush.requestSubscription({ serverPublicKey: ServiceKeysEnum.PUSH_SUBSCRIPTION_PUBLIC_KEY });
-      console.log("subscription object ", sub);
-      
+
       this.saveSubscriptionObject(sub);
 
     } catch  (e) {
@@ -50,7 +49,7 @@ export class PushNotificationsComponent {
 
   saveSubscriptionObject(sub) {
 
-    if(this.buttonText.sub.startsWith('P')) return;
+    // if(this.buttonText.sub.startsWith('P')) return;
 
     this.buttonText.sub = 'Please wait...';
 
@@ -70,7 +69,7 @@ export class PushNotificationsComponent {
   unsubscribeAll() {
 
     if(this.buttonText.unsub.endsWith('P')) return;
-    
+
     this.buttonText.unsub = 'Please wait...';
     this._apiService.unsubsribePushNotifications().then( result => {
       this._floatNotifications.makeToast.next({heading: "Success", text: "All your subscriptions have been removed", type: 'success', duration: DurationsEnum.SHORT});

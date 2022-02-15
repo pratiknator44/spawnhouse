@@ -1,9 +1,10 @@
 .login-container {
-    background-image: url("../../assets//images/bg-new.jpg");
+    background-image: url("../../assets/images/bg-new.jpg");
     background-position: 50% 100%;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: auto;
+    // background: linear-gradient(45deg, #A048E8, #370163);
 }
 
 @media screen and (max-width: 450px) {
@@ -48,3 +49,10 @@
         transform: rotate(15deg);
     }
 }
+// .std-gradient {
+//   background: linear-gradient(45deg, #A048E8, #370163);
+// }
+
+// .std-gradient:active {
+//   background: linear-gradient(-45deg, #A048E8, #370163);
+// }
